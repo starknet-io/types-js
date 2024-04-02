@@ -1,30 +1,10 @@
 {
+  // This configuration is used for local development and type checking.
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  "exclude": [],
+  "references": [{ "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "lib": ["dom", "ES2022"],
-    "moduleResolution": "Node",
-      "declaration": true,
-      "sourceMap": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-      "esModuleInterop": true,
-      "emitDeclarationOnly": true,
-    "declarationDir": "./dist-types",
-    "removeComments": true,
-    // "outFile":"./dist/index.d.ts",
-    "preserveConstEnums": true,
-  },
-  "include": [
-    "src/**/*"
-  ]
+    "baseUrl": "."
+  }
 }

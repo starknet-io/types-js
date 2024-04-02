@@ -1,10 +1,8 @@
 {
   "name": "starknet-types",
   "version": "0.0.1",
-  "publishConfig": {
-    "access": "public"
-  },
   "description": "Shared TypeScript definitions for Starknet projects",
+  "homepage": "https://github.com/starknet-io/types-js",
   "keywords": [
     "starknet",
     "starkware",
@@ -15,13 +13,30 @@
     "dapp"
   ],
   "license": "MIT",
-  "types": "dist-types/index.d.ts",
-  "files": [
-    "dist-types/**"
-  ],
+
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "sideEffects": false,
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
-    "build": "tsc --build",
+    "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
+    "build:cjs": "tsc --project ./tsconfig.build.json --module commonjs --outDir ./dist/cjs --removeComments --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+    "build:esm": "tsc --project ./tsconfig.build.json --module es2015 --outDir ./dist/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./dist/esm/package.json",
+    "build:types": "tsc --project ./tsconfig.build.json --module esnext --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
+    "clean": "npx rimraf dist",
     "format": "prettier --log-level log --write \"**/*.{ts,js,md,yml,json}\"",
     "lint": "eslint . --cache --fix --ext .ts",
     "ts:check": "tsc --noEmit --resolveJsonModule --project tsconfig.eslint.json"
@@ -38,5 +53,8 @@
     "prettier": "^3.2.5",
     "prettier-plugin-import-sort": "^0.0.7",
     "typescript": "^5.4.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

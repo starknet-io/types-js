@@ -7,7 +7,6 @@
 .idea
 coverage
 dist
-dist-types
 node_modules
 npm-debug.log
 package

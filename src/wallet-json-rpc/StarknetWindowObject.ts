@@ -1,5 +1,5 @@
-import { WalletEventListener } from './events';
-import { RequestFn } from './methods';
+import type { WalletEventListener } from './events';
+import type { RequestFn } from './methods';
 
 export interface StarknetWindowObject {
   id: string;

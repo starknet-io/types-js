@@ -1,5 +1,6 @@
 import { Permission, StarknetChainId } from '../common/constants';
-import {
+import type { TypedData } from '../common/typedData';
+import type {
   AddDeclareTransactionParameters,
   AddDeclareTransactionResult,
   AddDeployAccountTransactionParameters,
@@ -10,7 +11,6 @@ import {
   GetDeploymentDataResult,
   RequestAccountsParameters,
   SwitchStarknetChainParameters,
-  TypedData,
   WatchAssetParameters,
 } from './components';
 

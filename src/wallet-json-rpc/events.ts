@@ -9,10 +9,10 @@ export interface WalletEventHandlers {
   networkChanged: NetworkChangeEventHandler;
 }
 
-// I think we don't need it
-/* export type WalletEvents = {
+// TODO: Check with get-starknet team do we need it
+export type WalletEvents = {
   [E in keyof WalletEventHandlers]: { type: E; handler: WalletEventHandlers[E] };
-}[keyof WalletEventHandlers]; */
+}[keyof WalletEventHandlers];
 
 export type WalletEventListener = <E extends keyof WalletEventHandlers>(
   event: E,
