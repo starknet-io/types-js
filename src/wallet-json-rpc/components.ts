@@ -1,4 +1,4 @@
-import type { Call, FELT, SIERRA_ENTRY_POINT } from '../common/miscellaneous';
+import type { Call, FELT, SIERRA_ENTRY_POINT } from '../common/miscellaneous.js';
 
 /**
  * INVOKE_TXN_V1

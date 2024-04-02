@@ -1,5 +1,5 @@
 // Optimization on events
-import { StarknetChainId } from '../common/constants';
+import { StarknetChainId } from '../common/constants.js';
 
 export type AccountChangeEventHandler = (accounts?: string[]) => void;
 export type NetworkChangeEventHandler = (chainId?: StarknetChainId, accounts?: string[]) => void;

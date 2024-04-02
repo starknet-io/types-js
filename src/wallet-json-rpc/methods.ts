@@ -1,5 +1,5 @@
-import { Permission, StarknetChainId } from '../common/constants';
-import type { TypedData } from '../common/typedData';
+import { Permission, StarknetChainId } from '../common/constants.js';
+import type { TypedData } from '../common/typedData.js';
 import type {
   AddDeclareTransactionParameters,
   AddDeclareTransactionResult,
@@ -12,7 +12,7 @@ import type {
   RequestAccountsParameters,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
-} from './components';
+} from './components.js';
 
 /**
  * Maps each RPC message type to its corresponding parameters and result type.
