@@ -19,6 +19,7 @@ on:
   pull_request:
     branches: '*'
 
+
 jobs:
   quality:
     name: Quality test
@@ -49,3 +50,6 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npx semantic-release --debug ${{ inputs.debug }} --dry-run ${{ inputs.dry-run }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
