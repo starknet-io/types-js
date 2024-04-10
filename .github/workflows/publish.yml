@@ -4,6 +4,17 @@
 name: Node.js CI
 
 on:
+  workflow_call:
+    inputs:
+      debug:
+        type: boolean
+        default: false
+      dry-run:
+        type: boolean
+        default: false
+    secrets:
+      NPM_TOKEN:
+        required: true
   push:
     branches: [ "main" ]
   pull_request:
@@ -20,12 +31,25 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
     - run: npm run lint
     - run: npm run ts:check
+    
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: [quality]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npx semantic-release --debug ${{ toJSON(inputs.debug) }} --dry-run ${{ toJSON(inputs.dry-run) }}
