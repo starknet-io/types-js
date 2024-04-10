@@ -4,10 +4,9 @@
 
 🐺 Starknet TypeScript types 🚀
 
-![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-[![GitHub Workflow Status](https://github.com/starknet-io/types-rs/actions/workflows/test.yml/badge.svg)](https://github.com/starknet-io/types-rs/actions/workflows/test.yml)
-[![Project license](https://img.shields.io/github/license/starknet-io/types-rs.svg?style=flat-square)](LICENSE)
-[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/starknet-io/types-rs/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+[![GitHub Workflow Status](https://github.com/starknet-io/types-js/actions/workflows/test.yml/badge.svg)](https://github.com/starknet-io/types-js/actions/workflows/test.yml)
+[![Project license](https://img.shields.io/github/license/starknet-io/types-js.svg?style=flat-square)](LICENSE)
+[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
 Shared TypeScript type definitions for Starknet projects
 
