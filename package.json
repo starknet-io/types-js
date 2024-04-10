@@ -13,7 +13,6 @@
     "dapp"
   ],
   "license": "MIT",
-
   "type": "module",
   "exports": {
     ".": {
@@ -45,6 +44,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^18.0.0",
@@ -53,9 +53,15 @@
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
     "prettier-plugin-import-sort": "^0.0.7",
+    "semantic-release": "^23.0.8",
     "typescript": "^5.4.3"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
