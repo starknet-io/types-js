@@ -26,7 +26,7 @@ export type StarknetType =
       name: string;
       type: string;
     }
-  | StarknetEnumType
+  | StarknetEnumType // TODO: check @Penovic it is not in Spec
   | StarknetMerkleType;
 
 /**
@@ -36,15 +36,15 @@ export interface StarknetDomain extends Record<string, unknown> {
   name?: string;
   version?: string;
   chainId?: string | number;
-  revision?: string;
+  revision?: string; // TODO: check check @Penovic, not is speck
 }
 
 /**
  * The complete typed data, with all the structs, domain data, primary type of the message, and the message itself.
  */
 export interface TypedData {
-  types: Record<string, StarknetType[]>;
-  primaryType: string;
+  types: Record<string, StarknetType[]>; // TODO: check @Penovic, in speck it is only StarknetType[]
+  primary_type: string;
   domain: StarknetDomain;
-  message: Record<string, unknown>;
+  message: Record<string, unknown>; // TODO: check check @Penovic, in speck it is any object
 }
