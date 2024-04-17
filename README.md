@@ -1,5 +1,3 @@
-
-
 # starknet-types
 
 🐺 Starknet TypeScript types 🚀
@@ -11,18 +9,22 @@
 Shared TypeScript type definitions for Starknet projects
 
 ## Types
+
 - (WIP) api [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
 - wallet-api [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
 - SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
 
 ## Versioning (wip - pending PR merge will be the first version in sync)
+
 (MAJOR.MINOR) Version of this package should follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning.
 PATCH version can diverge based on bug-fixes
 
 Starknet types v0.7.x <-> Starknet Spec v0.7.x
 
 ## Usage
+
 As a package
+
 ```bash
 npm i starknet-types
 ```
