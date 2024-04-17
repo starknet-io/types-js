@@ -2,14 +2,17 @@ import { Permission } from './constants.js';
 import type { TypedData } from './typedData.js';
 import * as Errors from './errors.js';
 import type {
+  AccountDeploymentData,
   AddDeclareTransactionParameters,
   AddDeclareTransactionResult,
   AddInvokeTransactionParameters,
   AddInvokeTransactionResult,
   AddStarknetChainParameters,
+  Address,
   ChainId,
-  GetDeploymentDataResult,
   RequestAccountsParameters,
+  Signature,
+  SpecVersion,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
 } from './components.js';
@@ -22,16 +25,16 @@ export interface RpcTypeToMessageMap {
    * Get permissions from the wallet.
    * @returns An array of permissions.
    */
-  wallet_getPermissions: { params?: never; result: Permission[] };
+  wallet_getPermissions: { params?: never; result: Permission[] | [] };
 
   /**
-   * Request accounts from the wallet.
+   * Request active accounts from the wallet.
    * @param params Optional parameters for requesting accounts.
    * @returns An array of account addresses as strings.
    */
   wallet_requestAccounts: {
     params?: RequestAccountsParameters;
-    result: string[];
+    result: Address[];
   };
 
   /**
@@ -83,7 +86,7 @@ export interface RpcTypeToMessageMap {
    */
   wallet_deploymentData: {
     params?: never;
-    result: GetDeploymentDataResult;
+    result: AccountDeploymentData;
     errors: Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
@@ -116,15 +119,15 @@ export interface RpcTypeToMessageMap {
    */
   wallet_signTypedData: {
     params: TypedData;
-    result: string[]; // TODO: SIGNATURE from starknetjs
+    result: Signature;
     errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
   /**
-   * Get the list of supported specifications.
+   * Get the list of supported RPC specification versions.
    * @returns An array of supported specification strings.
    */
-  wallet_supportedSpecs: { params?: never; result: string[] };
+  wallet_supportedSpecs: { params?: never; result: SpecVersion[] };
 }
 
 export type RpcMessage = {

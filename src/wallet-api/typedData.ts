@@ -9,6 +9,7 @@ export type StarknetEnumType = {
   contains: string;
 };
 
+// SPEC: STARKNET_MERKLE_TYPE
 export type StarknetMerkleType = {
   name: string;
   type: 'merkletree';
@@ -16,8 +17,8 @@ export type StarknetMerkleType = {
 };
 
 /**
+ * SPEC: STARKNET_TYPE
  * A single type, as part of a struct. The `type` field can be any of the EIP-712 supported types.
- *
  * Note that the `uint` and `int` aliases like in Solidity, and fixed point numbers are not supported by the EIP-712
  * standard.
  */
@@ -26,7 +27,7 @@ export type StarknetType =
       name: string;
       type: string;
     }
-  | StarknetEnumType // TODO: check @Penovic it is not in Spec
+  | StarknetEnumType
   | StarknetMerkleType;
 
 /**
@@ -35,16 +36,17 @@ export type StarknetType =
 export interface StarknetDomain extends Record<string, unknown> {
   name?: string;
   version?: string;
-  chainId?: string | number;
-  revision?: string; // TODO: check check @Penovic, not is speck
+  chainId?: string | number; // TODO: check resolution, diverge from SPEC and follow SNIP-12
+  revision?: string;
 }
 
 /**
+ * SPEC: TYPED_DATA
  * The complete typed data, with all the structs, domain data, primary type of the message, and the message itself.
  */
 export interface TypedData {
-  types: Record<string, StarknetType[]>; // TODO: check @Penovic, in speck it is only StarknetType[]
-  primary_type: string;
+  types: Record<string, StarknetType[]>;
+  primaryType: string; // TODO: check resolution, diverge from SPEC and follow SNIP-12
   domain: StarknetDomain;
-  message: Record<string, unknown>; // TODO: check check @Penovic, in speck it is any object
+  message: object;
 }
