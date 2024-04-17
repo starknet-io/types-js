@@ -19,6 +19,7 @@ on:
   pull_request:
     branches: '*'
 
+
 jobs:
   quality:
     name: Quality test
@@ -38,14 +39,17 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: [quality]
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-      - name: Run Release on Node lts/*
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - run: npx semantic-release --debug ${{ inputs.debug }} --dry-run ${{ inputs.dry-run }}
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+    - name: Run Release on Node lts/*
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build
+    - run: npx semantic-release --debug ${{ inputs.debug }} --dry-run ${{ inputs.dry-run }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
