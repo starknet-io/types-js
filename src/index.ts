@@ -1,8 +1,8 @@
-export * from './common/constants.js';
-export * from './common/miscellaneous.js';
-export * from './common/typedData.js';
-
-export * from './wallet-json-rpc/StarknetWindowObject.js';
-export * from './wallet-json-rpc/components.js';
-export * from './wallet-json-rpc/methods.js';
-export * from './wallet-json-rpc/events.js';
+export * from './api/components.js';
+export * from './wallet-api/constants.js';
+export * from './wallet-api/typedData.js';
+export * from './wallet-api/StarknetWindowObject.js';
+export * from './wallet-api/components.js';
+export * from './wallet-api/methods.js';
+export * from './wallet-api/events.js';
+export * from './wallet-api/errors.js';

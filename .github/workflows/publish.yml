@@ -15,7 +15,7 @@ on:
         type: boolean
         default: true
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
     branches: '*'
 
@@ -25,15 +25,15 @@ jobs:
     name: Quality test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Run tests on Node lts/*
-      uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run pretest
-    
+      - uses: actions/checkout@v4
+      - name: Run tests on Node lts/*
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run pretest
+
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}

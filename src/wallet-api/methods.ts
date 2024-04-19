@@ -1,15 +1,18 @@
-import { Permission, StarknetChainId } from '../common/constants.js';
-import type { TypedData } from '../common/typedData.js';
+import { Permission } from './constants.js';
+import type { TypedData } from './typedData.js';
+import * as Errors from './errors.js';
 import type {
+  AccountDeploymentData,
   AddDeclareTransactionParameters,
   AddDeclareTransactionResult,
-  AddDeployAccountTransactionParameters,
-  AddDeployAccountTransactionResult,
   AddInvokeTransactionParameters,
   AddInvokeTransactionResult,
   AddStarknetChainParameters,
-  GetDeploymentDataResult,
+  Address,
+  ChainId,
   RequestAccountsParameters,
+  Signature,
+  SpecVersion,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
 } from './components.js';
@@ -22,16 +25,16 @@ export interface RpcTypeToMessageMap {
    * Get permissions from the wallet.
    * @returns An array of permissions.
    */
-  wallet_getPermissions: { params?: never; result: Permission[] };
+  wallet_getPermissions: { params?: never; result: Permission[] | [] };
 
   /**
-   * Request accounts from the wallet.
+   * Request active accounts from the wallet.
    * @param params Optional parameters for requesting accounts.
    * @returns An array of account addresses as strings.
    */
   wallet_requestAccounts: {
     params?: RequestAccountsParameters;
-    result: string[];
+    result: Address[];
   };
 
   /**
@@ -39,7 +42,15 @@ export interface RpcTypeToMessageMap {
    * @param params The parameters required to watch an asset.
    * @returns A boolean indicating if the operation was successful.
    */
-  wallet_watchAsset: { params: WatchAssetParameters; result: boolean };
+  wallet_watchAsset: {
+    params: WatchAssetParameters;
+    result: boolean;
+    errors:
+      | Errors.NOT_ERC20
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.UNKNOWN_ERROR;
+  };
 
   /**
    * Add a new Starknet chain to the wallet.
@@ -49,6 +60,7 @@ export interface RpcTypeToMessageMap {
   wallet_addStarknetChain: {
     params: AddStarknetChainParameters;
     result: boolean;
+    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -59,28 +71,34 @@ export interface RpcTypeToMessageMap {
   wallet_switchStarknetChain: {
     params: SwitchStarknetChainParameters;
     result: boolean;
+    errors: Errors.UNLISTED_NETWORK | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
   /**
    * Request the current chain ID from the wallet.
    * @returns The current Starknet chain ID.
    */
-  wallet_requestChainId: { params?: never; result: StarknetChainId };
+  wallet_requestChainId: { params?: never; result: ChainId };
 
   /**
    * Get deployment data for a contract.
    * @returns The deployment data result.
    */
-  wallet_deploymentData: { params?: never; result: GetDeploymentDataResult };
+  wallet_deploymentData: {
+    params?: never;
+    result: AccountDeploymentData;
+    errors: Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+  };
 
   /**
    * Add an invoke transaction to the wallet.
    * @param params The parameters required for the invoke transaction.
    * @returns The result of adding the invoke transaction.
    */
-  starknet_addInvokeTransaction: {
+  wallet_addInvokeTransaction: {
     params: AddInvokeTransactionParameters;
     result: AddInvokeTransactionResult;
+    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -88,19 +106,10 @@ export interface RpcTypeToMessageMap {
    * @param params The parameters required for the declare transaction.
    * @returns The result of adding the declare transaction.
    */
-  starknet_addDeclareTransaction: {
+  wallet_addDeclareTransaction: {
     params: AddDeclareTransactionParameters;
     result: AddDeclareTransactionResult;
-  };
-
-  /**
-   * Add a deploy account transaction to the wallet.
-   * @param params The parameters required for the deploy account transaction.
-   * @returns The result of adding the deploy account transaction.
-   */
-  starknet_addDeployAccountTransaction: {
-    params: AddDeployAccountTransactionParameters;
-    result: AddDeployAccountTransactionResult;
+    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -108,13 +117,17 @@ export interface RpcTypeToMessageMap {
    * @param params The typed data to sign.
    * @returns An array of signatures as strings.
    */
-  starknet_signTypedData: { params: TypedData; result: string[] };
+  wallet_signTypedData: {
+    params: TypedData;
+    result: Signature;
+    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+  };
 
   /**
-   * Get the list of supported specifications.
+   * Get the list of supported RPC specification versions.
    * @returns An array of supported specification strings.
    */
-  starknet_supportedSpecs: { params?: never; result: string[] };
+  wallet_supportedSpecs: { params?: never; result: SpecVersion[] };
 }
 
 export type RpcMessage = {
