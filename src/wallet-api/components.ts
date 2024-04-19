@@ -1,4 +1,5 @@
 import type { CONTRACT_CLASS, FELT, ADDRESS, SIGNATURE } from '../api/components.js';
+import type { ChainId } from '../api/index.js';
 
 /**
  * Account Address
@@ -29,12 +30,6 @@ export type SpecVersion = string;
  * @pattern ^[A-Za-z0-9]{1,6}$
  */
 export type TokenSymbol = string; // TODO: I would recommend rename to TOKEN_SYMBOL to avoid collision with js Symbol (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)
-
-/**
- * chain id, given in hex representation.
- * @pattern "^0x[a-fA-F0-9]+$"
- */
-export type ChainId = string;
 
 /**
  * Starknet Token
