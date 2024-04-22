@@ -9,13 +9,13 @@ import type {
   AddInvokeTransactionResult,
   AddStarknetChainParameters,
   Address,
-  ChainId,
   RequestAccountsParameters,
   Signature,
   SpecVersion,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
 } from './components.js';
+import type { ChainId } from '../api/index.js';
 
 /**
  * Maps each RPC message type to its corresponding parameters and result type.

@@ -1,6 +1,6 @@
 {
   "name": "starknet-types",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Shared TypeScript definitions for Starknet projects",
   "homepage": "https://github.com/starknet-io/types-js",
   "keywords": [

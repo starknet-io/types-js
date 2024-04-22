@@ -1,4 +1,4 @@
-import type { ChainId } from './components.js';
+import type { ChainId } from '../api/index.js';
 
 // Optimization on events
 export type AccountChangeEventHandler = (accounts?: string[]) => void;
