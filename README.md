@@ -10,16 +10,36 @@ Shared TypeScript type definitions for Starknet projects
 
 ## Types
 
-- (WIP) api [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
-- wallet-api [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
-- SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
+#### api [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
+- /src/api/*
+- usage 
+```ts 
+  import type { SomeType } from 'starknet-types'
+```
+- or usage from api namespace import
+```ts 
+  import { API } from 'starknet-types'
+```
 
-## Versioning (wip - pending PR merge will be the first version in sync)
+#### wallet-api [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
+- /src/wallet-api/*
+- usage from top level type import 
+```ts 
+  import type { SomeType } from 'starknet-types'
+```
+- or usage from api namespace import
+```ts 
+  import { WALLET_API } from 'starknet-types'
+```
+
+##### SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
+- /src/wallet-api/typedData.ts
+
+## Versioning (pending SPEC PR merge)
 
 (MAJOR.MINOR) Version of this package should follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning.
 PATCH version can diverge based on bug-fixes
-
-Starknet types v0.7.x <-> Starknet Spec v0.7.x
+ex. Starknet types v0.7.x <-> Starknet Spec v0.7.x
 
 ## Usage
 
@@ -29,13 +49,13 @@ As a package
 npm i starknet-types
 ```
 
-## Build
+## Devs Build
 
 ```bash
 npm run build
 ```
 
-## Testing
+## Devs Testing
 
 ```bash
 npm run lint
