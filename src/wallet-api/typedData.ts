@@ -1,7 +1,9 @@
-export enum TypedDataRevision {
-  Active = '1',
-  Legacy = '0',
-}
+export const TypedDataRevision = {
+  ACTIVE: '1',
+  LEGACY: '0',
+} as const;
+
+export type TypedDataRevision = (typeof TypedDataRevision)[keyof typeof TypedDataRevision];
 
 export type StarknetEnumType = {
   name: string;
