@@ -1,5 +1,5 @@
 {
-  "name": "@starknet-io/starknet-types",
+  "name": "@starknet-io/types-js",
   "version": "0.7.3",
   "description": "Shared TypeScript definitions for Starknet projects",
   "homepage": "https://github.com/starknet-io/types-js",
