@@ -18,6 +18,17 @@ export interface INVALID_REQUEST_PAYLOAD {
   message: 'An error occurred (INVALID_REQUEST_PAYLOAD)';
 }
 
+export interface ACCOUNT_ALREADY_DEPLOYED {
+  code: 115;
+  message: 'An error occurred (ACCOUNT_ALREADY_DEPLOYED)';
+}
+
+export interface API_VERSION_NOT_SUPPORTED {
+  code: 162;
+  message: 'An error occurred (API_VERSION_NOT_SUPPORTED)';
+  data: 'string';
+}
+
 export interface UNKNOWN_ERROR {
   code: 163;
   message: 'An error occurred (UNKNOWN_ERROR)';
