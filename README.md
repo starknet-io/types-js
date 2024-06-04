@@ -1,4 +1,4 @@
-# starknet-types
+# Starknet types JS/TS
 
 🐺 Starknet TypeScript types 🚀
 
@@ -8,28 +8,28 @@
 
 Shared TypeScript type definitions for Starknet projects
 
+## Installation
+
+```bash
+npm i @starknet-io/types-js
+```
+
 ## Types
 
-#### api [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
-- /src/api/*
-- usage 
+#### API [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
 ```ts 
-  import type { SomeType } from 'starknet-types'
-```
-- or usage from api namespace import
-```ts 
-  import { API } from 'starknet-types'
+  // type import
+  import type { SomeApiType } from '@starknet-io/types-js'
+  // or entire namespace import
+  import { API } from '@starknet-io/types-js'
 ```
 
-#### wallet-api [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
-- /src/wallet-api/*
-- usage from top level type import 
+#### Wallet API [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
 ```ts 
-  import type { SomeType } from 'starknet-types'
-```
-- or usage from api namespace import
-```ts 
-  import { WALLET_API } from 'starknet-types'
+  // type import
+  import type { SomeWalletApiType } from '@starknet-io/types-js'
+  // or entire namespace import
+  import { WALLET_API } from '@starknet-io/types-js'
 ```
 
 ##### SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
@@ -40,14 +40,6 @@ Shared TypeScript type definitions for Starknet projects
 (MAJOR.MINOR) Version of this package should follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning.
 PATCH version can diverge based on bug-fixes
 ex. Starknet types v0.7.x <-> Starknet Spec v0.7.x
-
-## Usage
-
-As a package
-
-```bash
-npm i starknet-types
-```
 
 ## Devs Build
 
