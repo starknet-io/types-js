@@ -1,7 +1,9 @@
-export enum TypedDataRevision {
-  Active = '1',
-  Legacy = '0',
-}
+export const TypedDataRevision = {
+  ACTIVE: '1',
+  LEGACY: '0',
+} as const;
+
+export type TypedDataRevision = (typeof TypedDataRevision)[keyof typeof TypedDataRevision];
 
 export type StarknetEnumType = {
   name: string;
@@ -37,7 +39,7 @@ export interface StarknetDomain extends Record<string, unknown> {
   name?: string;
   version?: string;
   chainId?: string | number; // TODO: check resolution, diverge from SPEC and follow SNIP-12
-  revision?: string;
+  revision?: string | number; // TODO: future versions 1+ should be only string. The type should be kept as shortstring, but the value should be passed as 1 instead of ‘1’, Just for revision 1
 }
 
 /**
