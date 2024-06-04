@@ -140,3 +140,10 @@ export interface AccountDeploymentData {
   sigdata?: FELT[]; // An optional array of felts to be added in the signature
   version: 0 | 1; // Cairo version (an integer)
 }
+
+/**
+ * The version of wallet API the request expecting. If not specified, the latest is assumed
+ */
+export interface ApiVersion {
+  api_version?: string;
+}

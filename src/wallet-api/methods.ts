@@ -9,6 +9,7 @@ import type {
   AddInvokeTransactionResult,
   AddStarknetChainParameters,
   Address,
+  ApiVersion,
   RequestAccountsParameters,
   Signature,
   SpecVersion,
@@ -25,7 +26,11 @@ export interface RpcTypeToMessageMap {
    * Get permissions from the wallet.
    * @returns An array of permissions.
    */
-  wallet_getPermissions: { params?: never; result: Permission[] | [] };
+  wallet_getPermissions: {
+    params?: ApiVersion;
+    result: Permission[] | [];
+    errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
+  };
 
   /**
    * Request active accounts from the wallet.
@@ -33,8 +38,9 @@ export interface RpcTypeToMessageMap {
    * @returns An array of account addresses as strings.
    */
   wallet_requestAccounts: {
-    params?: RequestAccountsParameters;
+    params?: RequestAccountsParameters & ApiVersion;
     result: Address[];
+    errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -43,12 +49,13 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_watchAsset: {
-    params: WatchAssetParameters;
+    params: WatchAssetParameters & ApiVersion;
     result: boolean;
     errors:
       | Errors.NOT_ERC20
       | Errors.INVALID_REQUEST_PAYLOAD
       | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
       | Errors.UNKNOWN_ERROR;
   };
 
@@ -58,9 +65,13 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_addStarknetChain: {
-    params: AddStarknetChainParameters;
+    params: AddStarknetChainParameters & ApiVersion;
     result: boolean;
-    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -69,25 +80,36 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_switchStarknetChain: {
-    params: SwitchStarknetChainParameters;
+    params: SwitchStarknetChainParameters & ApiVersion;
     result: boolean;
-    errors: Errors.UNLISTED_NETWORK | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.UNLISTED_NETWORK
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
    * Request the current chain ID from the wallet.
    * @returns The current Starknet chain ID.
    */
-  wallet_requestChainId: { params?: never; result: ChainId };
+  wallet_requestChainId: {
+    params?: ApiVersion;
+    result: ChainId;
+    errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
+  };
 
   /**
    * Get deployment data for a contract.
    * @returns The deployment data result.
    */
   wallet_deploymentData: {
-    params?: never;
+    params?: ApiVersion;
     result: AccountDeploymentData;
-    errors: Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.ACCOUNT_ALREADY_DEPLOYED
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -96,9 +118,13 @@ export interface RpcTypeToMessageMap {
    * @returns The result of adding the invoke transaction.
    */
   wallet_addInvokeTransaction: {
-    params: AddInvokeTransactionParameters;
+    params: AddInvokeTransactionParameters & ApiVersion;
     result: AddInvokeTransactionResult;
-    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -107,9 +133,13 @@ export interface RpcTypeToMessageMap {
    * @returns The result of adding the declare transaction.
    */
   wallet_addDeclareTransaction: {
-    params: AddDeclareTransactionParameters;
+    params: AddDeclareTransactionParameters & ApiVersion;
     result: AddDeclareTransactionResult;
-    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -118,9 +148,13 @@ export interface RpcTypeToMessageMap {
    * @returns An array of signatures as strings.
    */
   wallet_signTypedData: {
-    params: TypedData;
+    params: TypedData & ApiVersion;
     result: Signature;
-    errors: Errors.INVALID_REQUEST_PAYLOAD | Errors.USER_REFUSED_OP | Errors.UNKNOWN_ERROR;
+    errors:
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR;
   };
 
   /**
@@ -128,6 +162,13 @@ export interface RpcTypeToMessageMap {
    * @returns An array of supported specification strings.
    */
   wallet_supportedSpecs: { params?: never; result: SpecVersion[] };
+
+  /**
+   * Returns a list of wallet api versions compatible with the wallet.
+   * Notice this might be different from Starknet JSON-RPC spec
+   * @returns An array of supported wallet api versions.
+   */
+  wallet_supportedWalletApi: { params?: never; result: ApiVersion[] };
 }
 
 export type RpcMessage = {
