@@ -1,3 +1,10 @@
+## [0.7.6](https://github.com/starknet-io/types-js/compare/v0.7.5...v0.7.6) (2024-06-07)
+
+
+### Bug Fixes
+
+* simgflag ([#15](https://github.com/starknet-io/types-js/issues/15)) ([f3458b9](https://github.com/starknet-io/types-js/commit/f3458b9ae436e0fe61684f8bd3dd5ce09d70e45a))
+
 ## [0.7.5](https://github.com/starknet-io/types-js/compare/v0.7.4...v0.7.5) (2024-06-05)
 
 
