@@ -115,7 +115,7 @@ export const ETransactionType = {
   DECLARE: 'DECLARE',
   DEPLOY: 'DEPLOY',
   DEPLOY_ACCOUNT: 'DEPLOY_ACCOUNT',
-  INVOKE: 'INVOKE_FUNCTION',
+  INVOKE: 'INVOKE',
   L1_HANDLER: 'L1_HANDLER',
 } as const;
 
