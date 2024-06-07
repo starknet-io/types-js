@@ -126,7 +126,7 @@ export const ESimulationFlag = {
   SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
 } as const;
 
-export type ETransactionFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag];
+export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag];
 
 export const ETransactionStatus = {
   RECEIVED: 'RECEIVED',
