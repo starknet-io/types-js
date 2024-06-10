@@ -1,3 +1,10 @@
+## [0.7.7](https://github.com/starknet-io/types-js/compare/v0.7.6...v0.7.7) (2024-06-10)
+
+
+### Bug Fixes
+
+* export all from abi ([#16](https://github.com/starknet-io/types-js/issues/16)) ([8dcc198](https://github.com/starknet-io/types-js/commit/8dcc198526d6561ce967407aa2ca68e378e2c300))
+
 ## [0.7.6](https://github.com/starknet-io/types-js/compare/v0.7.5...v0.7.6) (2024-06-07)
 
 
