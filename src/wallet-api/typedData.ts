@@ -1,6 +1,6 @@
 export enum TypedDataRevision {
-  Active = '1',
-  Legacy = '0',
+  ACTIVE = '1',
+  LEGACY = '0',
 }
 
 export type StarknetEnumType = {
@@ -24,9 +24,9 @@ export type StarknetMerkleType = {
  */
 export type StarknetType =
   | {
-    name: string;
-    type: string;
-  }
+      name: string;
+      type: string;
+    }
   | StarknetEnumType
   | StarknetMerkleType;
 

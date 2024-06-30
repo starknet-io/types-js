@@ -1,3 +1,3 @@
 export enum Permission {
-  Accounts = 'accounts',
+  ACCOUNTS = 'accounts',
 }
