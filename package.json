@@ -20,6 +20,76 @@
       "import": "./dist/esm/index.js",
       "default": "./dist/cjs/index.js"
     },
+    "./api": {
+      "types": "./dist/types/api/index.d.ts",
+      "import": "./dist/esm/api/index.js",
+      "default": "./dist/cjs/api/index.js"
+    },
+    "./api/components": {
+      "types": "./dist/types/api/components.d.ts",
+      "import": "./dist/esm/api/components.js",
+      "default": "./dist/cjs/api/components.js"
+    },
+    "./api/contract": {
+      "types": "./dist/types/api/contract.d.ts",
+      "import": "./dist/esm/api/contract.js",
+      "default": "./dist/cjs/api/contract.js"
+    },
+    "./api/errors": {
+      "types": "./dist/types/api/errors.d.ts",
+      "import": "./dist/esm/api/errors.js",
+      "default": "./dist/cjs/api/errors.js"
+    },
+    "./api/methods": {
+      "types": "./dist/types/api/methods.d.ts",
+      "import": "./dist/esm/api/methods.js",
+      "default": "./dist/cjs/api/methods.js"
+    },
+    "./api/nonspec": {
+      "types": "./dist/types/api/nonspec.d.ts",
+      "import": "./dist/esm/api/nonspec.js",
+      "default": "./dist/cjs/api/nonspec.js"
+    },
+    "./wallet-api": {
+      "types": "./dist/types/wallet-api/index.d.ts",
+      "import": "./dist/esm/wallet-api/index.js",
+      "default": "./dist/cjs/wallet-api/index.js"
+    },
+    "./wallet-api/components": {
+      "types": "./dist/types/wallet-api/components.d.ts",
+      "import": "./dist/esm/wallet-api/components.js",
+      "default": "./dist/cjs/wallet-api/components.js"
+    },
+    "./wallet-api/constants": {
+      "types": "./dist/types/wallet-api/constants.d.ts",
+      "import": "./dist/esm/wallet-api/constants.js",
+      "default": "./dist/cjs/wallet-api/constants.js"
+    },
+    "./wallet-api/errors": {
+      "types": "./dist/types/wallet-api/errors.d.ts",
+      "import": "./dist/esm/wallet-api/errors.js",
+      "default": "./dist/cjs/wallet-api/errors.js"
+    },
+    "./wallet-api/events": {
+      "types": "./dist/types/wallet-api/events.d.ts",
+      "import": "./dist/esm/wallet-api/events.js",
+      "default": "./dist/cjs/wallet-api/events.js"
+    },
+    "./wallet-api/methods": {
+      "types": "./dist/types/wallet-api/methods.d.ts",
+      "import": "./dist/esm/wallet-api/methods.js",
+      "default": "./dist/cjs/wallet-api/methods.js"
+    },
+    "./wallet-api/StarknetWindpwObject": {
+      "types": "./dist/types/wallet-api/StarknetWindpwObject.d.ts",
+      "import": "./dist/esm/wallet-api/StarknetWindpwObject.js",
+      "default": "./dist/cjs/wallet-api/StarknetWindpwObject.js"
+    },
+    "./wallet-api/typedData": {
+      "types": "./dist/types/wallet-api/typedData.d.ts",
+      "import": "./dist/esm/wallet-api/typedData.js",
+      "default": "./dist/cjs/wallet-api/typedData.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/cjs/index.js",
