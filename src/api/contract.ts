@@ -1,7 +1,7 @@
 /**
  * TypeScript Representation of Cairo1 v2+ Starknet Contract ABI
  *
- * starknet_metadata.json - tags/v0.5.0
+ * starknet_metadata.json - tags/v0.8rc0
  *
  * 'starknet-specs' (OpenRpc protocol types)
  * https://github.com/starkware-libs/starknet-specs
@@ -96,5 +96,5 @@ export type EVENT_KIND = 'struct' | 'enum';
 export type EVENT_FIELD = {
   name: string;
   type: string;
-  kind: 'key' | 'data' | 'nested';
+  kind: 'key' | 'data' | 'nested' | 'flat';
 };
