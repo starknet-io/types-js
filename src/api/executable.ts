@@ -19,7 +19,7 @@ export type CASM_COMPILED_CONTRACT_CLASS = {
   /**
    * Array of 2-tuple of pc value and an array of hints to execute.
    */
-  hints: Array<[Number | Array<HINT>, Number | Array<HINT>]>;
+  hints: Array<[number | Array<HINT>, number | Array<HINT>]>;
   /**
    * a list of sizes of segments in the bytecode, each segment is hashed invidually when computing the bytecode hash.
    * Integer
@@ -33,7 +33,7 @@ export type CASM_ENTRY_POINT = DEPRECATED_CAIRO_ENTRY_POINT & {
 
 export type CellRef = {
   register: 'AP' | 'FP';
-  offset: Number;
+  offset: number;
 };
 
 export type Deref = {
@@ -44,7 +44,7 @@ export type DoubleDeref = {
   /**
    * A (CellRef, offsest) tuple
    */
-  DoubleDeref: [CellRef | Number];
+  DoubleDeref: [CellRef | number];
 };
 
 export type Immediate = {

@@ -81,7 +81,7 @@ export type BLOCK_TAG = 'latest' | 'pending';
  * An identifier for this subscription stream used to associate events with this subscription.
  * Integer
  */
-export type SUBSCRIPTION_ID = Number;
+export type SUBSCRIPTION_ID = number;
 export type NEW_TXN_STATUS = {
   transaction_hash: TXN_HASH;
   status: TXN_STATUS_RESULT;
@@ -710,28 +710,28 @@ export type EXECUTION_RESOURCES = {
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used.
    * integer
    */
-  l1_gas: Number;
+  l1_gas: number;
   /**
    * data gas consumed by this transaction, 0 if blobs are not used
    * integer
    */
-  l1_data_gas: Number;
+  l1_data_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
    * Integer
    */
-  l2_gas: Number;
+  l2_gas: number;
 };
 
 export type MERKLE_NODE = {
   /**
    * Integer
    */
-  path: Number;
+  path: number;
   /**
    * Integer
    */
-  length: Number;
+  length: number;
   value: FELT;
   /**
    * the hash of the child nodes, if not present then the node is a leaf

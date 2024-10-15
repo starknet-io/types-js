@@ -541,7 +541,7 @@ type WebSocketMethods = {
    */
   starknet_unsubscribe: {
     params: {
-      subscription_id: Number;
+      subscription_id: number;
     };
     result: Boolean;
     errors: Errors.INVALID_SUBSCRIPTION_ID;
