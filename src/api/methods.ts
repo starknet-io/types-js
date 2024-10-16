@@ -443,7 +443,7 @@ type WebSocketMethods = {
       /**
        * Filter events by from_address which emitted the event
        */
-      from_address?: BLOCK_ID;
+      from_address?: ADDRESS;
       keys?: EVENT_KEYS;
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
