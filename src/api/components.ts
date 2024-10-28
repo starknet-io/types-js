@@ -836,7 +836,7 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
   calls: NESTED_CALL[];
   events: ORDERED_EVENT[];
   messages: ORDERED_MESSAGE[];
-  execution_resources: COMPUTATION_RESOURCES;
+  execution_resources: any; // COMPUTATION_RESOURCES; // TODO: kad bude rpc spreman popravit
 };
 
 /**

@@ -26,7 +26,7 @@ import type {
   TXN_HASH,
 } from './components.js';
 import type * as Errors from './errors.js';
-import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
+import type { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import type {
   BlockHashAndNumber,
   BlockTransactionsTraces,
@@ -541,7 +541,7 @@ type WebSocketMethods = {
    */
   starknet_unsubscribe: {
     params: {
-      subscription_id: number;
+      subscription_id: SUBSCRIPTION_ID;
     };
     result: Boolean;
     errors: Errors.INVALID_SUBSCRIPTION_ID;

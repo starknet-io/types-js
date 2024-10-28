@@ -1,4 +1,4 @@
-import { CONTRACT_EXECUTION_ERROR } from './components';
+import type { CONTRACT_EXECUTION_ERROR } from './components.js';
 
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;

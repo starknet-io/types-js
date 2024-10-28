@@ -2,7 +2,7 @@
 //    * Starknet executables
 //    **********************
 
-import { DEPRECATED_CAIRO_ENTRY_POINT, FELT, NUM_AS_HEX } from './components';
+import type { DEPRECATED_CAIRO_ENTRY_POINT, FELT, NUM_AS_HEX } from './components.js';
 
 /**
  * Starknet get compiled CASM result
@@ -24,7 +24,7 @@ export type CASM_COMPILED_CONTRACT_CLASS = {
    * a list of sizes of segments in the bytecode, each segment is hashed invidually when computing the bytecode hash.
    * Integer
    */
-  bytecode_segment_lengths?: Number;
+  bytecode_segment_lengths?: number;
 };
 
 export type CASM_ENTRY_POINT = DEPRECATED_CAIRO_ENTRY_POINT & {
