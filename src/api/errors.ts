@@ -93,6 +93,11 @@ export interface TRANSACTION_EXECUTION_ERROR {
   };
 }
 
+export interface STORAGE_PROOF_NOT_SUPPORTED {
+  code: 42;
+  message: "the node doesn't support storage proofs for blocks that are too far in the past";
+}
+
 export interface CLASS_ALREADY_DECLARED {
   code: 51;
   message: 'Class already declared';
@@ -175,7 +180,14 @@ export interface TOO_MANY_BLOCKS_BACK {
   message: 'Cannot go back more than 1024 blocks';
 }
 
+export interface CALL_ON_PENDING {
+  code: 69;
+  message: 'This method does not support being called on the pending block';
+}
+
 export interface COMPILATION_ERROR {
+  code: 100;
+  message: 'Failed to compile the contract';
   /**
    * "More data about the compilation failure
    */

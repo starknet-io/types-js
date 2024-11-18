@@ -283,6 +283,10 @@ type ReadMethods = {
   starknet_getStorageProof: {
     params: {
       /**
+       * The hash of the requested block, or number (height) of the requested block, or a block tag
+       */
+      block_id: BLOCK_ID;
+      /**
        * a list of the class hashes for which we want to prove membership in the classes trie
        */
       class_hashes?: Array<FELT>;
@@ -295,7 +299,11 @@ type ReadMethods = {
        */
       contracts_storage_keys?: Array<{ contract_address: ADDRESS; storage_keys: FELT }>;
     };
+    /**
+     * The requested storage proofs. Note that if a requested leaf has the default value, the path to it may end in an edge node whose path is not a prefix of the requested leaf, thus effectively proving non-membership
+     */
     result: StorageProof;
+    errors: Errors.BLOCK_NOT_FOUND | Errors.STORAGE_PROOF_NOT_SUPPORTED;
   };
 
   /**
@@ -409,14 +417,14 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND | Errors.CALL_ON_PENDING;
     events: [
       {
-        name: 'starknet_subscriptionNewHeads';
-        result: {
+        method: 'starknet_subscriptionNewHeads';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: BLOCK_HEADER;
         };
@@ -425,10 +433,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -448,14 +456,18 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK;
+    errors:
+      | Errors.TOO_MANY_KEYS_IN_FILTER
+      | Errors.TOO_MANY_BLOCKS_BACK
+      | Errors.BLOCK_NOT_FOUND
+      | Errors.CALL_ON_PENDING;
     events: [
       {
-        name: 'starknet_subscriptionEvents';
-        result: {
+        method: 'starknet_subscriptionEvents';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: EMITTED_EVENT;
         };
@@ -464,10 +476,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -483,14 +495,14 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
     events: [
       {
-        name: 'starknet_subscriptionTransactionsStatus';
-        result: {
+        method: 'starknet_subscriptionTransactionStatus';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: NEW_TXN_STATUS;
         };
@@ -499,10 +511,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -527,8 +539,8 @@ type WebSocketMethods = {
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
     events: [
       {
-        name: 'starknet_subscriptionPendingTransactions';
-        result: {
+        method: 'starknet_subscriptionPendingTransactions';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: TXN_HASH | TXN;
         };

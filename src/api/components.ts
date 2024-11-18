@@ -64,7 +64,8 @@ export type TXN_STATUS = 'RECEIVED' | 'REJECTED' | 'ACCEPTED_ON_L2' | 'ACCEPTED_
  */
 export type SIMULATION_FLAG = 'SKIP_VALIDATE' | 'SKIP_FEE_CHARGE';
 /**
- * Data availability mode
+ * Data availability mode.
+ * Specifies a storage domain in Starknet. Each domain has different guarantees regarding availability
  */
 export type DA_MODE = 'L1' | 'L2';
 export type TXN_TYPE = 'DECLARE' | 'DEPLOY' | 'DEPLOY_ACCOUNT' | 'INVOKE' | 'L1_HANDLER';
@@ -240,7 +241,7 @@ export type BLOCK_HEADER = {
   timestamp: number;
   sequencer_address: FELT;
   l1_gas_price: RESOURCE_PRICE;
-  l2_gas_price?: RESOURCE_PRICE;
+  l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
   l1_da_mode: 'BLOB' | 'CALLDATA';
   starknet_version: string;
@@ -251,6 +252,7 @@ export type PENDING_BLOCK_HEADER = {
   timestamp: number;
   sequencer_address: FELT;
   l1_gas_price: RESOURCE_PRICE;
+  l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
   l1_da_mode: 'BLOB' | 'CALLDATA';
   starknet_version: string;
@@ -668,7 +670,17 @@ export type FEE_PAYMENT = {
 };
 
 export type RESOURCE_BOUNDS_MAPPING = {
+  /**
+   * The max amount and max price per unit of L1 gas used in this tx
+   */
   l1_gas: RESOURCE_BOUNDS;
+  /**
+   * The max amount and max price per unit of L1 blob gas used in this tx
+   */
+  l1_data_gas: RESOURCE_BOUNDS;
+  /**
+   * The max amount and max price per unit of L2 gas used in this tx
+   */
   l2_gas: RESOURCE_BOUNDS;
 };
 
@@ -723,27 +735,45 @@ export type EXECUTION_RESOURCES = {
   l2_gas: number;
 };
 
-export type MERKLE_NODE = {
+/**
+ * a node in the Merkle-Patricia tree, can be a leaf, binary node, or an edge node
+ */
+export type MERKLE_NODE = BINARY_NODE | EDGE_NODE;
+
+/**
+ * an internal node whose both children are non-zero
+ */
+export type BINARY_NODE = {
   /**
-   * Integer
+   * the hash of the left child
    */
-  path: number;
+  left: FELT;
   /**
-   * Integer
+   * the hash of the right child
    */
-  length: number;
-  value: FELT;
-  /**
-   * the hash of the child nodes, if not present then the node is a leaf
-   */
-  children_hashes?: {
-    left: FELT;
-    right: FELT;
-  };
+  right: FELT;
 };
 
 /**
- * a node_hash -> node mapping of all the nodes in the union of the paths between the requested leaves and the root (for each node present, its sibling is also present)
+ * represents a path to the highest non-zero descendant node
+ */
+export type EDGE_NODE = {
+  /**
+   * an integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
+   */
+  path: NUM_AS_HEX;
+  /**
+   * the length of the path (bounded by 251)
+   */
+  length: Number;
+  /**
+   * the hash of the unique non-zero maximal-height descendant node
+   */
+  child: FELT;
+};
+
+/**
+ * a node_hash -> node mapping of all the nodes in the union of the paths between the requested leaves and the root
  */
 export type NODE_HASH_TO_NODE_MAPPING = Array<{ node_hash: FELT; node: MERKLE_NODE }>;
 
@@ -751,7 +781,13 @@ export type NODE_HASH_TO_NODE_MAPPING = Array<{ node_hash: FELT; node: MERKLE_NO
  * structured error that can later be processed by wallets or sdks.
  * error frame or the error raised during execution
  */
-export type CONTRACT_EXECUTION_ERROR =
+export type CONTRACT_EXECUTION_ERROR = CONTRACT_EXECUTION_ERROR_INNER;
+
+/**
+ * structured error that can later be processed by wallets or sdks.
+ * error frame or the error raised during execution
+ */
+export type CONTRACT_EXECUTION_ERROR_INNER =
   | {
       contract_address: ADDRESS;
       class_hash: FELT;
@@ -836,7 +872,21 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
   calls: NESTED_CALL[];
   events: ORDERED_EVENT[];
   messages: ORDERED_MESSAGE[];
-  execution_resources: any; // COMPUTATION_RESOURCES; // TODO: kad bude rpc spreman popravit
+  execution_resources: INNER_CALL_EXECUTION_RESOURCES;
+};
+
+/**
+ * the resources consumed by an inner call (does not account for state diffs since data is squashed across the transaction)
+ */
+export type INNER_CALL_EXECUTION_RESOURCES = {
+  /**
+   * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used
+   */
+  l1_gas: Number;
+  /**
+   * l2 gas consumed by this transaction, used for computation and calldata
+   */
+  l2_gas: Number;
 };
 
 /**

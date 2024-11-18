@@ -85,8 +85,25 @@ export type L1L2MessagesStatus = Array<L1L2MessageStatus>;
 // response starknet_getStorageProof (merkle paths)
 export type StorageProof = {
   classes_proof: NODE_HASH_TO_NODE_MAPPING;
-  contracts_proof: NODE_HASH_TO_NODE_MAPPING;
+  contracts_proof: {
+    /**
+     * The nodes in the union of the paths from the contracts tree root to the requested leaves
+     */
+    nodes: NODE_HASH_TO_NODE_MAPPING;
+    /**
+     * The nonce and class hash for each requested contract address, in the order in which they appear in the request. These values are needed to construct the associated leaf node
+     */
+    contract_leaves_data: Array<{
+      nonce: FELT;
+      class_hash: FELT;
+    }>;
+  };
   contracts_storage_proofs: Array<NODE_HASH_TO_NODE_MAPPING>;
+  global_roots: {
+    contracts_tree_root: FELT;
+    classes_tree_root: FELT;
+    block_hash: FELT;
+  };
 };
 
 // Nice Components names
