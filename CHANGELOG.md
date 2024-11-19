@@ -1,3 +1,10 @@
+## [0.7.8-alpha.1](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8-alpha.1) (2024-11-19)
+
+
+### Bug Fixes
+
+* new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
+
 ## [0.7.7](https://github.com/starknet-io/types-js/compare/v0.7.6...v0.7.7) (2024-06-10)
 
 ### Bug Fixes
