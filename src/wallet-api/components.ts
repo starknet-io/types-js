@@ -141,9 +141,11 @@ export interface AccountDeploymentData {
   version: 0 | 1; // Cairo version (an integer)
 }
 
+export type API_VERSION = string;
+
 /**
  * The version of wallet API the request expecting. If not specified, the latest is assumed
  */
-export interface ApiVersion {
-  api_version?: string;
+export interface ApiVersionRequest {
+  api_version?: API_VERSION;
 }
