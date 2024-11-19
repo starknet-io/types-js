@@ -13,7 +13,6 @@
     "dapp"
   ],
   "license": "MIT",
-  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
