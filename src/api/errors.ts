@@ -1,3 +1,5 @@
+import type { CONTRACT_EXECUTION_ERROR } from './components.js';
+
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;
   message: 'Failed to write transaction';
@@ -75,7 +77,10 @@ export interface CONTRACT_ERROR {
   code: 40;
   message: 'Contract error';
   data: {
-    revert_error: string;
+    /**
+     * the execution trace up to the point of failure
+     */
+    revert_error: CONTRACT_EXECUTION_ERROR;
   };
 }
 
@@ -98,9 +103,9 @@ export interface INVALID_TRANSACTION_NONCE {
   message: 'Invalid transaction nonce';
 }
 
-export interface INSUFFICIENT_MAX_FEE {
+export interface INSUFFICIENT_RESOURCES_FOR_VALIDATE {
   code: 53;
-  message: 'Max fee is smaller than the minimal transaction cost (validation plus fee transfer)';
+  message: "The transaction's resources don't cover validation or the minimal transaction fee";
 }
 
 export interface INSUFFICIENT_ACCOUNT_BALANCE {
@@ -153,4 +158,28 @@ export interface UNEXPECTED_ERROR {
   code: 63;
   message: 'An unexpected error occurred';
   data: string;
+}
+
+export interface INVALID_SUBSCRIPTION_ID {
+  code: 66;
+  message: 'Invalid subscription id';
+}
+
+export interface TOO_MANY_ADDRESSES_IN_FILTER {
+  code: 67;
+  message: 'Too many addresses in filter sender_address filter';
+}
+
+export interface TOO_MANY_BLOCKS_BACK {
+  code: 68;
+  message: 'Cannot go back more than 1024 blocks';
+}
+
+export interface COMPILATION_ERROR {
+  /**
+   * "More data about the compilation failure
+   */
+  data: {
+    compilation_error: string;
+  };
 }

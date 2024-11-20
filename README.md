@@ -17,22 +17,25 @@ npm i @starknet-io/types-js
 ## Types
 
 #### API [Starknet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/api)
-```ts 
-  // type import
-  import type { SomeApiType } from '@starknet-io/types-js'
-  // or entire namespace import
-  import { API } from '@starknet-io/types-js'
+
+```ts
+// type import
+import type { SomeApiType } from '@starknet-io/types-js';
+// or entire namespace import
+import { API } from '@starknet-io/types-js';
 ```
 
 #### Wallet API [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
-```ts 
-  // type import
-  import type { SomeWalletApiType } from '@starknet-io/types-js'
-  // or entire namespace import
-  import { WALLET_API } from '@starknet-io/types-js'
+
+```ts
+// type import
+import type { SomeWalletApiType } from '@starknet-io/types-js';
+// or entire namespace import
+import { WALLET_API } from '@starknet-io/types-js';
 ```
 
 ##### SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
+
 - /src/wallet-api/typedData.ts
 
 ## Versioning (pending SPEC PR merge)

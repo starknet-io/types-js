@@ -21,6 +21,7 @@ import type {
   FEE_PAYMENT,
   FELT,
   MSG_FROM_L1,
+  NODE_HASH_TO_NODE_MAPPING,
   NONCE_UPDATE,
   PENDING_BLOCK_WITH_RECEIPTS,
   PENDING_BLOCK_WITH_TXS,
@@ -35,11 +36,11 @@ import type {
   SYNC_STATUS,
   TRANSACTION_TRACE,
   TXN,
-  TXN_EXECUTION_STATUS,
   TXN_HASH,
   TXN_RECEIPT,
   TXN_RECEIPT_WITH_BLOCK_INFO,
   TXN_STATUS,
+  TXN_STATUS_RESULT,
 } from './components.js';
 
 // METHOD RESPONSES
@@ -79,6 +80,14 @@ export type InvokedTransaction = { transaction_hash: TXN_HASH };
 export type DeclaredTransaction = { transaction_hash: TXN_HASH; class_hash: FELT };
 // response starknet_addDeployAccountTransaction
 export type DeployedAccountTransaction = { transaction_hash: TXN_HASH; contract_address: FELT };
+// response starknet_getMessagesStatus (ordered by the l1 tx sending order)
+export type L1L2MessagesStatus = Array<L1L2MessageStatus>;
+// response starknet_getStorageProof (merkle paths)
+export type StorageProof = {
+  classes_proof: NODE_HASH_TO_NODE_MAPPING;
+  contracts_proof: NODE_HASH_TO_NODE_MAPPING;
+  contracts_storage_proofs: Array<NODE_HASH_TO_NODE_MAPPING>;
+};
 
 // Nice Components names
 export type ContractAddress = ADDRESS;
@@ -96,13 +105,28 @@ export type L1Message = MSG_FROM_L1;
 export type BaseTransaction = BROADCASTED_TXN;
 export type ChainId = CHAIN_ID;
 export type Transaction = TXN;
-export type TransactionStatus = {
-  finality_status: TXN_STATUS;
-  execution_status?: TXN_EXECUTION_STATUS;
-};
+export type TransactionStatus = TXN_STATUS_RESULT;
 export type ResourceBounds = RESOURCE_BOUNDS_MAPPING;
 export type FeePayment = FEE_PAYMENT;
 export type PriceUnit = PRICE_UNIT;
+
+/**
+ * Ethereum l1_handler tx hash and status for L1 -> L2 messages sent by the l1 transaction
+ */
+export type L1L2MessageStatus = {
+  /**
+   * l1_handler tx hash
+   */
+  transaction_hash: TXN_HASH;
+  /**
+   * finality status of the L1 -> L2 messages sent by the l1 transaction
+   */
+  finality_status: TXN_STATUS;
+  /**
+   * the failure reason, only appears if finality_status is REJECTED
+   */
+  failure_reason?: string;
+};
 
 // Diff Than Seq
 export type StorageDiffs = Array<CONTRACT_STORAGE_DIFF_ITEM>;
