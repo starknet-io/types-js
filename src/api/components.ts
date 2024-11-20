@@ -1,9 +1,35 @@
-// TODO: To be completed in future revisions
-// This is in API SPEC extracted from starknetjs RPC 0.8rc0 components.ts
-
 //    ******************
 //    * PRIMITIVES
 //    ******************
+
+import type {
+  ABI_TYPE_CONSTRUCTOR,
+  ABI_TYPE_FUNCTION,
+  ABI_TYPE_L1_HANDLER,
+  CALL_TYPE,
+  EBlockTag,
+  EDataAvailabilityMode,
+  ESimulationFlag,
+  ETransactionVersion,
+  EVENT_ABI_TYPE,
+  L1_DA_MODE,
+  PRICE_UNIT_FRI,
+  PRICE_UNIT_WEI,
+  STATE_MUTABILITY_EXTERNAL,
+  STATE_MUTABILITY_VIEW,
+  STATUS_ACCEPTED_ON_L1,
+  STATUS_ACCEPTED_ON_L2,
+  STATUS_PENDING,
+  STATUS_RECEIVED,
+  STATUS_REJECTED,
+  STATUS_REVERTED,
+  STATUS_SUCCEEDED,
+  STRUCT_ABI_TYPE,
+  TXN_TYPE_DECLARE,
+  TXN_TYPE_DEPLOY,
+  TXN_TYPE_DEPLOY_ACCOUNT,
+  TXN_TYPE_INVOKE,
+} from './constants.js';
 
 /**
  * A field element. represented by at most 63 hex digits
@@ -44,35 +70,57 @@ export type TXN_HASH = FELT;
  */
 export type L1_TXN_HASH = NUM_AS_HEX;
 export type CHAIN_ID = NUM_AS_HEX;
-export type STRUCT_ABI_TYPE = 'struct';
-export type EVENT_ABI_TYPE = 'event';
-export type FUNCTION_ABI_TYPE = 'function' | 'l1_handler' | 'constructor';
+export type STATE_MUTABILITY = STATE_MUTABILITY_VIEW | STATE_MUTABILITY_EXTERNAL;
+export type FUNCTION_ABI_TYPE = ABI_TYPE_FUNCTION | ABI_TYPE_L1_HANDLER | ABI_TYPE_CONSTRUCTOR;
+/**
+ * common definition
+ */
+export type ABI_NAME_AND_TYPE = { name: string; type: string };
+/**
+ * common outputs
+ */
+export type ABI_TYPE = { type: string };
 /**
  * Represents the type of an entry point.
  */
-export type ENTRY_POINT_TYPE = 'EXTERNAL' | 'L1_HANDLER' | 'CONSTRUCTOR';
-/**
- * Represents the type of a function call.
- */
-export type CALL_TYPE = 'DELEGATE' | 'LIBRARY_CALL' | 'CALL';
+export type ENTRY_POINT_TYPE =
+  | Uppercase<STATE_MUTABILITY_EXTERNAL>
+  | Uppercase<ABI_TYPE_L1_HANDLER>
+  | Uppercase<ABI_TYPE_CONSTRUCTOR>;
+
 /**
  * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
  */
-export type TXN_STATUS = 'RECEIVED' | 'REJECTED' | 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1';
+export type TXN_STATUS =
+  | STATUS_RECEIVED
+  | STATUS_REJECTED
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1;
 /**
  * Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
  */
-export type SIMULATION_FLAG = 'SKIP_VALIDATE' | 'SKIP_FEE_CHARGE';
+export type SIMULATION_FLAG =
+  | typeof ESimulationFlag.SKIP_VALIDATE
+  | typeof ESimulationFlag.SKIP_FEE_CHARGE;
 /**
  * Data availability mode.
  * Specifies a storage domain in Starknet. Each domain has different guarantees regarding availability
  */
-export type DA_MODE = 'L1' | 'L2';
-export type TXN_TYPE = 'DECLARE' | 'DEPLOY' | 'DEPLOY_ACCOUNT' | 'INVOKE' | 'L1_HANDLER';
-export type TXN_FINALITY_STATUS = 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1';
-export type TXN_EXECUTION_STATUS = 'SUCCEEDED' | 'REVERTED';
-export type BLOCK_STATUS = 'PENDING' | 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1' | 'REJECTED';
-export type BLOCK_TAG = 'latest' | 'pending';
+export type DA_MODE = EDataAvailabilityMode;
+export type TXN_TYPE =
+  | TXN_TYPE_DECLARE
+  | TXN_TYPE_DEPLOY
+  | TXN_TYPE_DEPLOY_ACCOUNT
+  | TXN_TYPE_INVOKE
+  | Uppercase<ABI_TYPE_L1_HANDLER>;
+export type TXN_FINALITY_STATUS = STATUS_ACCEPTED_ON_L2 | STATUS_ACCEPTED_ON_L1;
+export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
+export type BLOCK_STATUS =
+  | STATUS_PENDING
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1
+  | STATUS_REJECTED;
+export type BLOCK_TAG = EBlockTag;
 
 //    *****************
 //    * WEBSOCKET API
@@ -243,7 +291,7 @@ export type BLOCK_HEADER = {
   l1_gas_price: RESOURCE_PRICE;
   l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
-  l1_da_mode: 'BLOB' | 'CALLDATA';
+  l1_da_mode: L1_DA_MODE;
   starknet_version: string;
 };
 
@@ -254,7 +302,7 @@ export type PENDING_BLOCK_HEADER = {
   l1_gas_price: RESOURCE_PRICE;
   l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
-  l1_da_mode: 'BLOB' | 'CALLDATA';
+  l1_da_mode: L1_DA_MODE;
   starknet_version: string;
 };
 
@@ -281,9 +329,9 @@ export type DEPLOYED_CONTRACT_ITEM = {
 
 export type CONTRACT_STORAGE_DIFF_ITEM = {
   /**
-   * The contract address for which the storage changed (in FELT format)
+   * The contract address for which the storage changed
    */
-  address: string;
+  address: FELT;
   /**
    * The changes in the storage of the contract
    */
@@ -292,13 +340,13 @@ export type CONTRACT_STORAGE_DIFF_ITEM = {
 
 export type StorageDiffItem = {
   /**
-   * The key of the changed value (in FELT format)
+   * The key of the changed value
    */
-  key: string;
+  key: FELT;
   /**
-   * The new value applied to the given address (in FELT format)
+   * The new value applied to the given address
    */
-  value: string;
+  value: FELT;
 };
 
 export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLOY_ACCOUNT_TXN;
@@ -306,40 +354,40 @@ export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLO
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3;
 
 export type DECLARE_TXN_V0 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   max_fee: FELT;
-  version: '0x0' | '0x100000000000000000000000000000000';
+  version: typeof ETransactionVersion.V0 | typeof ETransactionVersion.F0;
   signature: SIGNATURE;
   class_hash: FELT;
 };
 
 export type DECLARE_TXN_V1 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
 };
 
 export type DECLARE_TXN_V2 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
   max_fee: FELT;
-  version: '0x2' | '0x100000000000000000000000000000002';
+  version: typeof ETransactionVersion.V2 | typeof ETransactionVersion.F2;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
 };
 
 export type DECLARE_TXN_V3 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
@@ -367,32 +415,31 @@ export type BROADCASTED_DECLARE_TXN =
   | BROADCASTED_DECLARE_TXN_V3;
 
 export type BROADCASTED_DECLARE_TXN_V1 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   max_fee: FELT;
-  // todo: check if working, prev i fixed it with NUM_AS_HEX
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
   contract_class: DEPRECATED_CONTRACT_CLASS;
 };
 
 export type BROADCASTED_DECLARE_TXN_V2 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
   max_fee: FELT;
-  version: '0x2' | '0x100000000000000000000000000000002';
+  version: typeof ETransactionVersion.V2 | typeof ETransactionVersion.F2;
   signature: SIGNATURE;
   nonce: FELT;
   contract_class: CONTRACT_CLASS;
 };
 
 export type BROADCASTED_DECLARE_TXN_V3 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   contract_class: CONTRACT_CLASS;
@@ -408,9 +455,9 @@ export type BROADCASTED_DECLARE_TXN_V3 = {
 export type DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V1 | DEPLOY_ACCOUNT_TXN_V3;
 
 export type DEPLOY_ACCOUNT_TXN_V1 = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
   contract_address_salt: FELT;
@@ -419,8 +466,8 @@ export type DEPLOY_ACCOUNT_TXN_V1 = {
 };
 
 export type DEPLOY_ACCOUNT_TXN_V3 = {
-  type: 'DEPLOY_ACCOUNT';
-  version: '0x3' | '0x100000000000000000000000000000003';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   contract_address_salt: FELT;
@@ -434,7 +481,7 @@ export type DEPLOY_ACCOUNT_TXN_V3 = {
 };
 
 export type DEPLOY_TXN = {
-  type: 'DEPLOY';
+  type: TXN_TYPE_DEPLOY;
   version: FELT;
   contract_address_salt: FELT;
   constructor_calldata: FELT[];
@@ -444,9 +491,9 @@ export type DEPLOY_TXN = {
 export type INVOKE_TXN = INVOKE_TXN_V0 | INVOKE_TXN_V1 | INVOKE_TXN_V3;
 
 export type INVOKE_TXN_V0 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   max_fee: FELT;
-  version: '0x0' | '0x100000000000000000000000000000000';
+  version: typeof ETransactionVersion.V0 | typeof ETransactionVersion.F0;
   signature: SIGNATURE;
   contract_address: ADDRESS;
   entry_point_selector: FELT;
@@ -454,20 +501,20 @@ export type INVOKE_TXN_V0 = {
 };
 
 export type INVOKE_TXN_V1 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   sender_address: ADDRESS;
   calldata: FELT[];
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
 };
 
 export type INVOKE_TXN_V3 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   sender_address: ADDRESS;
   calldata: FELT[];
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   resource_bounds: RESOURCE_BOUNDS_MAPPING;
@@ -479,8 +526,8 @@ export type INVOKE_TXN_V3 = {
 };
 
 export type L1_HANDLER_TXN = {
-  version: '0x0';
-  type: 'L1_HANDLER';
+  version: typeof ETransactionVersion.V0;
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   nonce: NUM_AS_HEX;
 } & FUNCTION_CALL;
 
@@ -494,34 +541,34 @@ export type COMMON_RECEIPT_PROPERTIES = {
 } & (SUCCESSFUL_COMMON_RECEIPT_PROPERTIES | REVERTED_COMMON_RECEIPT_PROPERTIES);
 
 type SUCCESSFUL_COMMON_RECEIPT_PROPERTIES = {
-  execution_status: 'SUCCEEDED';
+  execution_status: STATUS_SUCCEEDED;
 };
 
 type REVERTED_COMMON_RECEIPT_PROPERTIES = {
-  execution_status: 'REVERTED';
+  execution_status: STATUS_REVERTED;
   revert_reason: string;
 };
 
 export type INVOKE_TXN_RECEIPT = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DECLARE_TXN_RECEIPT = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DEPLOY_ACCOUNT_TXN_RECEIPT = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DEPLOY_TXN_RECEIPT = {
-  type: 'DEPLOY';
+  type: TXN_TYPE_DEPLOY;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type L1_HANDLER_TXN_RECEIPT = {
-  type: 'L1_HANDLER';
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   message_hash: NUM_AS_HEX;
 } & COMMON_RECEIPT_PROPERTIES;
 
@@ -589,47 +636,79 @@ export type SIERRA_ENTRY_POINT = {
 
 export type CONTRACT_ABI = readonly CONTRACT_ABI_ENTRY[];
 
-export type CONTRACT_ABI_ENTRY = {
-  selector: FELT;
-  input: string;
-  output: string;
-};
+export type CONTRACT_ABI_ENTRY = FUNCTION_ABI_ENTRY | EVENT_ABI_ENTRY | STRUCT_ABI_ENTRY;
 
 export type STRUCT_ABI_ENTRY = {
+  /**
+   * Struct ABI type
+   */
   type: STRUCT_ABI_TYPE;
+  /**
+   * Struct name
+   */
   name: string;
   size: number;
   members: STRUCT_MEMBER[];
 };
 
 export type STRUCT_MEMBER = TYPED_PARAMETER & {
+  /**
+   * offset of this property within the struct
+   */
   offset: number;
 };
 
 export type EVENT_ABI_ENTRY = {
+  /**
+   * Event ABI type
+   */
   type: EVENT_ABI_TYPE;
+  /**
+   * Event name
+   */
   name: string;
   keys: TYPED_PARAMETER[];
   data: TYPED_PARAMETER[];
 };
 
-export type FUNCTION_STATE_MUTABILITY = 'view';
+export type FUNCTION_STATE_MUTABILITY = STATE_MUTABILITY_VIEW;
 
 export type FUNCTION_ABI_ENTRY = {
+  /**
+   * Function ABI type
+   */
   type: FUNCTION_ABI_TYPE;
+  /**
+   * Function name
+   */
   name: string;
+  /**
+   * Typed parameter
+   */
   inputs: TYPED_PARAMETER[];
+  /**
+   * Typed parameter
+   */
   outputs: TYPED_PARAMETER[];
-  stateMutability: FUNCTION_STATE_MUTABILITY;
+  /**
+   * Function state mutability
+   */
+  stateMutability?: FUNCTION_STATE_MUTABILITY;
 };
 
 export type TYPED_PARAMETER = {
+  /**
+   * Parameter name
+   */
   name: string;
+  /**
+   * Parameter type
+   */
   type: string;
 };
 
-export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = 'SKIP_VALIDATE';
-export type PRICE_UNIT = 'WEI' | 'FRI';
+export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = typeof ESimulationFlag.SKIP_VALIDATE;
+export type PRICE_UNIT = PRICE_UNIT_WEI | PRICE_UNIT_FRI;
 
 export type FEE_ESTIMATE = {
   /**
@@ -694,26 +773,6 @@ export type RESOURCE_PRICE = {
   price_in_wei: FELT;
 };
 
-/* export type COMPUTATION_RESOURCES = {
-  steps: number;
-  memory_holes?: number;
-  range_check_builtin_applications?: number;
-  pedersen_builtin_applications?: number;
-  poseidon_builtin_applications?: number;
-  ec_op_builtin_applications?: number;
-  ecdsa_builtin_applications?: number;
-  bitwise_builtin_applications?: number;
-  keccak_builtin_applications?: number;
-  segment_arena_builtin?: number;
-};
-
-export type EXECUTION_RESOURCES = COMPUTATION_RESOURCES & {
-  data_availability: {
-    l1_gas: number;
-    l1_data_gas: number;
-  };
-}; */
-
 /**
  * the resources consumed by the transaction
  */
@@ -765,7 +824,7 @@ export type EDGE_NODE = {
   /**
    * the length of the path (bounded by 251)
    */
-  length: Number;
+  length: number;
   /**
    * the hash of the unique non-zero maximal-height descendant node
    */
@@ -814,7 +873,7 @@ export type TRANSACTION_TRACE = {
  * Represents a transaction trace for an invoke transaction.
  */
 export type INVOKE_TXN_TRACE = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   execute_invocation: FUNCTION_INVOCATION | { revert_reason: string };
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
@@ -826,7 +885,7 @@ export type INVOKE_TXN_TRACE = {
  * Represents a transaction trace for a declare transaction.
  */
 export type DECLARE_TXN_TRACE = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
@@ -837,7 +896,7 @@ export type DECLARE_TXN_TRACE = {
  * Represents a transaction trace for a deploy account transaction.
  */
 export type DEPLOY_ACCOUNT_TXN_TRACE = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   constructor_invocation: FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
@@ -849,7 +908,7 @@ export type DEPLOY_ACCOUNT_TXN_TRACE = {
  * Represents a transaction trace for an L1 handler transaction.
  */
 export type L1_HANDLER_TXN_TRACE = {
-  type: 'L1_HANDLER';
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   function_invocation: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
@@ -864,14 +923,35 @@ export type NESTED_CALL = FUNCTION_INVOCATION;
  * Represents a function invocation along with its execution details.
  */
 export type FUNCTION_INVOCATION = FUNCTION_CALL & {
-  caller_address: string;
-  class_hash: string;
+  /**
+   * The address of the invoking contract. 0 for the root invocation
+   */
+  caller_address: FELT;
+  /**
+   * The hash of the class being called
+   */
+  class_hash: FELT;
   entry_point_type: ENTRY_POINT_TYPE;
   call_type: CALL_TYPE;
-  result: string[];
+  /**
+   * The value returned from the function invocation
+   */
+  result: FELT[];
+  /**
+   * The calls made by this invocation
+   */
   calls: NESTED_CALL[];
+  /**
+   * The events emitted in this invocation
+   */
   events: ORDERED_EVENT[];
+  /**
+   * The messages sent by this invocation to L1
+   */
   messages: ORDERED_MESSAGE[];
+  /**
+   * Resources consumed by the internal call
+   */
   execution_resources: INNER_CALL_EXECUTION_RESOURCES;
 };
 
@@ -882,11 +962,11 @@ export type INNER_CALL_EXECUTION_RESOURCES = {
   /**
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used
    */
-  l1_gas: Number;
+  l1_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
    */
-  l2_gas: Number;
+  l2_gas: number;
 };
 
 /**
@@ -915,4 +995,12 @@ export type TXN_STATUS_RESULT = {
    * the failure reason, only appears if finality_status is REJECTED or execution_status is REVERTED
    */
   failure_reason?: string;
+};
+
+/**
+ * (contract_address, storage_keys) pairs
+ */
+export type CONTRACT_STORAGE_KEYS = {
+  contract_address: ADDRESS;
+  storage_keys: FELT[];
 };

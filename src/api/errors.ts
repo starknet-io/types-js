@@ -1,4 +1,5 @@
 import type { CONTRACT_EXECUTION_ERROR } from './components.js';
+import type { STATUS_RECEIVED, STATUS_REJECTED } from './constants.js';
 
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;
@@ -9,7 +10,7 @@ export interface NO_TRACE_AVAILABLE {
   code: 10;
   message: 'No trace available for transaction';
   data: {
-    status: 'RECEIVED' | 'REJECTED';
+    status: STATUS_RECEIVED | STATUS_REJECTED;
   };
 }
 

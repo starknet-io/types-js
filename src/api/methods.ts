@@ -8,6 +8,7 @@ import type {
   BROADCASTED_INVOKE_TXN,
   BROADCASTED_TXN,
   CHAIN_ID,
+  CONTRACT_STORAGE_KEYS,
   EMITTED_EVENT,
   EVENT_FILTER,
   EVENT_KEYS,
@@ -57,6 +58,10 @@ type ReadMethods = {
   // Returns the version of the Starknet JSON-RPC specification being used
   starknet_specVersion: {
     params: [];
+    /**
+     * Semver of Starknet's JSON-RPC spec being used
+     * @example 0.7.1
+     */
     result: string;
   };
 
@@ -193,11 +198,17 @@ type ReadMethods = {
     errors: Errors.CONTRACT_NOT_FOUND | Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
   };
 
-  // Estimate the fee for Starknet transactions
+  /**
+   * Estimate the fee for Starknet transactions
+   *
+   * Estimates the resources required by a given sequence of transactions when applied on a given state.
+   * If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error),
+   * a TRANSACTION_EXECUTION_ERROR is returned. For v0-2 transactions the estimate is given in wei, and for v3 transactions it is given in fri.
+   */
   starknet_estimateFee: {
     params: {
       request: BROADCASTED_TXN[];
-      simulation_flags?: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | []; // Diverged from spec (0.5 can't be, 0.6 must be)
+      simulation_flags: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | [];
       block_id: BLOCK_ID;
     };
     result: FeeEstimate[];
@@ -289,15 +300,15 @@ type ReadMethods = {
       /**
        * a list of the class hashes for which we want to prove membership in the classes trie
        */
-      class_hashes?: Array<FELT>;
+      class_hashes?: FELT[];
       /**
        * a list of contracts for which we want to prove membership in the global state trie
        */
-      contract_addresses?: Array<ADDRESS>;
+      contract_addresses?: ADDRESS[];
       /**
        * a list of (contract_address, storage_keys) pairs
        */
-      contracts_storage_keys?: Array<{ contract_address: ADDRESS; storage_keys: FELT }>;
+      contracts_storage_keys?: CONTRACT_STORAGE_KEYS[];
     };
     /**
      * The requested storage proofs. Note that if a requested leaf has the default value, the path to it may end in an edge node whose path is not a prefix of the requested leaf, thus effectively proving non-membership
