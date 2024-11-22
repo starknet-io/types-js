@@ -8,6 +8,7 @@ import type {
   BROADCASTED_INVOKE_TXN,
   BROADCASTED_TXN,
   CHAIN_ID,
+  CONTRACT_STORAGE_KEYS,
   EMITTED_EVENT,
   EVENT_FILTER,
   EVENT_KEYS,
@@ -57,6 +58,10 @@ type ReadMethods = {
   // Returns the version of the Starknet JSON-RPC specification being used
   starknet_specVersion: {
     params: [];
+    /**
+     * Semver of Starknet's JSON-RPC spec being used
+     * @example 0.7.1
+     */
     result: string;
   };
 
@@ -193,11 +198,17 @@ type ReadMethods = {
     errors: Errors.CONTRACT_NOT_FOUND | Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
   };
 
-  // Estimate the fee for Starknet transactions
+  /**
+   * Estimate the fee for Starknet transactions
+   *
+   * Estimates the resources required by a given sequence of transactions when applied on a given state.
+   * If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error),
+   * a TRANSACTION_EXECUTION_ERROR is returned. For v0-2 transactions the estimate is given in wei, and for v3 transactions it is given in fri.
+   */
   starknet_estimateFee: {
     params: {
       request: BROADCASTED_TXN[];
-      simulation_flags?: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | []; // Diverged from spec (0.5 can't be, 0.6 must be)
+      simulation_flags: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | [];
       block_id: BLOCK_ID;
     };
     result: FeeEstimate[];
@@ -283,19 +294,27 @@ type ReadMethods = {
   starknet_getStorageProof: {
     params: {
       /**
+       * The hash of the requested block, or number (height) of the requested block, or a block tag
+       */
+      block_id: BLOCK_ID;
+      /**
        * a list of the class hashes for which we want to prove membership in the classes trie
        */
-      class_hashes?: Array<FELT>;
+      class_hashes?: FELT[];
       /**
        * a list of contracts for which we want to prove membership in the global state trie
        */
-      contract_addresses?: Array<ADDRESS>;
+      contract_addresses?: ADDRESS[];
       /**
        * a list of (contract_address, storage_keys) pairs
        */
-      contracts_storage_keys?: Array<{ contract_address: ADDRESS; storage_keys: FELT }>;
+      contracts_storage_keys?: CONTRACT_STORAGE_KEYS[];
     };
+    /**
+     * The requested storage proofs. Note that if a requested leaf has the default value, the path to it may end in an edge node whose path is not a prefix of the requested leaf, thus effectively proving non-membership
+     */
     result: StorageProof;
+    errors: Errors.BLOCK_NOT_FOUND | Errors.STORAGE_PROOF_NOT_SUPPORTED;
   };
 
   /**
@@ -409,14 +428,14 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND | Errors.CALL_ON_PENDING;
     events: [
       {
-        name: 'starknet_subscriptionNewHeads';
-        result: {
+        method: 'starknet_subscriptionNewHeads';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: BLOCK_HEADER;
         };
@@ -425,10 +444,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -448,14 +467,18 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK;
+    errors:
+      | Errors.TOO_MANY_KEYS_IN_FILTER
+      | Errors.TOO_MANY_BLOCKS_BACK
+      | Errors.BLOCK_NOT_FOUND
+      | Errors.CALL_ON_PENDING;
     events: [
       {
-        name: 'starknet_subscriptionEvents';
-        result: {
+        method: 'starknet_subscriptionEvents';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: EMITTED_EVENT;
         };
@@ -464,10 +487,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -483,14 +506,14 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block?: BLOCK_ID;
+      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
     events: [
       {
-        name: 'starknet_subscriptionTransactionsStatus';
-        result: {
+        method: 'starknet_subscriptionTransactionStatus';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: NEW_TXN_STATUS;
         };
@@ -499,10 +522,10 @@ type WebSocketMethods = {
         /**
          * Notifies the subscriber of a reorganization of the chain.
          */
-        name: 'starknet_subscriptionReorg';
-        result: {
+        method: 'starknet_subscriptionReorg';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA; // TODO: WTF SPEC
+          result: REORG_DATA;
         };
       },
     ];
@@ -527,8 +550,8 @@ type WebSocketMethods = {
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
     events: [
       {
-        name: 'starknet_subscriptionPendingTransactions';
-        result: {
+        method: 'starknet_subscriptionPendingTransactions';
+        params: {
           subscription_id: SUBSCRIPTION_ID;
           result: TXN_HASH | TXN;
         };

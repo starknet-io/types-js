@@ -1,4 +1,5 @@
 import type { CONTRACT_EXECUTION_ERROR } from './components.js';
+import type { STATUS_RECEIVED, STATUS_REJECTED } from './constants.js';
 
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;
@@ -9,7 +10,7 @@ export interface NO_TRACE_AVAILABLE {
   code: 10;
   message: 'No trace available for transaction';
   data: {
-    status: 'RECEIVED' | 'REJECTED';
+    status: STATUS_RECEIVED | STATUS_REJECTED;
   };
 }
 
@@ -91,6 +92,11 @@ export interface TRANSACTION_EXECUTION_ERROR {
     transaction_index: number;
     execution_error: string;
   };
+}
+
+export interface STORAGE_PROOF_NOT_SUPPORTED {
+  code: 42;
+  message: "the node doesn't support storage proofs for blocks that are too far in the past";
 }
 
 export interface CLASS_ALREADY_DECLARED {
@@ -175,7 +181,14 @@ export interface TOO_MANY_BLOCKS_BACK {
   message: 'Cannot go back more than 1024 blocks';
 }
 
+export interface CALL_ON_PENDING {
+  code: 69;
+  message: 'This method does not support being called on the pending block';
+}
+
 export interface COMPILATION_ERROR {
+  code: 100;
+  message: 'Failed to compile the contract';
   /**
    * "More data about the compilation failure
    */

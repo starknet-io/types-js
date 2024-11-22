@@ -1,3 +1,5 @@
+import type { ABI_TYPE_ENUM } from '../api/constants.js';
+
 export const TypedDataRevision = {
   ACTIVE: '1',
   LEGACY: '0',
@@ -7,7 +9,7 @@ export type TypedDataRevision = (typeof TypedDataRevision)[keyof typeof TypedDat
 
 export type StarknetEnumType = {
   name: string;
-  type: 'enum';
+  type: ABI_TYPE_ENUM;
   contains: string;
 };
 

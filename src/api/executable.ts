@@ -21,7 +21,7 @@ export type CASM_COMPILED_CONTRACT_CLASS = {
    */
   hints: Array<[number | Array<HINT>, number | Array<HINT>]>;
   /**
-   * a list of sizes of segments in the bytecode, each segment is hashed invidually when computing the bytecode hash.
+   * a list of sizes of segments in the bytecode, each segment is hashed individually when computing the bytecode hash.
    * Integer
    */
   bytecode_segment_lengths?: number;
@@ -42,7 +42,7 @@ export type Deref = {
 
 export type DoubleDeref = {
   /**
-   * A (CellRef, offsest) tuple
+   * A (CellRef, offset) tuple
    */
   DoubleDeref: [CellRef | number];
 };

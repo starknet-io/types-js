@@ -85,8 +85,28 @@ export type L1L2MessagesStatus = Array<L1L2MessageStatus>;
 // response starknet_getStorageProof (merkle paths)
 export type StorageProof = {
   classes_proof: NODE_HASH_TO_NODE_MAPPING;
-  contracts_proof: NODE_HASH_TO_NODE_MAPPING;
-  contracts_storage_proofs: Array<NODE_HASH_TO_NODE_MAPPING>;
+  contracts_proof: {
+    /**
+     * The nodes in the union of the paths from the contracts tree root to the requested leaves
+     */
+    nodes: NODE_HASH_TO_NODE_MAPPING;
+    /**
+     * The nonce and class hash for each requested contract address, in the order in which they appear in the request. These values are needed to construct the associated leaf node
+     */
+    contract_leaves_data: {
+      nonce: FELT;
+      class_hash: FELT;
+    }[];
+  };
+  contracts_storage_proofs: NODE_HASH_TO_NODE_MAPPING[];
+  global_roots: {
+    contracts_tree_root: FELT;
+    classes_tree_root: FELT;
+    /**
+     * the associated block hash (needed in case the caller used a block tag for the block_id parameter)
+     */
+    block_hash: FELT;
+  };
 };
 
 // Nice Components names
@@ -133,111 +153,3 @@ export type StorageDiffs = Array<CONTRACT_STORAGE_DIFF_ITEM>;
 export type DeprecatedDeclaredClasses = Array<FELT>;
 export type NonceUpdates = NONCE_UPDATE[];
 export type ReplacedClasses = REPLACED_CLASS[];
-
-// Enums Derived From Spec Types (require manual check for changes)
-export const ETransactionType = {
-  DECLARE: 'DECLARE',
-  DEPLOY: 'DEPLOY',
-  DEPLOY_ACCOUNT: 'DEPLOY_ACCOUNT',
-  INVOKE: 'INVOKE',
-  L1_HANDLER: 'L1_HANDLER',
-} as const;
-
-export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransactionType];
-
-export const ESimulationFlag = {
-  SKIP_VALIDATE: 'SKIP_VALIDATE',
-  SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
-} as const;
-
-export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag];
-
-export const ETransactionStatus = {
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-  ACCEPTED_ON_L2: 'ACCEPTED_ON_L2',
-  ACCEPTED_ON_L1: 'ACCEPTED_ON_L1',
-} as const;
-
-export type ETransactionStatus = (typeof ETransactionStatus)[keyof typeof ETransactionStatus];
-
-export const ETransactionFinalityStatus = {
-  ACCEPTED_ON_L2: 'ACCEPTED_ON_L2',
-  ACCEPTED_ON_L1: 'ACCEPTED_ON_L1',
-} as const;
-
-export type ETransactionFinalityStatus =
-  (typeof ETransactionFinalityStatus)[keyof typeof ETransactionFinalityStatus];
-
-export const ETransactionExecutionStatus = {
-  SUCCEEDED: 'SUCCEEDED',
-  REVERTED: 'REVERTED',
-} as const;
-
-export type ETransactionExecutionStatus =
-  (typeof ETransactionExecutionStatus)[keyof typeof ETransactionExecutionStatus];
-
-export const EBlockTag = {
-  LATEST: 'latest',
-  PENDING: 'pending',
-} as const;
-
-export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
-
-// 'L1' | 'L2'
-export const EDataAvailabilityMode = {
-  L1: 'L1',
-  L2: 'L2',
-} as const;
-
-export type EDataAvailabilityMode =
-  (typeof EDataAvailabilityMode)[keyof typeof EDataAvailabilityMode];
-
-// 0 | 1
-export const EDAMode = {
-  L1: 0,
-  L2: 1,
-} as const;
-
-export type EDAMode = (typeof EDAMode)[keyof typeof EDAMode];
-
-/**
- * V_ Transaction versions HexString
- * F_ Fee Transaction Versions HexString (2 ** 128 + TRANSACTION_VERSION)
- */
-export const ETransactionVersion = {
-  V0: '0x0',
-  V1: '0x1',
-  V2: '0x2',
-  V3: '0x3',
-  F0: '0x100000000000000000000000000000000',
-  F1: '0x100000000000000000000000000000001',
-  F2: '0x100000000000000000000000000000002',
-  F3: '0x100000000000000000000000000000003',
-} as const;
-
-export type ETransactionVersion = (typeof ETransactionVersion)[keyof typeof ETransactionVersion];
-/**
- * Old Transaction Versions
- */
-
-export const ETransactionVersion2 = {
-  V0: '0x0',
-  V1: '0x1',
-  V2: '0x2',
-  F0: '0x100000000000000000000000000000000',
-  F1: '0x100000000000000000000000000000001',
-  F2: '0x100000000000000000000000000000002',
-} as const;
-export type ETransactionVersion2 = (typeof ETransactionVersion2)[keyof typeof ETransactionVersion2];
-
-/**
- * V3 Transaction Versions
- */
-
-export const ETransactionVersion3 = {
-  V3: '0x3',
-  F3: '0x100000000000000000000000000000003',
-} as const;
-
-export type ETransactionVersion3 = (typeof ETransactionVersion3)[keyof typeof ETransactionVersion3];
