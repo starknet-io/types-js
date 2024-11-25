@@ -1,3 +1,11 @@
+# [0.8.0-beta.2](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.1...v0.8.0-beta.2) (2024-11-25)
+
+
+### Bug Fixes
+
+* proposed changes on exports ([#23](https://github.com/starknet-io/types-js/issues/23)) ([5e966b9](https://github.com/starknet-io/types-js/commit/5e966b90126d5054bf519f09575271d04e4ffc25))
+* Update spec to 0.8.0 rc1 ([#22](https://github.com/starknet-io/types-js/issues/22)) ([8016199](https://github.com/starknet-io/types-js/commit/80161996d4f072e36a6f65f50ca58a57bd4b0d0a))
+
 # [0.8.0-beta.1](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.8.0-beta.1) (2024-10-28)
 
 
