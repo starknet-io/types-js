@@ -1,6 +1,6 @@
-export type { Methods } from './methods.js';
-export * from './contract.js';
-export * as Errors from './errors.js';
-export * as SPEC from './components.js';
+export * from './methods.js';
+export * as CONTRACT from './contract.js';
+export * from './errors.js';
+export * from './components.js';
 export * from './nonspec.js';
 export * from './constants.js';

@@ -1,6 +1,5 @@
 import type {
   ADDRESS,
-  BLOCK_HEADER,
   BLOCK_ID,
   BLOCK_NUMBER,
   BROADCASTED_DECLARE_TXN,
@@ -9,21 +8,22 @@ import type {
   BROADCASTED_TXN,
   CHAIN_ID,
   CONTRACT_STORAGE_KEYS,
-  EMITTED_EVENT,
   EVENT_FILTER,
   EVENT_KEYS,
   FELT,
   FUNCTION_CALL,
   L1_TXN_HASH,
   MSG_FROM_L1,
-  NEW_TXN_STATUS,
-  REORG_DATA,
   RESULT_PAGE_REQUEST,
   SIMULATION_FLAG,
   SIMULATION_FLAG_FOR_ESTIMATE_FEE,
   STORAGE_KEY,
   SUBSCRIPTION_ID,
-  TXN,
+  SubscriptionEventsResponse,
+  SubscriptionNewHeadsResponse,
+  SubscriptionPendingTransactionsResponse,
+  SubscriptionReorgResponse,
+  SubscriptionTransactionsStatusResponse,
   TXN_HASH,
 } from './components.js';
 import type * as Errors from './errors.js';
@@ -432,25 +432,7 @@ type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND | Errors.CALL_ON_PENDING;
-    events: [
-      {
-        method: 'starknet_subscriptionNewHeads';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: BLOCK_HEADER;
-        };
-      },
-      {
-        /**
-         * Notifies the subscriber of a reorganization of the chain.
-         */
-        method: 'starknet_subscriptionReorg';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA;
-        };
-      },
-    ];
+    events: ['starknet_subscriptionNewHeads', 'starknet_subscriptionReorg'];
   };
 
   /**
@@ -475,25 +457,7 @@ type WebSocketMethods = {
       | Errors.TOO_MANY_BLOCKS_BACK
       | Errors.BLOCK_NOT_FOUND
       | Errors.CALL_ON_PENDING;
-    events: [
-      {
-        method: 'starknet_subscriptionEvents';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: EMITTED_EVENT;
-        };
-      },
-      {
-        /**
-         * Notifies the subscriber of a reorganization of the chain.
-         */
-        method: 'starknet_subscriptionReorg';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA;
-        };
-      },
-    ];
+    events: ['starknet_subscriptionEvents', 'starknet_subscriptionReorg'];
   };
 
   /**
@@ -510,25 +474,7 @@ type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
-    events: [
-      {
-        method: 'starknet_subscriptionTransactionStatus';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: NEW_TXN_STATUS;
-        };
-      },
-      {
-        /**
-         * Notifies the subscriber of a reorganization of the chain.
-         */
-        method: 'starknet_subscriptionReorg';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: REORG_DATA;
-        };
-      },
-    ];
+    events: ['starknet_subscriptionTransactionStatus', 'starknet_subscriptionReorg'];
   };
 
   /**
@@ -548,15 +494,7 @@ type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
-    events: [
-      {
-        method: 'starknet_subscriptionPendingTransactions';
-        params: {
-          subscription_id: SUBSCRIPTION_ID;
-          result: TXN_HASH | TXN;
-        };
-      },
-    ];
+    events: ['starknet_subscriptionPendingTransactions'];
   };
 
   /**
@@ -569,4 +507,12 @@ type WebSocketMethods = {
     result: Boolean;
     errors: Errors.INVALID_SUBSCRIPTION_ID;
   };
+};
+
+export type WebSocketEvents = {
+  starknet_subscriptionReorg: SubscriptionReorgResponse;
+  starknet_subscriptionNewHeads: SubscriptionNewHeadsResponse;
+  starknet_subscriptionEvents: SubscriptionEventsResponse;
+  starknet_subscriptionTransactionStatus: SubscriptionTransactionsStatusResponse;
+  starknet_subscriptionPendingTransactions: SubscriptionPendingTransactionsResponse;
 };

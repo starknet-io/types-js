@@ -157,6 +157,31 @@ export type REORG_DATA = {
   ending_block_number: BLOCK_NUMBER;
 };
 
+export type SubscriptionNewHeadsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: BLOCK_HEADER;
+};
+
+export type SubscriptionEventsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: EMITTED_EVENT;
+};
+
+export type SubscriptionTransactionsStatusResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: NEW_TXN_STATUS;
+};
+
+export type SubscriptionPendingTransactionsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: TXN_HASH | TXN;
+};
+
+export type SubscriptionReorgResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: REORG_DATA;
+};
+
 //    *****************
 //    * READ API
 //    *****************
