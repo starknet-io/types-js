@@ -544,7 +544,7 @@ type WebSocketMethods = {
       /**
        * Filter transactions to only receive notification from address list
        */
-      sender_address?: ADDRESS;
+      sender_address?: ADDRESS[];
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
