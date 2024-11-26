@@ -1,3 +1,11 @@
+# [0.8.0-beta.1](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.8.0-beta.1) (2024-10-28)
+
+
+### Features
+
+* beta release ([e830783](https://github.com/starknet-io/types-js/commit/e830783ed5501d6b78ed737c229a132b16f91a39))
+* rpc spec 0.8.rc0 implementation, with known issues ([#19](https://github.com/starknet-io/types-js/issues/19)) ([d0bc541](https://github.com/starknet-io/types-js/commit/d0bc54162ef42c39a0665c7fc76b2e7fb4c22b80))
+
 ## [0.7.7](https://github.com/starknet-io/types-js/compare/v0.7.6...v0.7.7) (2024-06-10)
 
 ### Bug Fixes
