@@ -509,6 +509,9 @@ type WebSocketMethods = {
   };
 };
 
+/**
+ * Server -> Client events over WebSockets
+ */
 export type WebSocketEvents = {
   starknet_subscriptionReorg: SubscriptionReorgResponse;
   starknet_subscriptionNewHeads: SubscriptionNewHeadsResponse;
