@@ -1,3 +1,10 @@
+# [0.8.0-beta.4](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.3...v0.8.0-beta.4) (2024-11-26)
+
+
+### Bug Fixes
+
+* beta update ([d10b199](https://github.com/starknet-io/types-js/commit/d10b199346dedda1f37073405cef428f46d63a7d))
+
 # [0.8.0-beta.3](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.2...v0.8.0-beta.3) (2024-11-26)
 
 
