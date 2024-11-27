@@ -38,11 +38,10 @@ import { WALLET_API } from '@starknet-io/types-js';
 
 - /src/wallet-api/typedData.ts
 
-## Versioning (pending SPEC PR merge)
+## Version
 
-(MAJOR.MINOR) Version of this package should follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning.
-PATCH version can diverge based on bug-fixes
-ex. Starknet types v0.7.x <-> Starknet Spec v0.7.x
+(MAJOR.MINOR) Version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning. PATCH version can diverge based on bug-fixes
+`Starknet types v0.7.x <-> Starknet Spec v0.7.x`
 
 ## Devs Build
 
