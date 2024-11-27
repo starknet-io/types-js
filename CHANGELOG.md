@@ -1,16 +1,14 @@
 ## [0.7.8](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8) (2024-11-22)
 
-
 ### Bug Fixes
 
-* package, alpha -> main ([#26](https://github.com/starknet-io/types-js/issues/26)) ([39f80e9](https://github.com/starknet-io/types-js/commit/39f80e9ce4ca1cf5db97444cd5f91b5fb9a4e694)), closes [#25](https://github.com/starknet-io/types-js/issues/25) [#25](https://github.com/starknet-io/types-js/issues/25)
+- package, alpha -> main ([#26](https://github.com/starknet-io/types-js/issues/26)) ([39f80e9](https://github.com/starknet-io/types-js/commit/39f80e9ce4ca1cf5db97444cd5f91b5fb9a4e694)), closes [#25](https://github.com/starknet-io/types-js/issues/25) [#25](https://github.com/starknet-io/types-js/issues/25)
 
 ## [0.7.8-alpha.1](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8-alpha.1) (2024-11-19)
 
-
 ### Bug Fixes
 
-* new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
+- new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
 
 ## [0.7.7](https://github.com/starknet-io/types-js/compare/v0.7.6...v0.7.7) (2024-06-10)
 
