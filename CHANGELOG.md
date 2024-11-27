@@ -1,3 +1,10 @@
+## [0.7.9](https://github.com/starknet-io/types-js/compare/v0.7.8...v0.7.9) (2024-11-27)
+
+
+### Bug Fixes
+
+* trigger release, fix readme ([675777a](https://github.com/starknet-io/types-js/commit/675777a0ddcb5497812a6a48076534ebfd4e1f81))
+
 ## [0.7.8](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8) (2024-11-22)
 
 ### Bug Fixes
