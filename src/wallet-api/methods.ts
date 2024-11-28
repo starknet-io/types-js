@@ -2,6 +2,7 @@ import { Permission } from './constants.js';
 import type { TypedData } from './typedData.js';
 import * as Errors from './errors.js';
 import type {
+  API_VERSION,
   AccountDeploymentData,
   AddDeclareTransactionParameters,
   AddDeclareTransactionResult,
@@ -9,7 +10,7 @@ import type {
   AddInvokeTransactionResult,
   AddStarknetChainParameters,
   Address,
-  ApiVersion,
+  ApiVersionRequest,
   RequestAccountsParameters,
   Signature,
   SpecVersion,
@@ -27,7 +28,7 @@ export interface RpcTypeToMessageMap {
    * @returns An array of permissions.
    */
   wallet_getPermissions: {
-    params?: ApiVersion;
+    params?: ApiVersionRequest;
     result: Permission[] | [];
     errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
   };
@@ -38,7 +39,7 @@ export interface RpcTypeToMessageMap {
    * @returns An array of account addresses as strings.
    */
   wallet_requestAccounts: {
-    params?: RequestAccountsParameters & ApiVersion;
+    params?: RequestAccountsParameters & ApiVersionRequest;
     result: Address[];
     errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
   };
@@ -49,7 +50,7 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_watchAsset: {
-    params: WatchAssetParameters & ApiVersion;
+    params: WatchAssetParameters & ApiVersionRequest;
     result: boolean;
     errors:
       | Errors.NOT_ERC20
@@ -65,7 +66,7 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_addStarknetChain: {
-    params: AddStarknetChainParameters & ApiVersion;
+    params: AddStarknetChainParameters & ApiVersionRequest;
     result: boolean;
     errors:
       | Errors.INVALID_REQUEST_PAYLOAD
@@ -80,7 +81,7 @@ export interface RpcTypeToMessageMap {
    * @returns A boolean indicating if the operation was successful.
    */
   wallet_switchStarknetChain: {
-    params: SwitchStarknetChainParameters & ApiVersion;
+    params: SwitchStarknetChainParameters & ApiVersionRequest;
     result: boolean;
     errors:
       | Errors.UNLISTED_NETWORK
@@ -94,7 +95,7 @@ export interface RpcTypeToMessageMap {
    * @returns The current Starknet chain ID.
    */
   wallet_requestChainId: {
-    params?: ApiVersion;
+    params?: ApiVersionRequest;
     result: ChainId;
     errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
   };
@@ -104,7 +105,7 @@ export interface RpcTypeToMessageMap {
    * @returns The deployment data result.
    */
   wallet_deploymentData: {
-    params?: ApiVersion;
+    params?: ApiVersionRequest;
     result: AccountDeploymentData;
     errors:
       | Errors.ACCOUNT_ALREADY_DEPLOYED
@@ -118,7 +119,7 @@ export interface RpcTypeToMessageMap {
    * @returns The result of adding the invoke transaction.
    */
   wallet_addInvokeTransaction: {
-    params: AddInvokeTransactionParameters & ApiVersion;
+    params: AddInvokeTransactionParameters & ApiVersionRequest;
     result: AddInvokeTransactionResult;
     errors:
       | Errors.INVALID_REQUEST_PAYLOAD
@@ -133,7 +134,7 @@ export interface RpcTypeToMessageMap {
    * @returns The result of adding the declare transaction.
    */
   wallet_addDeclareTransaction: {
-    params: AddDeclareTransactionParameters & ApiVersion;
+    params: AddDeclareTransactionParameters & ApiVersionRequest;
     result: AddDeclareTransactionResult;
     errors:
       | Errors.INVALID_REQUEST_PAYLOAD
@@ -148,7 +149,7 @@ export interface RpcTypeToMessageMap {
    * @returns An array of signatures as strings.
    */
   wallet_signTypedData: {
-    params: TypedData & ApiVersion;
+    params: TypedData & ApiVersionRequest;
     result: Signature;
     errors:
       | Errors.INVALID_REQUEST_PAYLOAD
@@ -168,7 +169,7 @@ export interface RpcTypeToMessageMap {
    * Notice this might be different from Starknet JSON-RPC spec
    * @returns An array of supported wallet api versions.
    */
-  wallet_supportedWalletApi: { params?: never; result: ApiVersion[] };
+  wallet_supportedWalletApi: { params?: never; result: API_VERSION[] };
 }
 
 export type RpcMessage = {
