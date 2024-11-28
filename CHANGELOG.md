@@ -1,3 +1,10 @@
+## [0.7.10](https://github.com/starknet-io/types-js/compare/v0.7.9...v0.7.10) (2024-11-28)
+
+
+### Bug Fixes
+
+* issue [#20](https://github.com/starknet-io/types-js/issues/20) ([#27](https://github.com/starknet-io/types-js/issues/27)) ([d702721](https://github.com/starknet-io/types-js/commit/d702721aad8ae21e898dcb2a1409b5bbb42fc2d9))
+
 ## [0.7.9](https://github.com/starknet-io/types-js/compare/v0.7.8...v0.7.9) (2024-11-27)
 
 
