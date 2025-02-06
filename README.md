@@ -10,8 +10,16 @@ Shared TypeScript type definitions for Starknet projects
 
 ## Installation
 
+RPC 0.7 - Latest
+
 ```bash
 npm i @starknet-io/types-js
+```
+
+RPC 0.8 (rc3) - Beta
+
+```bash
+npm i @starknet-io/types-js@0.8.0-beta.5
 ```
 
 ## Types

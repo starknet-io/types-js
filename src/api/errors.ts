@@ -182,11 +182,6 @@ export interface TOO_MANY_BLOCKS_BACK {
   message: 'Cannot go back more than 1024 blocks';
 }
 
-export interface CALL_ON_PENDING {
-  code: 69;
-  message: 'This method does not support being called on the pending block';
-}
-
 export interface COMPILATION_ERROR {
   code: 100;
   message: 'Failed to compile the contract';

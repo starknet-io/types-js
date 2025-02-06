@@ -125,7 +125,15 @@ export type BLOCK_STATUS =
   | STATUS_ACCEPTED_ON_L2
   | STATUS_ACCEPTED_ON_L1
   | STATUS_REJECTED;
+export type BLOCK_SELECTOR =
+  | {
+      block_hash: BLOCK_HASH;
+    }
+  | {
+      block_number: BLOCK_NUMBER;
+    };
 export type BLOCK_TAG = EBlockTag;
+export type SUBSCRIPTION_BLOCK_TAG = 'latest';
 
 //    *****************
 //    * WEBSOCKET API
@@ -241,12 +249,11 @@ export type EVENT_FILTER = {
   keys?: EVENT_KEYS;
 };
 
-export type BLOCK_ID =
-  | {
-      block_hash?: BLOCK_HASH;
-      block_number?: BLOCK_NUMBER;
-    }
-  | BLOCK_TAG;
+export type BLOCK_ID = BLOCK_SELECTOR | BLOCK_TAG;
+/**
+ * same as BLOCK_ID, but without 'pending'
+ */
+export type SUBSCRIPTION_BLOCK_ID = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
 
 export type SYNC_STATUS = {
   starting_block_hash: BLOCK_HASH;
@@ -652,7 +659,7 @@ export type DEPRECATED_CAIRO_ENTRY_POINT = {
   /**
    * "The offset of the entry point in the program"
    */
-  offset: number;
+  offset: NUM_AS_HEX;
   /**
    * A unique identifier of the entry point (function) in the program
    */
@@ -980,7 +987,7 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
    */
   messages: ORDERED_MESSAGE[];
   /**
-   * Resources consumed by the internal call
+   * Resources consumed by the call tree rooted at this given call (including the root)
    */
   execution_resources: INNER_CALL_EXECUTION_RESOURCES;
   /**

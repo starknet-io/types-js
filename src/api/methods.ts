@@ -18,6 +18,7 @@ import type {
   SIMULATION_FLAG,
   SIMULATION_FLAG_FOR_ESTIMATE_FEE,
   STORAGE_KEY,
+  SUBSCRIPTION_BLOCK_ID,
   SUBSCRIPTION_ID,
   SubscriptionEventsResponse,
   SubscriptionNewHeadsResponse,
@@ -432,10 +433,10 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block_id?: BLOCK_ID;
+      block_id?: SUBSCRIPTION_BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND | Errors.CALL_ON_PENDING;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
     events: ['starknet_subscriptionNewHeads', 'starknet_subscriptionReorg'];
   };
 
@@ -453,14 +454,10 @@ type WebSocketMethods = {
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
-      block_id?: BLOCK_ID;
+      block_id?: SUBSCRIPTION_BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors:
-      | Errors.TOO_MANY_KEYS_IN_FILTER
-      | Errors.TOO_MANY_BLOCKS_BACK
-      | Errors.BLOCK_NOT_FOUND
-      | Errors.CALL_ON_PENDING;
+    errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
     events: ['starknet_subscriptionEvents', 'starknet_subscriptionReorg'];
   };
 
