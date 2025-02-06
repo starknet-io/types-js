@@ -195,7 +195,11 @@ type ReadMethods = {
       block_id: BLOCK_ID;
     };
     result: FELT[];
-    errors: Errors.CONTRACT_NOT_FOUND | Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
+    errors:
+      | Errors.CONTRACT_NOT_FOUND
+      | Errors.ENTRYPOINT_NOT_FOUND
+      | Errors.CONTRACT_ERROR
+      | Errors.BLOCK_NOT_FOUND;
   };
 
   /**

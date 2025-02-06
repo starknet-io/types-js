@@ -19,9 +19,9 @@ export interface CONTRACT_NOT_FOUND {
   message: 'Contract not found';
 }
 
-export interface INVALID_MESSAGE_SELECTOR {
+export interface ENTRYPOINT_NOT_FOUND {
   code: 21;
-  message: 'Invalid message selector';
+  message: 'Requested entrypoint does not exist in the contract';
 }
 
 export interface INVALID_CALL_DATA {

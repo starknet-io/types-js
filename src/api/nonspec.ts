@@ -41,6 +41,7 @@ import type {
   TXN_RECEIPT_WITH_BLOCK_INFO,
   TXN_STATUS,
   TXN_STATUS_RESULT,
+  TXN_WITH_HASH,
 } from './components.js';
 
 // METHOD RESPONSES
@@ -55,7 +56,7 @@ export type SimulateTransactionResponse = SimulateTransaction[];
 // response starknet_estimateFee
 export type FeeEstimate = FEE_ESTIMATE;
 // response starknet_getTransactionByHash, starknet_getTransactionByBlockIdAndIndex
-export type TransactionWithHash = TXN & { transaction_hash: TXN_HASH };
+export type TransactionWithHash = TXN_WITH_HASH;
 // response starknet_blockHashAndNumber
 export type BlockHashAndNumber = { block_hash: BLOCK_HASH; block_number: BLOCK_NUMBER };
 // response starknet_getBlockWithTxs

@@ -376,6 +376,8 @@ export type StorageDiffItem = {
 
 export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLOY_ACCOUNT_TXN;
 
+export type TXN_WITH_HASH = TXN & { transaction_hash: TXN_HASH };
+
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3;
 
 export type DECLARE_TXN_V0 = {
