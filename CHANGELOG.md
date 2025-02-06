@@ -1,3 +1,10 @@
+# [0.8.0-beta.6](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.5...v0.8.0-beta.6) (2025-02-06)
+
+
+### Bug Fixes
+
+* Spec rc3 ([5ec8eac](https://github.com/starknet-io/types-js/commit/5ec8eac31250beb6822f87319e3d4e21cf8b78a7))
+
 # [0.8.0-beta.5](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.4...v0.8.0-beta.5) (2025-02-06)
 
 
