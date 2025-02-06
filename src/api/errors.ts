@@ -128,6 +128,7 @@ export interface VALIDATION_FAILURE {
 export interface COMPILATION_FAILED {
   code: 56;
   message: 'Compilation failed';
+  data: 'string';
 }
 
 export interface CONTRACT_CLASS_SIZE_IS_TOO_LARGE {

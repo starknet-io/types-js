@@ -97,6 +97,7 @@ export type StorageProof = {
     contract_leaves_data: {
       nonce: FELT;
       class_hash: FELT;
+      storage_root: FELT;
     }[];
   };
   contracts_storage_proofs: NODE_HASH_TO_NODE_MAPPING[];

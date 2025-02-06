@@ -152,12 +152,30 @@ export type EDAMode = (typeof EDAMode)[keyof typeof EDAMode];
  * F_ Fee Transaction Versions HexString (2 ** 128 + TRANSACTION_VERSION)
  */
 export const ETransactionVersion = {
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   V0: '0x0',
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   V1: '0x1',
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   V2: '0x2',
   V3: '0x3',
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   F0: '0x100000000000000000000000000000000',
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   F1: '0x100000000000000000000000000000001',
+  /**
+   * @deprecated Starknet 0.14 will not support this transaction
+   */
   F2: '0x100000000000000000000000000000002',
   F3: '0x100000000000000000000000000000003',
 } as const;
@@ -167,6 +185,9 @@ export type ETransactionVersion = (typeof ETransactionVersion)[keyof typeof ETra
  * Old Transaction Versions
  */
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export const ETransactionVersion2 = {
   V0: ETransactionVersion.V0,
   V1: ETransactionVersion.V1,
@@ -175,12 +196,14 @@ export const ETransactionVersion2 = {
   F1: ETransactionVersion.F1,
   F2: ETransactionVersion.F2,
 } as const;
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type ETransactionVersion2 = (typeof ETransactionVersion2)[keyof typeof ETransactionVersion2];
 
 /**
  * V3 Transaction Versions
  */
-
 export const ETransactionVersion3 = {
   V3: ETransactionVersion.V3,
   F3: ETransactionVersion.F3,

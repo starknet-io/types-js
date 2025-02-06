@@ -466,18 +466,13 @@ type WebSocketMethods = {
 
   /**
    * New transaction status subscription.
-   * Creates a WebSocket stream which will fire events when a transaction status is updated.
+   * Creates a WebSocket stream which at first fires an event with the current known transaction status, followed by events for every transaction status update
    */
   starknet_subscribeTransactionStatus: {
     params: {
       transaction_hash: FELT;
-      /**
-       * The block to get notifications from, default is latest, limited to 1024 blocks back
-       */
-      block_id?: BLOCK_ID;
     };
     result: SUBSCRIPTION_ID;
-    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
     events: ['starknet_subscriptionTransactionStatus', 'starknet_subscriptionReorg'];
   };
 

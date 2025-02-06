@@ -215,7 +215,7 @@ export type CORE_HINT =
     }
   | {
       InitSquashData: {
-        dict_access: ResOperand;
+        dict_accesses: ResOperand;
         ptr_diff: ResOperand;
         n_accesses: ResOperand;
         big_keys: CellRef;

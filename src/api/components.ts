@@ -47,6 +47,11 @@ export type ETH_ADDRESS = string;
  */
 export type STORAGE_KEY = string;
 export type ADDRESS = FELT;
+/**
+ * string representing an integer number in prefixed hexadecimal format
+ * @example "0x.."
+ * @pattern ^0x[a-fA-F0-9]+$
+ */
 export type NUM_AS_HEX = string;
 /**
  * 64 bit integers, represented by hex string of length at most 16
@@ -54,7 +59,7 @@ export type NUM_AS_HEX = string;
  */
 export type u64 = string;
 /**
- * 64 bit integers, represented by hex string of length at most 32
+ * 128 bit integers, represented by hex string of length at most 32
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,31})$"
  */
 export type u128 = string;
@@ -174,7 +179,7 @@ export type SubscriptionTransactionsStatusResponse = {
 
 export type SubscriptionPendingTransactionsResponse = {
   subscription_id: SUBSCRIPTION_ID;
-  result: TXN_HASH | TXN;
+  result: TXN_HASH | TXN_WITH_HASH;
 };
 
 export type SubscriptionReorgResponse = {
@@ -294,9 +299,7 @@ export type BLOCK_BODY_WITH_TX_HASHES = {
 };
 
 export type BLOCK_BODY_WITH_TXS = {
-  transactions: (TXN & {
-    transaction_hash: TXN_HASH;
-  })[];
+  transactions: TXN_WITH_HASH[];
 };
 
 export type BLOCK_BODY_WITH_RECEIPTS = {
@@ -380,6 +383,9 @@ export type TXN_WITH_HASH = TXN & { transaction_hash: TXN_HASH };
 
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V0 = {
   type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
@@ -389,6 +395,9 @@ export type DECLARE_TXN_V0 = {
   class_hash: FELT;
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V1 = {
   type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
@@ -399,6 +408,9 @@ export type DECLARE_TXN_V1 = {
   class_hash: FELT;
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V2 = {
   type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
@@ -432,35 +444,11 @@ export type BROADCASTED_TXN =
   | BROADCASTED_DECLARE_TXN
   | BROADCASTED_DEPLOY_ACCOUNT_TXN;
 
-export type BROADCASTED_INVOKE_TXN = INVOKE_TXN;
+export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3;
 
-export type BROADCASTED_DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN;
+export type BROADCASTED_DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V3;
 
-export type BROADCASTED_DECLARE_TXN =
-  | BROADCASTED_DECLARE_TXN_V1
-  | BROADCASTED_DECLARE_TXN_V2
-  | BROADCASTED_DECLARE_TXN_V3;
-
-export type BROADCASTED_DECLARE_TXN_V1 = {
-  type: TXN_TYPE_DECLARE;
-  sender_address: ADDRESS;
-  max_fee: FELT;
-  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
-  signature: SIGNATURE;
-  nonce: FELT;
-  contract_class: DEPRECATED_CONTRACT_CLASS;
-};
-
-export type BROADCASTED_DECLARE_TXN_V2 = {
-  type: TXN_TYPE_DECLARE;
-  sender_address: ADDRESS;
-  compiled_class_hash: FELT;
-  max_fee: FELT;
-  version: typeof ETransactionVersion.V2 | typeof ETransactionVersion.F2;
-  signature: SIGNATURE;
-  nonce: FELT;
-  contract_class: CONTRACT_CLASS;
-};
+export type BROADCASTED_DECLARE_TXN = BROADCASTED_DECLARE_TXN_V3;
 
 export type BROADCASTED_DECLARE_TXN_V3 = {
   type: TXN_TYPE_DECLARE;
@@ -481,6 +469,9 @@ export type BROADCASTED_DECLARE_TXN_V3 = {
 
 export type DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V1 | DEPLOY_ACCOUNT_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DEPLOY_ACCOUNT_TXN_V1 = {
   type: TXN_TYPE_DEPLOY_ACCOUNT;
   max_fee: FELT;
@@ -517,6 +508,9 @@ export type DEPLOY_TXN = {
 
 export type INVOKE_TXN = INVOKE_TXN_V0 | INVOKE_TXN_V1 | INVOKE_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type INVOKE_TXN_V0 = {
   type: TXN_TYPE_INVOKE;
   max_fee: FELT;
@@ -527,6 +521,9 @@ export type INVOKE_TXN_V0 = {
   calldata: FELT[];
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type INVOKE_TXN_V1 = {
   type: TXN_TYPE_INVOKE;
   sender_address: ADDRESS;
@@ -652,7 +649,13 @@ export type DEPRECATED_CONTRACT_CLASS = {
 };
 
 export type DEPRECATED_CAIRO_ENTRY_POINT = {
-  offset: NUM_AS_HEX | number;
+  /**
+   * "The offset of the entry point in the program"
+   */
+  offset: number;
+  /**
+   * A unique identifier of the entry point (function) in the program
+   */
   selector: FELT;
 };
 
@@ -980,6 +983,10 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
    * Resources consumed by the internal call
    */
   execution_resources: INNER_CALL_EXECUTION_RESOURCES;
+  /**
+   * true if this inner call panicked
+   */
+  is_reverted: boolean;
 };
 
 /**
