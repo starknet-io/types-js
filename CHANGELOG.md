@@ -1,3 +1,10 @@
+# [0.8.0-beta.5](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.4...v0.8.0-beta.5) (2025-02-06)
+
+
+### Bug Fixes
+
+* update to spec 0.8-rc2, deprecate <v3 transactions ([1bc1339](https://github.com/starknet-io/types-js/commit/1bc1339041b5b17739cb5444632be6661a8c367f))
+
 # [0.8.0-beta.4](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.3...v0.8.0-beta.4) (2024-11-26)
 
 
