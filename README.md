@@ -10,8 +10,16 @@ Shared TypeScript type definitions for Starknet projects
 
 ## Installation
 
+RPC 0.7 - Latest
+
 ```bash
 npm i @starknet-io/types-js
+```
+
+RPC 0.8 (rc3) - Beta
+
+```bash
+npm i @starknet-io/types-js@beta
 ```
 
 ## Types
@@ -38,10 +46,11 @@ import { WALLET_API } from '@starknet-io/types-js';
 
 - /src/wallet-api/typedData.ts
 
-## Version
+## Versioning
 
-(MAJOR.MINOR) Version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning. PATCH version can diverge based on bug-fixes
-`Starknet types v0.7.x <-> Starknet Spec v0.7.x`
+(MAJOR.MINOR) Version of this package follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning. PATCH version can diverge based on bug-fixes.
+`Starknet types v0.7 <-> Starknet Spec v0.7`
+`Starknet types v0.8 <-> Starknet Spec v0.8`
 
 ## Devs Build
 
