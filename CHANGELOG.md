@@ -1,3 +1,11 @@
+# [0.8.0-beta.7](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.6...v0.8.0-beta.7) (2025-02-10)
+
+
+### Bug Fixes
+
+* readme beta install path ([51a6174](https://github.com/starknet-io/types-js/commit/51a61746d2935e16271c2963f37f614d3e37b6c4))
+* split ws and https methods ([669f003](https://github.com/starknet-io/types-js/commit/669f003aea2ddae9fcc166e957dcc74995fdf646))
+
 # [0.8.0-beta.6](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.5...v0.8.0-beta.6) (2025-02-06)
 
 
