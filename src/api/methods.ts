@@ -53,7 +53,7 @@ import type {
   TransactionWithHash,
 } from './nonspec.js';
 
-export type Methods = ReadMethods & WriteMethods & TraceMethods & WebSocketMethods;
+export type Methods = ReadMethods & WriteMethods & TraceMethods;
 
 type ReadMethods = {
   // Returns the version of the Starknet JSON-RPC specification being used
@@ -423,7 +423,7 @@ type TraceMethods = {
   };
 };
 
-type WebSocketMethods = {
+export type WebSocketMethods = {
   /**
    * New block headers subscription.
    * Creates a WebSocket stream which will fire events for new block headers.
