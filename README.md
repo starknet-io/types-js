@@ -75,16 +75,15 @@ import type { SomeWalletApiType } from '@starknet-io/types-js';
 import { WALLET_API } from '@starknet-io/types-js';
 ```
 
-##### SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
+##### SNIPs [StarkNet Improvement Proposals](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-1.md)
 
-- /src/wallet-api/typedData.ts
+- [SNIP-12 Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md) - [/src/wallet-api/typedData.ts](https://github.com/starknet-io/types-js/blob/main/src/wallet-api/typedData.ts)
 
 ## Versioning
 
-Starknet types-js v0.7 == Starknet Spec v0.7
-Starknet types-js v0.8 == Starknet Spec v0.8
+MAJOR and MINOR version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs/tags) semantic versioning. The PATCH version can diverge based on the bug fixes.
 
-(MAJOR.MINOR) Version of this package follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning. PATCH version can diverge based on bug-fixes
+Ex. Starknet types-js v0.7 == Starknet Spec v0.7
 
 ## Devs Build
 
