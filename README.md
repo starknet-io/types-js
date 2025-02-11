@@ -1,15 +1,45 @@
 <p align="center">
   <img width='300' src="https://raw.githubusercontent.com/starknet-io/types-js/9c98311bfdeda3440b0d65d2eaa3c5869ddedcab/types%20js%20logo.png">
 </p>
-
-[![GitHub Workflow Status](https://github.com/starknet-io/types-js/actions/workflows/publish.yml/badge.svg)](https://github.com/starknet-io/types-js/actions/workflows/publish.yml)
-[![Project license](https://img.shields.io/github/license/starknet-io/types-js.svg?style=flat-square)](LICENSE)
-[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+<p align="center">
+    <a href="https://github.com/starknet-io/types-js/actions/workflows/publish.yml">
+    <img src="https://github.com/starknet-io/types-js/actions/workflows/publish.yml/badge.svg">
+  </a>
+  <a href="https://www.npmjs.com/package/@starknet-io/types-js">
+    <img src='https://img.shields.io/npm/v/%40starknet-io%2Ftypes-js' />
+  </a>
+  <a href="https://www.npmjs.com/package/@starknet-io/types-js">
+    <img src='https://img.shields.io/npm/v/%40starknet-io%2Ftypes-js/beta' />
+  </a>
+  <a href="https://bundlephobia.com/package/%40starknet-io%2Ftypes-js">
+    <img src='https://img.shields.io/bundlephobia/minzip/%40starknet-io%2Ftypes-js?color=success&label=size' />
+  </a>
+  <a href="https://www.npmjs.com/package/%40starknet-io%2Ftypes-js">
+    <img src='https://img.shields.io/npm/dt/%40starknet-io%2Ftypes-js?color=blueviolet' />
+  </a>
+  <a href="https://github.com/starknet-io/types-js/blob/main/LICENSE/">
+    <img src="https://img.shields.io/badge/license-MIT-black">
+  </a>
+  <a href="https://github.com/starknet-io/%40starknet-io%2Ftypes-js/stargazers">
+    <img src='https://img.shields.io/github/stars/starknet-io/types-js?color=yellow' />
+  </a>
+  <a href="https://starkware.co/">
+    <img src="https://img.shields.io/badge/powered_by-StarkWare-navy">
+  </a>
+  <a href="https://twitter.com/starknetjs">
+    <img src="https://img.shields.io/badge/follow_us-Twitter-blue">
+  </a>
+  <a href="https://www.drips.network/app/projects/github/starknet-io/starknet.js" target="_blank">
+    <img src="https://www.drips.network/api/embed/project/https%3A%2F%2Fgithub.com%2Fstarknet-io%2Fstarknet.js/support.png?background=light&style=github&text=project&stat=none" alt="Support starknet.js on drips.network" height="20">
+  </a>
+  <a href="https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">
+    <img src="https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square">
+  </a>
+</p>
 
 <p align="center">
 🐺 Starknet TypeScript types 🚀 definitions for Starknet projects
 </p>
-
 
 ## Installation
 
