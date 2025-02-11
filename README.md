@@ -1,12 +1,15 @@
-# Starknet types JS/TS
-
-🐺 Starknet TypeScript types 🚀
+<p align="center">
+  <img width='300' src="https://raw.githubusercontent.com/starknet-io/types-js/9c98311bfdeda3440b0d65d2eaa3c5869ddedcab/types%20js%20logo.png">
+</p>
 
 [![GitHub Workflow Status](https://github.com/starknet-io/types-js/actions/workflows/publish.yml/badge.svg)](https://github.com/starknet-io/types-js/actions/workflows/publish.yml)
 [![Project license](https://img.shields.io/github/license/starknet-io/types-js.svg?style=flat-square)](LICENSE)
 [![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 
-Shared TypeScript type definitions for Starknet projects
+<p align="center">
+🐺 Starknet TypeScript types 🚀 definitions for Starknet projects
+</p>
+
 
 ## Installation
 
