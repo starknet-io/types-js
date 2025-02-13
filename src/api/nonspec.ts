@@ -43,6 +43,7 @@ import type {
   TXN_STATUS_RESULT,
   TXN_WITH_HASH,
 } from './components.js';
+import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 
 // METHOD RESPONSES
 // response starknet_getClass
@@ -110,6 +111,8 @@ export type StorageProof = {
     block_hash: FELT;
   };
 };
+// response starknet_getCompiledCasm
+export type CompiledCasm = CASM_COMPILED_CONTRACT_CLASS;
 
 // Nice Components names
 export type ContractAddress = ADDRESS;
