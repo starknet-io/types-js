@@ -610,10 +610,29 @@ export type TXN_RECEIPT =
   | DEPLOY_TXN_RECEIPT
   | DEPLOY_ACCOUNT_TXN_RECEIPT;
 
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & {
-  block_hash?: BLOCK_HASH;
-  block_number?: BLOCK_NUMBER;
-};
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
+  (
+    | {
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_hash: BLOCK_HASH;
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_number: BLOCK_NUMBER;
+      }
+    | {
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_hash: never;
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_number: never;
+      }
+  );
 
 export type MSG_TO_L1 = {
   from_address: FELT;

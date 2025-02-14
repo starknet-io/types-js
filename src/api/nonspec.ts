@@ -45,6 +45,9 @@ import type {
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 
+// HELPER
+export type AllNever<T> = Record<keyof T, never>;
+
 // METHOD RESPONSES
 // response starknet_getClass
 export type ContractClass = CONTRACT_CLASS | DEPRECATED_CONTRACT_CLASS;
@@ -121,9 +124,18 @@ export type Nonce = FELT;
 export type TransactionHash = TXN_HASH;
 export type TransactionTrace = TRANSACTION_TRACE;
 export type BlockHash = BLOCK_HASH;
+/**
+ * Transaction Receipt from pending or production block
+ */
 export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
-export type Receipt = TXN_RECEIPT_WITH_BLOCK_INFO & BlockHashAndNumber;
-export type PendingReceipt = TXN_RECEIPT;
+/**
+ * Transaction Receipt from production block
+ */
+export type TransactionReceiptFromPendingBlock = TXN_RECEIPT & BlockHashAndNumber;
+/**
+ * Transaction Receipt from pending block
+ */
+export type TransactionReceiptFromProductionBlock = TXN_RECEIPT & AllNever<BlockHashAndNumber>;
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST;
 export type SimulationFlags = Array<SIMULATION_FLAG>;
 export type L1Message = MSG_FROM_L1;
