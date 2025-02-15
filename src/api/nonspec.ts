@@ -37,13 +37,13 @@ import type {
   TRANSACTION_TRACE,
   TXN,
   TXN_HASH,
-  TXN_RECEIPT,
   TXN_RECEIPT_WITH_BLOCK_INFO,
   TXN_STATUS,
   TXN_STATUS_RESULT,
   TXN_WITH_HASH,
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
+import { IsInBlock, IsPending } from './expansions/transactionReceipt.js';
 
 // HELPER
 export type AllNever<T> = Record<keyof T, never>;
@@ -124,18 +124,22 @@ export type Nonce = FELT;
 export type TransactionHash = TXN_HASH;
 export type TransactionTrace = TRANSACTION_TRACE;
 export type BlockHash = BLOCK_HASH;
+
+// **TRANSACTION RECEIPTS NARROW FILTER EXPANSIONS**
 /**
- * Transaction Receipt from pending or production block
+ * All Type Transaction Receipt from pending or production block
  */
 export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
+// **TYPE FROM PRODUCTION BLOCK**
 /**
- * Transaction Receipt from production block
+ * All Type Transaction Receipt from production block
  */
-export type TransactionReceiptFromPendingBlock = TXN_RECEIPT & BlockHashAndNumber;
+export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>;
+// **TYPE FROM PENDING BLOCK**
 /**
- * Transaction Receipt from pending block
+ * All Type Transaction Receipt from pending block
  */
-export type TransactionReceiptFromProductionBlock = TXN_RECEIPT & AllNever<BlockHashAndNumber>;
+export type TransactionReceiptPendingBlock = IsPending<TransactionReceipt>;
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST;
 export type SimulationFlags = Array<SIMULATION_FLAG>;
 export type L1Message = MSG_FROM_L1;
