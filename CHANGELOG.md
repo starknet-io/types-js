@@ -1,3 +1,10 @@
+# [0.8.0-beta.9](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.8...v0.8.0-beta.9) (2025-02-15)
+
+
+### Bug Fixes
+
+* export all from executable ([175e8ab](https://github.com/starknet-io/types-js/commit/175e8aba665688a26feb8e4042ebd395c6395a55))
+
 # [0.8.0-beta.8](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.7...v0.8.0-beta.8) (2025-02-15)
 
 
