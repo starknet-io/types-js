@@ -1,3 +1,17 @@
+# [0.8.0-beta.8](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.7...v0.8.0-beta.8) (2025-02-15)
+
+
+### Bug Fixes
+
+* export CompiledCasm response type, add logo svg ([5a019eb](https://github.com/starknet-io/types-js/commit/5a019ebc8f5d15c55b42a0a81c62da2cab43910d))
+* transaction receipt block info properties ([edc9e25](https://github.com/starknet-io/types-js/commit/edc9e25cf9c13e409d43f7b1c01758fde9788f5b))
+
+
+### Features
+
+* narrow filter for transaction receipts ([38ead6a](https://github.com/starknet-io/types-js/commit/38ead6a51daa39cab67de06e634a5222cb83f92e))
+* narrow filter for transaction receipts ([3471b55](https://github.com/starknet-io/types-js/commit/3471b55cbe650b54f24000308ccaf116ba66f494))
+
 # [0.8.0-beta.7](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.6...v0.8.0-beta.7) (2025-02-10)
 
 
