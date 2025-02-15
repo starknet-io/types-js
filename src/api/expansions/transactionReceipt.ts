@@ -10,7 +10,7 @@
 
 // Transaction lifetime
 /* LIFE IN PENDING BLOCK
-TransactionReceipt_Pending_InvokeRejected // dead and dropped - this do not exist as a transaction receipt but just as a transaction status
+TransactionReceipt_Pending_InvokeRejected // dead and droped - this do not exist as a transaction receipt but just as a transaction status
 TransactionReceipt_Pending_InvokeReceived // this status also do not exist on transaction receipt
 
   TransactionReceipt_Pending_InvokeReverted

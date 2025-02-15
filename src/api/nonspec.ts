@@ -121,18 +121,14 @@ export type Nonce = FELT;
 export type TransactionHash = TXN_HASH;
 export type TransactionTrace = TRANSACTION_TRACE;
 export type BlockHash = BLOCK_HASH;
-
-// **TRANSACTION RECEIPTS NARROW FILTER EXPANSIONS**
 /**
- * All Type Transaction Receipt from pending or production block
+ * All Type Transaction Receipt
  */
 export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
-// **TYPE FROM PRODUCTION BLOCK**
 /**
  * All Type Transaction Receipt from production block
  */
 export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>;
-// **TYPE FROM PENDING BLOCK**
 /**
  * All Type Transaction Receipt from pending block
  */
