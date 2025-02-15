@@ -1,3 +1,10 @@
+# [0.8.0-beta.10](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.9...v0.8.0-beta.10) (2025-02-15)
+
+
+### Bug Fixes
+
+* add excplusive OneOf to the most of the unions, TRANSACTION_TRACE should be fixed if spec is correct ([d4dda7e](https://github.com/starknet-io/types-js/commit/d4dda7e456c5d0ecc189c213e0e9dfed563a472f))
+
 # [0.8.0-beta.9](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.8...v0.8.0-beta.9) (2025-02-15)
 
 
