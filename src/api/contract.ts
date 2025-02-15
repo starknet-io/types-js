@@ -12,6 +12,7 @@ import type {
   EVENT_ABI_TYPE,
   STRUCT_ABI_TYPE,
 } from './constants.js';
+import { SimpleOneOf } from './expansions/helpless.js';
 
 // *** ABI ***
 /**
@@ -58,7 +59,7 @@ export type EVENT = {
    * the name of the (Cairo) type associated with the event
    */
   name: string;
-} & (ENUM_EVENT | STRUCT_EVENT);
+} & SimpleOneOf<ENUM_EVENT, STRUCT_EVENT>;
 
 export type STRUCT_EVENT = {
   kind: STRUCT_ABI_TYPE;

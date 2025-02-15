@@ -253,6 +253,9 @@ type ReadMethods = {
   // Returns an object about the sync status, or false if the node is not syncing
   starknet_syncing: {
     params: [];
+    /**
+     * false if the node is not syncing, or an object with data about the syncing status
+     */
     result: Syncing;
   };
 

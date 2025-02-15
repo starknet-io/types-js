@@ -43,11 +43,12 @@ import type {
   TXN_WITH_HASH,
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
+import { OneOf } from './expansions/helpless.js';
 import { IsInBlock, IsPending } from './expansions/transactionReceipt.js';
 
 // METHOD RESPONSES
-// response starknet_getClass
-export type ContractClass = CONTRACT_CLASS | DEPRECATED_CONTRACT_CLASS;
+// response starknet_getClass, starknet_getClassAt
+export type ContractClass = OneOf<[CONTRACT_CLASS, DEPRECATED_CONTRACT_CLASS]>;
 // response starknet_simulateTransactions
 export type SimulateTransaction = {
   transaction_trace: TRANSACTION_TRACE;
@@ -61,17 +62,17 @@ export type TransactionWithHash = TXN_WITH_HASH;
 // response starknet_blockHashAndNumber
 export type BlockHashAndNumber = { block_hash: BLOCK_HASH; block_number: BLOCK_NUMBER };
 // response starknet_getBlockWithTxs
-export type BlockWithTxs = BLOCK_WITH_TXS | PENDING_BLOCK_WITH_TXS;
+export type BlockWithTxs = OneOf<[BLOCK_WITH_TXS, PENDING_BLOCK_WITH_TXS]>;
 // response starknet_getBlockWithTxHashes
-export type BlockWithTxHashes = BLOCK_WITH_TX_HASHES | PENDING_BLOCK_WITH_TX_HASHES;
+export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PENDING_BLOCK_WITH_TX_HASHES]>;
 // response starknet_getBlockWithReceipts
-export type BlockWithTxReceipts = BLOCK_WITH_RECEIPTS | PENDING_BLOCK_WITH_RECEIPTS;
+export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PENDING_BLOCK_WITH_RECEIPTS]>;
 // response starknet_getStateUpdate
-export type StateUpdate = STATE_UPDATE | PENDING_STATE_UPDATE;
+export type StateUpdate = OneOf<[STATE_UPDATE, PENDING_STATE_UPDATE]>;
 // response starknet_traceBlockTransactions
 export type BlockTransactionsTraces = { transaction_hash: FELT; trace_root: TRANSACTION_TRACE }[];
 // response starknet_syncing
-export type Syncing = false | SYNC_STATUS;
+export type Syncing = false | SYNC_STATUS; // TODO: propose in spec SYNC_STATUS to be names SYNC_STATS as it represent syncing data and not syncing status like true or false
 // response starknet_getEvents
 export type Events = EVENTS_CHUNK;
 export type EmittedEvent = EMITTED_EVENT;

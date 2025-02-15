@@ -30,6 +30,7 @@ import type {
   TXN_TYPE_DEPLOY_ACCOUNT,
   TXN_TYPE_INVOKE,
 } from './constants.js';
+import { SimpleOneOf } from './expansions/helpless.js';
 
 /**
  * A field element. represented by at most 63 hex digits
@@ -125,13 +126,14 @@ export type BLOCK_STATUS =
   | STATUS_ACCEPTED_ON_L2
   | STATUS_ACCEPTED_ON_L1
   | STATUS_REJECTED;
-export type BLOCK_SELECTOR =
-  | {
-      block_hash: BLOCK_HASH;
-    }
-  | {
-      block_number: BLOCK_NUMBER;
-    };
+export type BLOCK_SELECTOR = SimpleOneOf<
+  {
+    block_hash: BLOCK_HASH;
+  },
+  {
+    block_number: BLOCK_NUMBER;
+  }
+>;
 export type BLOCK_TAG = EBlockTag;
 export type SUBSCRIPTION_BLOCK_TAG = 'latest';
 
@@ -569,7 +571,7 @@ export type COMMON_RECEIPT_PROPERTIES = {
   messages_sent: MSG_TO_L1[];
   events: EVENT[];
   execution_resources: EXECUTION_RESOURCES;
-} & (SUCCESSFUL_COMMON_RECEIPT_PROPERTIES | REVERTED_COMMON_RECEIPT_PROPERTIES);
+} & SimpleOneOf<SUCCESSFUL_COMMON_RECEIPT_PROPERTIES, REVERTED_COMMON_RECEIPT_PROPERTIES>;
 
 type SUCCESSFUL_COMMON_RECEIPT_PROPERTIES = {
   execution_status: STATUS_SUCCEEDED;
@@ -853,7 +855,7 @@ export type EXECUTION_RESOURCES = {
 /**
  * a node in the Merkle-Patricia tree, can be a leaf, binary node, or an edge node
  */
-export type MERKLE_NODE = BINARY_NODE | EDGE_NODE;
+export type MERKLE_NODE = SimpleOneOf<BINARY_NODE, EDGE_NODE>;
 
 /**
  * an internal node whose both children are non-zero
@@ -918,19 +920,25 @@ export type CONTRACT_EXECUTION_ERROR_INNER =
 /**
  * Represents a transaction trace including the execution details.
  */
-export type TRANSACTION_TRACE = {
+export type TRANSACTION_TRACE =
+  | INVOKE_TXN_TRACE
+  | DECLARE_TXN_TRACE
+  | DEPLOY_ACCOUNT_TXN_TRACE
+  | L1_HANDLER_TXN_TRACE;
+/* {
   invoke_tx_trace?: INVOKE_TXN_TRACE;
   declare_tx_trace?: DECLARE_TXN_TRACE;
   deploy_account_tx_trace?: DEPLOY_ACCOUNT_TXN_TRACE;
   l1_handler_tx_trace?: L1_HANDLER_TXN_TRACE;
-};
+}; */
+// TODO: is it possible that this was false defined or is it a mistake in Spec or Implementation??? Test this response on node in production!!!
 
 /**
  * Represents a transaction trace for an invoke transaction.
  */
 export type INVOKE_TXN_TRACE = {
   type: TXN_TYPE_INVOKE;
-  execute_invocation: FUNCTION_INVOCATION | { revert_reason: string };
+  execute_invocation: SimpleOneOf<FUNCTION_INVOCATION, { revert_reason: string }>;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
