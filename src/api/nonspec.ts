@@ -45,9 +45,6 @@ import type {
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import { IsInBlock, IsPending } from './expansions/transactionReceipt.js';
 
-// HELPER
-export type AllNever<T> = Record<keyof T, never>;
-
 // METHOD RESPONSES
 // response starknet_getClass
 export type ContractClass = CONTRACT_CLASS | DEPRECATED_CONTRACT_CLASS;
