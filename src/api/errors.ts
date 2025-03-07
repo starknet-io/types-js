@@ -24,19 +24,9 @@ export interface ENTRYPOINT_NOT_FOUND {
   message: 'Requested entrypoint does not exist in the contract';
 }
 
-export interface INVALID_CALL_DATA {
-  code: 22;
-  message: 'Invalid call data';
-}
-
 export interface BLOCK_NOT_FOUND {
   code: 24;
   message: 'Block not found';
-}
-
-export interface INVALID_BLOCK_HASH {
-  code: 26;
-  message: 'Invalid block hash';
 }
 
 export interface INVALID_TXN_INDEX {
