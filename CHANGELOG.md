@@ -1,4 +1,5 @@
 # [0.8.0-beta.11](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.10...v0.8.0-beta.11) (2025-04-10)
+## [0.7.10](https://github.com/starknet-io/types-js/compare/v0.7.9...v0.7.10) (2024-11-28)
 
 
 ### Bug Fixes
@@ -7,6 +8,9 @@
 * update rpc 8.0 ([#34](https://github.com/starknet-io/types-js/issues/34)) ([026ecb6](https://github.com/starknet-io/types-js/commit/026ecb6150dce902113ffd02ba15fa89633a8929))
 
 # [0.8.0-beta.10](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.9...v0.8.0-beta.10) (2025-02-15)
+* issue [#20](https://github.com/starknet-io/types-js/issues/20) ([#27](https://github.com/starknet-io/types-js/issues/27)) ([d702721](https://github.com/starknet-io/types-js/commit/d702721aad8ae21e898dcb2a1409b5bbb42fc2d9))
+
+## [0.7.9](https://github.com/starknet-io/types-js/compare/v0.7.8...v0.7.9) (2024-11-27)
 
 
 ### Bug Fixes
@@ -81,6 +85,19 @@
 
 - beta release ([e830783](https://github.com/starknet-io/types-js/commit/e830783ed5501d6b78ed737c229a132b16f91a39))
 - rpc spec 0.8.rc0 implementation, with known issues ([#19](https://github.com/starknet-io/types-js/issues/19)) ([d0bc541](https://github.com/starknet-io/types-js/commit/d0bc54162ef42c39a0665c7fc76b2e7fb4c22b80))
+* trigger release, fix readme ([675777a](https://github.com/starknet-io/types-js/commit/675777a0ddcb5497812a6a48076534ebfd4e1f81))
+
+## [0.7.8](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8) (2024-11-22)
+
+### Bug Fixes
+
+- package, alpha -> main ([#26](https://github.com/starknet-io/types-js/issues/26)) ([39f80e9](https://github.com/starknet-io/types-js/commit/39f80e9ce4ca1cf5db97444cd5f91b5fb9a4e694)), closes [#25](https://github.com/starknet-io/types-js/issues/25) [#25](https://github.com/starknet-io/types-js/issues/25)
+
+## [0.7.8-alpha.1](https://github.com/starknet-io/types-js/compare/v0.7.7...v0.7.8-alpha.1) (2024-11-19)
+
+### Bug Fixes
+
+- new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
 
 ## [0.7.7](https://github.com/starknet-io/types-js/compare/v0.7.6...v0.7.7) (2024-06-10)
 
