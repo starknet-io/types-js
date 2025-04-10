@@ -2,7 +2,7 @@
 //    * Starknet executables
 //    **********************
 
-import type { DEPRECATED_CAIRO_ENTRY_POINT, FELT, NUM_AS_HEX } from './components.js';
+import type { FELT, NUM_AS_HEX } from './components.js';
 
 /**
  * Starknet get compiled CASM result
@@ -27,7 +27,9 @@ export type CASM_COMPILED_CONTRACT_CLASS = {
   bytecode_segment_lengths?: number;
 };
 
-export type CASM_ENTRY_POINT = DEPRECATED_CAIRO_ENTRY_POINT & {
+export type CASM_ENTRY_POINT = {
+  offset: number;
+  selector: FELT;
   builtins: string[];
 };
 

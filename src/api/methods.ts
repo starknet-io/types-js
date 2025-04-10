@@ -205,10 +205,7 @@ type ReadMethods = {
 
   /**
    * Estimate the fee for Starknet transactions
-   *
-   * Estimates the resources required by a given sequence of transactions when applied on a given state.
-   * If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error),
-   * a TRANSACTION_EXECUTION_ERROR is returned. For v0-2 transactions the estimate is given in wei, and for v3 transactions it is given in fri.
+   * Estimates the resources required by a given sequence of transactions when applied on a given state. If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error), a TRANSACTION_EXECUTION_ERROR is returned.
    */
   starknet_estimateFee: {
     params: {
@@ -304,7 +301,7 @@ type ReadMethods = {
       /**
        * The hash of the requested block, or number (height) of the requested block, or a block tag
        */
-      block_id: BLOCK_ID;
+      block_id: SUBSCRIPTION_BLOCK_ID;
       /**
        * a list of the class hashes for which we want to prove membership in the classes trie
        */
@@ -326,7 +323,7 @@ type ReadMethods = {
   };
 
   /**
-   * Get the contract class definition in the given block associated with the given hash
+   * Get the CASM code resulting from compiling a given class
    */
   starknet_getCompiledCasm: {
     params: {
