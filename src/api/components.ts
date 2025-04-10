@@ -145,7 +145,7 @@ export type SUBSCRIPTION_BLOCK_TAG = 'latest';
  * An identifier for this subscription stream used to associate events with this subscription.
  * Integer
  */
-export type SUBSCRIPTION_ID = number;
+export type SUBSCRIPTION_ID = string;
 export type NEW_TXN_STATUS = {
   transaction_hash: TXN_HASH;
   status: TXN_STATUS_RESULT;
@@ -773,31 +773,31 @@ export type FEE_ESTIMATE = {
    * The Ethereum gas consumption of the transaction, charged for L1->L2 messages and, depending on the block's DA_MODE, state diffs.
    * Prev. name gas_consumed
    */
-  l1_gas_consumed: FELT;
+  l1_gas_consumed: number;
   /**
    * The gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name gas_price
    */
-  l1_gas_price: FELT;
+  l1_gas_price: number;
   /**
    * The L2 gas consumption of the transaction.
    */
-  l2_gas_consumed: FELT;
+  l2_gas_consumed: number;
   /**
    * The L2 gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    */
-  l2_gas_price: FELT;
+  l2_gas_price: number;
   /**
    * The Ethereum data gas consumption of the transaction.
    * Prev. name data_gas_consumed
    */
-  l1_data_gas_consumed: FELT;
+  l1_data_gas_consumed: number;
   /**
    * The data gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name data_gas_price
    */
-  l1_data_gas_price: FELT;
-  overall_fee: FELT;
+  l1_data_gas_price: number;
+  overall_fee: number;
   unit: PRICE_UNIT;
 };
 
