@@ -43,24 +43,16 @@
 
 ## Installation
 
-RPC 0.7 - Latest
+RPC 0.8 - Latest
 
 ```bash
 npm i @starknet-io/types-js
 ```
 
-RPC 0.8 (rc3) - Beta
-
-RPC 0.7 - Latest
+RPC 0.7
 
 ```bash
-npm i @starknet-io/types-js@beta
-```
-
-RPC 0.8 (rc3) - Beta
-
-```bash
-npm i @starknet-io/types-js@beta
+npm i @starknet-io/types-js@0.7.10
 ```
 
 ## Types
