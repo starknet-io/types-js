@@ -205,7 +205,7 @@ type ReadMethods = {
 
   /**
    * Estimate the fee for Starknet transactions
-   * Estimates the resources required by a given sequence of transactions when applied on a given state. If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error), a TRANSACTION_EXECUTION_ERROR is returned. The estimate is given in fri.
+   * Estimates the resources required by a given sequence of transactions when applied on a given state. If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error), a TRANSACTION_EXECUTION_ERROR is returned.
    */
   starknet_estimateFee: {
     params: {
