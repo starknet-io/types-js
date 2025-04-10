@@ -1,3 +1,6 @@
+import type { CONTRACT_EXECUTION_ERROR } from './components.js';
+import type { STATUS_RECEIVED, STATUS_REJECTED } from './constants.js';
+
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;
   message: 'Failed to write transaction';
@@ -7,7 +10,7 @@ export interface NO_TRACE_AVAILABLE {
   code: 10;
   message: 'No trace available for transaction';
   data: {
-    status: 'RECEIVED' | 'REJECTED';
+    status: STATUS_RECEIVED | STATUS_REJECTED;
   };
 }
 
@@ -16,24 +19,14 @@ export interface CONTRACT_NOT_FOUND {
   message: 'Contract not found';
 }
 
-export interface INVALID_MESSAGE_SELECTOR {
+export interface ENTRYPOINT_NOT_FOUND {
   code: 21;
-  message: 'Invalid message selector';
-}
-
-export interface INVALID_CALL_DATA {
-  code: 22;
-  message: 'Invalid call data';
+  message: 'Requested entrypoint does not exist in the contract';
 }
 
 export interface BLOCK_NOT_FOUND {
   code: 24;
   message: 'Block not found';
-}
-
-export interface INVALID_BLOCK_HASH {
-  code: 26;
-  message: 'Invalid block hash';
 }
 
 export interface INVALID_TXN_INDEX {
@@ -75,7 +68,10 @@ export interface CONTRACT_ERROR {
   code: 40;
   message: 'Contract error';
   data: {
-    revert_error: string;
+    /**
+     * the execution trace up to the point of failure
+     */
+    revert_error: CONTRACT_EXECUTION_ERROR;
   };
 }
 
@@ -88,6 +84,11 @@ export interface TRANSACTION_EXECUTION_ERROR {
   };
 }
 
+export interface STORAGE_PROOF_NOT_SUPPORTED {
+  code: 42;
+  message: "the node doesn't support storage proofs for blocks that are too far in the past";
+}
+
 export interface CLASS_ALREADY_DECLARED {
   code: 51;
   message: 'Class already declared';
@@ -98,9 +99,9 @@ export interface INVALID_TRANSACTION_NONCE {
   message: 'Invalid transaction nonce';
 }
 
-export interface INSUFFICIENT_MAX_FEE {
+export interface INSUFFICIENT_RESOURCES_FOR_VALIDATE {
   code: 53;
-  message: 'Max fee is smaller than the minimal transaction cost (validation plus fee transfer)';
+  message: "The transaction's resources don't cover validation or the minimal transaction fee";
 }
 
 export interface INSUFFICIENT_ACCOUNT_BALANCE {
@@ -117,6 +118,7 @@ export interface VALIDATION_FAILURE {
 export interface COMPILATION_FAILED {
   code: 56;
   message: 'Compilation failed';
+  data: 'string';
 }
 
 export interface CONTRACT_CLASS_SIZE_IS_TOO_LARGE {
@@ -153,4 +155,30 @@ export interface UNEXPECTED_ERROR {
   code: 63;
   message: 'An unexpected error occurred';
   data: string;
+}
+
+export interface INVALID_SUBSCRIPTION_ID {
+  code: 66;
+  message: 'Invalid subscription id';
+}
+
+export interface TOO_MANY_ADDRESSES_IN_FILTER {
+  code: 67;
+  message: 'Too many addresses in filter sender_address filter';
+}
+
+export interface TOO_MANY_BLOCKS_BACK {
+  code: 68;
+  message: 'Cannot go back more than 1024 blocks';
+}
+
+export interface COMPILATION_ERROR {
+  code: 100;
+  message: 'Failed to compile the contract';
+  /**
+   * "More data about the compilation failure
+   */
+  data: {
+    compilation_error: string;
+  };
 }

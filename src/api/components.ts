@@ -1,9 +1,36 @@
-// TODO: To be completed in future revisions
-// This is in API SPEC extracted from starknetjs RPC 0.7 components.ts
+//    ******************
+//    * PRIMITIVES
+//    ******************
 
-/**
- * PRIMITIVES
- */
+import type {
+  ABI_TYPE_CONSTRUCTOR,
+  ABI_TYPE_FUNCTION,
+  ABI_TYPE_L1_HANDLER,
+  CALL_TYPE,
+  EBlockTag,
+  EDataAvailabilityMode,
+  ESimulationFlag,
+  ETransactionVersion,
+  EVENT_ABI_TYPE,
+  L1_DA_MODE,
+  PRICE_UNIT_FRI,
+  PRICE_UNIT_WEI,
+  STATE_MUTABILITY_EXTERNAL,
+  STATE_MUTABILITY_VIEW,
+  STATUS_ACCEPTED_ON_L1,
+  STATUS_ACCEPTED_ON_L2,
+  STATUS_PENDING,
+  STATUS_RECEIVED,
+  STATUS_REJECTED,
+  STATUS_REVERTED,
+  STATUS_SUCCEEDED,
+  STRUCT_ABI_TYPE,
+  TXN_TYPE_DECLARE,
+  TXN_TYPE_DEPLOY,
+  TXN_TYPE_DEPLOY_ACCOUNT,
+  TXN_TYPE_INVOKE,
+} from './constants.js';
+import { SimpleOneOf } from './expansions/helpless.js';
 
 /**
  * A field element. represented by at most 63 hex digits
@@ -21,6 +48,11 @@ export type ETH_ADDRESS = string;
  */
 export type STORAGE_KEY = string;
 export type ADDRESS = FELT;
+/**
+ * string representing an integer number in prefixed hexadecimal format
+ * @example "0x.."
+ * @pattern ^0x[a-fA-F0-9]+$
+ */
 export type NUM_AS_HEX = string;
 /**
  * 64 bit integers, represented by hex string of length at most 16
@@ -28,49 +60,166 @@ export type NUM_AS_HEX = string;
  */
 export type u64 = string;
 /**
- * 64 bit integers, represented by hex string of length at most 32
+ * 128 bit integers, represented by hex string of length at most 32
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,31})$"
  */
 export type u128 = string;
 export type SIGNATURE = Array<FELT>;
 export type BLOCK_NUMBER = number;
 export type BLOCK_HASH = FELT;
+/**
+ * The hash of an Starknet transaction
+ */
 export type TXN_HASH = FELT;
+/**
+ * The hash of an Ethereum transaction
+ */
+export type L1_TXN_HASH = NUM_AS_HEX;
 export type CHAIN_ID = NUM_AS_HEX;
-export type STRUCT_ABI_TYPE = 'struct';
-export type EVENT_ABI_TYPE = 'event';
-export type FUNCTION_ABI_TYPE = 'function' | 'l1_handler' | 'constructor';
-// Represents the type of an entry point.
-export type ENTRY_POINT_TYPE = 'EXTERNAL' | 'L1_HANDLER' | 'CONSTRUCTOR';
-// Represents the type of a function call.
-export type CALL_TYPE = 'DELEGATE' | 'LIBRARY_CALL' | 'CALL';
-// Represents the status of the transaction
-export type TXN_STATUS = 'RECEIVED' | 'REJECTED' | 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1';
-// Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
-export type SIMULATION_FLAG = 'SKIP_VALIDATE' | 'SKIP_FEE_CHARGE';
-// Data availability mode
-export type DA_MODE = 'L1' | 'L2';
-export type TXN_TYPE = 'DECLARE' | 'DEPLOY' | 'DEPLOY_ACCOUNT' | 'INVOKE' | 'L1_HANDLER';
-export type TXN_FINALITY_STATUS = 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1';
-export type TXN_EXECUTION_STATUS = 'SUCCEEDED' | 'REVERTED';
-export type BLOCK_STATUS = 'PENDING' | 'ACCEPTED_ON_L2' | 'ACCEPTED_ON_L1' | 'REJECTED';
-export type BLOCK_TAG = 'latest' | 'pending';
+export type STATE_MUTABILITY = STATE_MUTABILITY_VIEW | STATE_MUTABILITY_EXTERNAL;
+export type FUNCTION_ABI_TYPE = ABI_TYPE_FUNCTION | ABI_TYPE_L1_HANDLER | ABI_TYPE_CONSTRUCTOR;
+/**
+ * common definition
+ */
+export type ABI_NAME_AND_TYPE = { name: string; type: string };
+/**
+ * common outputs
+ */
+export type ABI_TYPE = { type: string };
+/**
+ * Represents the type of an entry point.
+ */
+export type ENTRY_POINT_TYPE =
+  | Uppercase<STATE_MUTABILITY_EXTERNAL>
+  | Uppercase<ABI_TYPE_L1_HANDLER>
+  | Uppercase<ABI_TYPE_CONSTRUCTOR>;
 
 /**
- * READ API
+ * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
  */
+export type TXN_STATUS =
+  | STATUS_RECEIVED
+  | STATUS_REJECTED
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1;
+/**
+ * Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
+ */
+export type SIMULATION_FLAG =
+  | typeof ESimulationFlag.SKIP_VALIDATE
+  | typeof ESimulationFlag.SKIP_FEE_CHARGE;
+/**
+ * Data availability mode.
+ * Specifies a storage domain in Starknet. Each domain has different guarantees regarding availability
+ */
+export type DA_MODE = EDataAvailabilityMode;
+export type TXN_TYPE =
+  | TXN_TYPE_DECLARE
+  | TXN_TYPE_DEPLOY
+  | TXN_TYPE_DEPLOY_ACCOUNT
+  | TXN_TYPE_INVOKE
+  | Uppercase<ABI_TYPE_L1_HANDLER>;
+export type TXN_FINALITY_STATUS = STATUS_ACCEPTED_ON_L2 | STATUS_ACCEPTED_ON_L1;
+export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
+export type BLOCK_STATUS =
+  | STATUS_PENDING
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1
+  | STATUS_REJECTED;
+export type BLOCK_SELECTOR = SimpleOneOf<
+  {
+    block_hash: BLOCK_HASH;
+  },
+  {
+    block_number: BLOCK_NUMBER;
+  }
+>;
+export type BLOCK_TAG = EBlockTag;
+export type SUBSCRIPTION_BLOCK_TAG = 'latest';
+
+//    *****************
+//    * WEBSOCKET API
+//    *****************
+
+/**
+ * An identifier for this subscription stream used to associate events with this subscription.
+ * Integer
+ */
+export type SUBSCRIPTION_ID = string;
+export type NEW_TXN_STATUS = {
+  transaction_hash: TXN_HASH;
+  status: TXN_STATUS_RESULT;
+};
+/**
+ * Data about reorganized blocks, starting and ending block number and hash
+ */
+export type REORG_DATA = {
+  /**
+   * Hash of the first known block of the orphaned chain
+   */
+  starting_block_hash: BLOCK_HASH;
+  /**
+   * Number of the first known block of the orphaned chain
+   */
+  starting_block_number: BLOCK_NUMBER;
+  /**
+   * The last known block of the orphaned chain
+   */
+  ending_block_hash: BLOCK_HASH;
+  /**
+   * Number of the last known block of the orphaned chain
+   */
+  ending_block_number: BLOCK_NUMBER;
+};
+
+export type SubscriptionNewHeadsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: BLOCK_HEADER;
+};
+
+export type SubscriptionEventsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: EMITTED_EVENT;
+};
+
+export type SubscriptionTransactionsStatusResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: NEW_TXN_STATUS;
+};
+
+export type SubscriptionPendingTransactionsResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: TXN_HASH | TXN_WITH_HASH;
+};
+
+export type SubscriptionReorgResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  result: REORG_DATA;
+};
+
+//    *****************
+//    * READ API
+//    *****************
 
 export type EVENTS_CHUNK = {
-  // Returns matching events
+  /**
+   * Returns matching events
+   */
   events: EMITTED_EVENT[];
-  // Use this token in a subsequent query to obtain the next page. Should not appear if there are no more pages.
+  /**
+   * Use this token in a subsequent query to obtain the next page. Should not appear if there are no more pages.
+   */
   continuation_token?: string;
 };
 
 export type RESULT_PAGE_REQUEST = {
-  // The token returned from the previous query. If no token is provided the first page is returned.
+  /**
+   * The token returned from the previous query. If no token is provided the first page is returned.
+   */
   continuation_token?: string;
-  // Chunk size
+  /**
+   * Chunk size
+   */
   chunk_size: number;
 };
 
@@ -89,19 +238,24 @@ export type EVENT_CONTENT = {
   data: FELT[];
 };
 
+/**
+ * The keys to filter over.
+ * Per key (by position), designate the possible values to be matched for events to be returned. Empty array designates 'any' value.
+ */
+export type EVENT_KEYS = FELT[][];
+
 export type EVENT_FILTER = {
   from_block?: BLOCK_ID;
   to_block?: BLOCK_ID;
   address?: ADDRESS;
-  keys?: FELT[][];
+  keys?: EVENT_KEYS;
 };
 
-export type BLOCK_ID =
-  | {
-      block_hash?: BLOCK_HASH;
-      block_number?: BLOCK_NUMBER;
-    }
-  | BLOCK_TAG;
+export type BLOCK_ID = BLOCK_SELECTOR | BLOCK_TAG;
+/**
+ * same as BLOCK_ID, but without 'pending'
+ */
+export type SUBSCRIPTION_BLOCK_ID = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
 
 export type SYNC_STATUS = {
   starting_block_hash: BLOCK_HASH;
@@ -154,9 +308,7 @@ export type BLOCK_BODY_WITH_TX_HASHES = {
 };
 
 export type BLOCK_BODY_WITH_TXS = {
-  transactions: (TXN & {
-    transaction_hash: TXN_HASH;
-  })[];
+  transactions: TXN_WITH_HASH[];
 };
 
 export type BLOCK_BODY_WITH_RECEIPTS = {
@@ -174,8 +326,9 @@ export type BLOCK_HEADER = {
   timestamp: number;
   sequencer_address: FELT;
   l1_gas_price: RESOURCE_PRICE;
+  l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
-  l1_da_mode: 'BLOB' | 'CALLDATA';
+  l1_da_mode: L1_DA_MODE;
   starknet_version: string;
 };
 
@@ -184,8 +337,9 @@ export type PENDING_BLOCK_HEADER = {
   timestamp: number;
   sequencer_address: FELT;
   l1_gas_price: RESOURCE_PRICE;
+  l2_gas_price: RESOURCE_PRICE;
   l1_data_gas_price: RESOURCE_PRICE;
-  l1_da_mode: 'BLOB' | 'CALLDATA';
+  l1_da_mode: L1_DA_MODE;
   starknet_version: string;
 };
 
@@ -211,58 +365,77 @@ export type DEPLOYED_CONTRACT_ITEM = {
 };
 
 export type CONTRACT_STORAGE_DIFF_ITEM = {
-  // The contract address for which the storage changed (in FELT format)
-  address: string;
-  // The changes in the storage of the contract
+  /**
+   * The contract address for which the storage changed
+   */
+  address: FELT;
+  /**
+   * The changes in the storage of the contract
+   */
   storage_entries: StorageDiffItem[];
 };
 
 export type StorageDiffItem = {
-  // The key of the changed value (in FELT format)
-  key: string;
-  // The new value applied to the given address (in FELT format)
-  value: string;
+  /**
+   * The key of the changed value
+   */
+  key: FELT;
+  /**
+   * The new value applied to the given address
+   */
+  value: FELT;
 };
 
 export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLOY_ACCOUNT_TXN;
 
+export type TXN_WITH_HASH = TXN & { transaction_hash: TXN_HASH };
+
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V0 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   max_fee: FELT;
-  version: '0x0' | '0x100000000000000000000000000000000';
+  version: typeof ETransactionVersion.V0 | typeof ETransactionVersion.F0;
   signature: SIGNATURE;
   class_hash: FELT;
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V1 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DECLARE_TXN_V2 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
   max_fee: FELT;
-  version: '0x2' | '0x100000000000000000000000000000002';
+  version: typeof ETransactionVersion.V2 | typeof ETransactionVersion.F2;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
 };
 
 export type DECLARE_TXN_V3 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   class_hash: FELT;
@@ -280,42 +453,17 @@ export type BROADCASTED_TXN =
   | BROADCASTED_DECLARE_TXN
   | BROADCASTED_DEPLOY_ACCOUNT_TXN;
 
-export type BROADCASTED_INVOKE_TXN = INVOKE_TXN;
+export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3;
 
-export type BROADCASTED_DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN;
+export type BROADCASTED_DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V3;
 
-export type BROADCASTED_DECLARE_TXN =
-  | BROADCASTED_DECLARE_TXN_V1
-  | BROADCASTED_DECLARE_TXN_V2
-  | BROADCASTED_DECLARE_TXN_V3;
-
-export type BROADCASTED_DECLARE_TXN_V1 = {
-  type: 'DECLARE';
-  sender_address: ADDRESS;
-  max_fee: FELT;
-  // todo: check if working, prev i fixed it with NUM_AS_HEX
-  version: '0x1' | '0x100000000000000000000000000000001';
-  signature: SIGNATURE;
-  nonce: FELT;
-  contract_class: DEPRECATED_CONTRACT_CLASS;
-};
-
-export type BROADCASTED_DECLARE_TXN_V2 = {
-  type: 'DECLARE';
-  sender_address: ADDRESS;
-  compiled_class_hash: FELT;
-  max_fee: FELT;
-  version: '0x2' | '0x100000000000000000000000000000002';
-  signature: SIGNATURE;
-  nonce: FELT;
-  contract_class: CONTRACT_CLASS;
-};
+export type BROADCASTED_DECLARE_TXN = BROADCASTED_DECLARE_TXN_V3;
 
 export type BROADCASTED_DECLARE_TXN_V3 = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   sender_address: ADDRESS;
   compiled_class_hash: FELT;
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   contract_class: CONTRACT_CLASS;
@@ -330,10 +478,13 @@ export type BROADCASTED_DECLARE_TXN_V3 = {
 
 export type DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V1 | DEPLOY_ACCOUNT_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type DEPLOY_ACCOUNT_TXN_V1 = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
   contract_address_salt: FELT;
@@ -342,8 +493,8 @@ export type DEPLOY_ACCOUNT_TXN_V1 = {
 };
 
 export type DEPLOY_ACCOUNT_TXN_V3 = {
-  type: 'DEPLOY_ACCOUNT';
-  version: '0x3' | '0x100000000000000000000000000000003';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   contract_address_salt: FELT;
@@ -357,7 +508,7 @@ export type DEPLOY_ACCOUNT_TXN_V3 = {
 };
 
 export type DEPLOY_TXN = {
-  type: 'DEPLOY';
+  type: TXN_TYPE_DEPLOY;
   version: FELT;
   contract_address_salt: FELT;
   constructor_calldata: FELT[];
@@ -366,31 +517,37 @@ export type DEPLOY_TXN = {
 
 export type INVOKE_TXN = INVOKE_TXN_V0 | INVOKE_TXN_V1 | INVOKE_TXN_V3;
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type INVOKE_TXN_V0 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   max_fee: FELT;
-  version: '0x0' | '0x100000000000000000000000000000000';
+  version: typeof ETransactionVersion.V0 | typeof ETransactionVersion.F0;
   signature: SIGNATURE;
   contract_address: ADDRESS;
   entry_point_selector: FELT;
   calldata: FELT[];
 };
 
+/**
+ * @deprecated Starknet 0.14 will not support this transaction
+ */
 export type INVOKE_TXN_V1 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   sender_address: ADDRESS;
   calldata: FELT[];
   max_fee: FELT;
-  version: '0x1' | '0x100000000000000000000000000000001';
+  version: typeof ETransactionVersion.V1 | typeof ETransactionVersion.F1;
   signature: SIGNATURE;
   nonce: FELT;
 };
 
 export type INVOKE_TXN_V3 = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
   sender_address: ADDRESS;
   calldata: FELT[];
-  version: '0x3' | '0x100000000000000000000000000000003';
+  version: typeof ETransactionVersion.V3 | typeof ETransactionVersion.F3;
   signature: SIGNATURE;
   nonce: FELT;
   resource_bounds: RESOURCE_BOUNDS_MAPPING;
@@ -402,8 +559,8 @@ export type INVOKE_TXN_V3 = {
 };
 
 export type L1_HANDLER_TXN = {
-  version: '0x0';
-  type: 'L1_HANDLER';
+  version: typeof ETransactionVersion.V0;
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   nonce: NUM_AS_HEX;
 } & FUNCTION_CALL;
 
@@ -414,37 +571,37 @@ export type COMMON_RECEIPT_PROPERTIES = {
   messages_sent: MSG_TO_L1[];
   events: EVENT[];
   execution_resources: EXECUTION_RESOURCES;
-} & (SUCCESSFUL_COMMON_RECEIPT_PROPERTIES | REVERTED_COMMON_RECEIPT_PROPERTIES);
+} & SimpleOneOf<SUCCESSFUL_COMMON_RECEIPT_PROPERTIES, REVERTED_COMMON_RECEIPT_PROPERTIES>;
 
 type SUCCESSFUL_COMMON_RECEIPT_PROPERTIES = {
-  execution_status: 'SUCCEEDED';
+  execution_status: STATUS_SUCCEEDED;
 };
 
 type REVERTED_COMMON_RECEIPT_PROPERTIES = {
-  execution_status: 'REVERTED';
+  execution_status: STATUS_REVERTED;
   revert_reason: string;
 };
 
 export type INVOKE_TXN_RECEIPT = {
-  type: 'INVOKE';
+  type: TXN_TYPE_INVOKE;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DECLARE_TXN_RECEIPT = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DEPLOY_ACCOUNT_TXN_RECEIPT = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type DEPLOY_TXN_RECEIPT = {
-  type: 'DEPLOY';
+  type: TXN_TYPE_DEPLOY;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
 export type L1_HANDLER_TXN_RECEIPT = {
-  type: 'L1_HANDLER';
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   message_hash: NUM_AS_HEX;
 } & COMMON_RECEIPT_PROPERTIES;
 
@@ -455,10 +612,29 @@ export type TXN_RECEIPT =
   | DEPLOY_TXN_RECEIPT
   | DEPLOY_ACCOUNT_TXN_RECEIPT;
 
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & {
-  block_hash?: BLOCK_HASH;
-  block_number?: BLOCK_NUMBER;
-};
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
+  (
+    | {
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_hash: BLOCK_HASH;
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_number: BLOCK_NUMBER;
+      }
+    | {
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_hash: never;
+        /**
+         * "If this field is missing, it means the receipt belongs to the pending block"
+         */
+        block_number: never;
+      }
+  );
 
 export type MSG_TO_L1 = {
   from_address: FELT;
@@ -501,7 +677,13 @@ export type DEPRECATED_CONTRACT_CLASS = {
 };
 
 export type DEPRECATED_CAIRO_ENTRY_POINT = {
-  offset: NUM_AS_HEX | number;
+  /**
+   * "The offset of the entry point in the program"
+   */
+  offset: NUM_AS_HEX;
+  /**
+   * A unique identifier of the entry point (function) in the program
+   */
   selector: FELT;
 };
 
@@ -512,54 +694,110 @@ export type SIERRA_ENTRY_POINT = {
 
 export type CONTRACT_ABI = readonly CONTRACT_ABI_ENTRY[];
 
-export type CONTRACT_ABI_ENTRY = {
-  selector: FELT;
-  input: string;
-  output: string;
-};
+export type CONTRACT_ABI_ENTRY = FUNCTION_ABI_ENTRY | EVENT_ABI_ENTRY | STRUCT_ABI_ENTRY;
 
 export type STRUCT_ABI_ENTRY = {
+  /**
+   * Struct ABI type
+   */
   type: STRUCT_ABI_TYPE;
+  /**
+   * Struct name
+   */
   name: string;
   size: number;
   members: STRUCT_MEMBER[];
 };
 
 export type STRUCT_MEMBER = TYPED_PARAMETER & {
+  /**
+   * offset of this property within the struct
+   */
   offset: number;
 };
 
 export type EVENT_ABI_ENTRY = {
+  /**
+   * Event ABI type
+   */
   type: EVENT_ABI_TYPE;
+  /**
+   * Event name
+   */
   name: string;
   keys: TYPED_PARAMETER[];
   data: TYPED_PARAMETER[];
 };
 
-export type FUNCTION_STATE_MUTABILITY = 'view';
+export type FUNCTION_STATE_MUTABILITY = STATE_MUTABILITY_VIEW;
 
 export type FUNCTION_ABI_ENTRY = {
+  /**
+   * Function ABI type
+   */
   type: FUNCTION_ABI_TYPE;
+  /**
+   * Function name
+   */
   name: string;
+  /**
+   * Typed parameter
+   */
   inputs: TYPED_PARAMETER[];
+  /**
+   * Typed parameter
+   */
   outputs: TYPED_PARAMETER[];
-  stateMutability: FUNCTION_STATE_MUTABILITY;
+  /**
+   * Function state mutability
+   */
+  stateMutability?: FUNCTION_STATE_MUTABILITY;
 };
 
 export type TYPED_PARAMETER = {
+  /**
+   * Parameter name
+   */
   name: string;
+  /**
+   * Parameter type
+   */
   type: string;
 };
 
-export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = 'SKIP_VALIDATE';
-export type PRICE_UNIT = 'WEI' | 'FRI';
+export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = typeof ESimulationFlag.SKIP_VALIDATE;
+export type PRICE_UNIT = PRICE_UNIT_WEI | PRICE_UNIT_FRI;
 
 export type FEE_ESTIMATE = {
-  gas_consumed: FELT;
-  gas_price: FELT;
-  data_gas_consumed: FELT;
-  data_gas_price: FELT;
-  overall_fee: FELT;
+  /**
+   * The Ethereum gas consumption of the transaction, charged for L1->L2 messages and, depending on the block's DA_MODE, state diffs.
+   * Prev. name gas_consumed
+   */
+  l1_gas_consumed: number;
+  /**
+   * The gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
+   * Prev. name gas_price
+   */
+  l1_gas_price: number;
+  /**
+   * The L2 gas consumption of the transaction.
+   */
+  l2_gas_consumed: number;
+  /**
+   * The L2 gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
+   */
+  l2_gas_price: number;
+  /**
+   * The Ethereum data gas consumption of the transaction.
+   * Prev. name data_gas_consumed
+   */
+  l1_data_gas_consumed: number;
+  /**
+   * The data gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
+   * Prev. name data_gas_price
+   */
+  l1_data_gas_price: number;
+  overall_fee: number;
   unit: PRICE_UNIT;
 };
 
@@ -569,7 +807,17 @@ export type FEE_PAYMENT = {
 };
 
 export type RESOURCE_BOUNDS_MAPPING = {
+  /**
+   * The max amount and max price per unit of L1 gas used in this tx
+   */
   l1_gas: RESOURCE_BOUNDS;
+  /**
+   * The max amount and max price per unit of L1 blob gas used in this tx
+   */
+  l1_data_gas: RESOURCE_BOUNDS;
+  /**
+   * The max amount and max price per unit of L2 gas used in this tx
+   */
   l2_gas: RESOURCE_BOUNDS;
 };
 
@@ -583,60 +831,136 @@ export type RESOURCE_PRICE = {
   price_in_wei: FELT;
 };
 
-export type COMPUTATION_RESOURCES = {
-  steps: number;
-  memory_holes?: number;
-  range_check_builtin_applications?: number;
-  pedersen_builtin_applications?: number;
-  poseidon_builtin_applications?: number;
-  ec_op_builtin_applications?: number;
-  ecdsa_builtin_applications?: number;
-  bitwise_builtin_applications?: number;
-  keccak_builtin_applications?: number;
-  segment_arena_builtin?: number;
-};
-
-export type EXECUTION_RESOURCES = COMPUTATION_RESOURCES & {
-  data_availability: {
-    l1_gas: number;
-    l1_data_gas: number;
-  };
+/**
+ * the resources consumed by the transaction
+ */
+export type EXECUTION_RESOURCES = {
+  /**
+   * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used.
+   * integer
+   */
+  l1_gas: number;
+  /**
+   * data gas consumed by this transaction, 0 if blobs are not used
+   * integer
+   */
+  l1_data_gas: number;
+  /**
+   * l2 gas consumed by this transaction, used for computation and calldata
+   * Integer
+   */
+  l2_gas: number;
 };
 
 /**
- * TRACE API
+ * a node in the Merkle-Patricia tree, can be a leaf, binary node, or an edge node
  */
+export type MERKLE_NODE = SimpleOneOf<BINARY_NODE, EDGE_NODE>;
 
-// Represents a transaction trace including the execution details.
-export type TRANSACTION_TRACE = {
+/**
+ * an internal node whose both children are non-zero
+ */
+export type BINARY_NODE = {
+  /**
+   * the hash of the left child
+   */
+  left: FELT;
+  /**
+   * the hash of the right child
+   */
+  right: FELT;
+};
+
+/**
+ * represents a path to the highest non-zero descendant node
+ */
+export type EDGE_NODE = {
+  /**
+   * an integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
+   */
+  path: NUM_AS_HEX;
+  /**
+   * the length of the path (bounded by 251)
+   */
+  length: number;
+  /**
+   * the hash of the unique non-zero maximal-height descendant node
+   */
+  child: FELT;
+};
+
+/**
+ * a node_hash -> node mapping of all the nodes in the union of the paths between the requested leaves and the root
+ */
+export type NODE_HASH_TO_NODE_MAPPING = Array<{ node_hash: FELT; node: MERKLE_NODE }>;
+
+/**
+ * structured error that can later be processed by wallets or sdks.
+ * error frame or the error raised during execution
+ */
+export type CONTRACT_EXECUTION_ERROR = CONTRACT_EXECUTION_ERROR_INNER;
+
+/**
+ * structured error that can later be processed by wallets or sdks.
+ * error frame or the error raised during execution
+ */
+export type CONTRACT_EXECUTION_ERROR_INNER =
+  | {
+      contract_address: ADDRESS;
+      class_hash: FELT;
+      selector: FELT;
+      error: CONTRACT_EXECUTION_ERROR;
+    }
+  | string;
+
+//    *****************
+//    * TRACE API
+//    *****************
+
+/**
+ * Represents a transaction trace including the execution details.
+ */
+export type TRANSACTION_TRACE =
+  | INVOKE_TXN_TRACE
+  | DECLARE_TXN_TRACE
+  | DEPLOY_ACCOUNT_TXN_TRACE
+  | L1_HANDLER_TXN_TRACE;
+/* {
   invoke_tx_trace?: INVOKE_TXN_TRACE;
   declare_tx_trace?: DECLARE_TXN_TRACE;
   deploy_account_tx_trace?: DEPLOY_ACCOUNT_TXN_TRACE;
   l1_handler_tx_trace?: L1_HANDLER_TXN_TRACE;
-};
+}; */
+// TODO: is it possible that this was false defined or is it a mistake in Spec or Implementation??? Test this response on node in production!!!
 
-// Represents a transaction trace for an invoke transaction.
+/**
+ * Represents a transaction trace for an invoke transaction.
+ */
 export type INVOKE_TXN_TRACE = {
-  type: 'INVOKE';
-  execute_invocation: FUNCTION_INVOCATION | { revert_reason: string };
+  type: TXN_TYPE_INVOKE;
+  execute_invocation: SimpleOneOf<FUNCTION_INVOCATION, { revert_reason: string }>;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
 };
 
-// Represents a transaction trace for a declare transaction.
+/**
+ * Represents a transaction trace for a declare transaction.
+ */
 export type DECLARE_TXN_TRACE = {
-  type: 'DECLARE';
+  type: TXN_TYPE_DECLARE;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
 };
 
-// Represents a transaction trace for a deploy account transaction.
+/**
+ * Represents a transaction trace for a deploy account transaction.
+ */
 export type DEPLOY_ACCOUNT_TXN_TRACE = {
-  type: 'DEPLOY_ACCOUNT';
+  type: TXN_TYPE_DEPLOY_ACCOUNT;
   constructor_invocation: FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
@@ -644,38 +968,107 @@ export type DEPLOY_ACCOUNT_TXN_TRACE = {
   execution_resources: EXECUTION_RESOURCES;
 };
 
-// Represents a transaction trace for an L1 handler transaction.
+/**
+ * Represents a transaction trace for an L1 handler transaction.
+ */
 export type L1_HANDLER_TXN_TRACE = {
-  type: 'L1_HANDLER';
+  type: Uppercase<ABI_TYPE_L1_HANDLER>;
   function_invocation: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
 };
 
-// Represents a nested function call.
+/**
+ * Represents a nested function call.
+ */
 export type NESTED_CALL = FUNCTION_INVOCATION;
 
-// Represents a function invocation along with its execution details.
+/**
+ * Represents a function invocation along with its execution details.
+ */
 export type FUNCTION_INVOCATION = FUNCTION_CALL & {
-  caller_address: string;
-  class_hash: string;
+  /**
+   * The address of the invoking contract. 0 for the root invocation
+   */
+  caller_address: FELT;
+  /**
+   * The hash of the class being called
+   */
+  class_hash: FELT;
   entry_point_type: ENTRY_POINT_TYPE;
   call_type: CALL_TYPE;
-  result: string[];
+  /**
+   * The value returned from the function invocation
+   */
+  result: FELT[];
+  /**
+   * The calls made by this invocation
+   */
   calls: NESTED_CALL[];
+  /**
+   * The events emitted in this invocation
+   */
   events: ORDERED_EVENT[];
+  /**
+   * The messages sent by this invocation to L1
+   */
   messages: ORDERED_MESSAGE[];
-  execution_resources: COMPUTATION_RESOURCES;
+  /**
+   * Resources consumed by the call tree rooted at this given call (including the root)
+   */
+  execution_resources: INNER_CALL_EXECUTION_RESOURCES;
+  /**
+   * true if this inner call panicked
+   */
+  is_reverted: boolean;
 };
 
-// Represents an ordered event alongside its order within the transaction.
+/**
+ * the resources consumed by an inner call (does not account for state diffs since data is squashed across the transaction)
+ */
+export type INNER_CALL_EXECUTION_RESOURCES = {
+  /**
+   * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used
+   */
+  l1_gas: number;
+  /**
+   * l2 gas consumed by this transaction, used for computation and calldata
+   */
+  l2_gas: number;
+};
+
+/**
+ * Represents an ordered event alongside its order within the transaction.
+ */
 export type ORDERED_EVENT = {
   order: number;
   event: EVENT;
 };
 
-// Represents an ordered message alongside its order within the transaction.
+/**
+ * Represents an ordered message alongside its order within the transaction.
+ */
 export type ORDERED_MESSAGE = {
   order: number;
   message: MSG_TO_L1;
+};
+
+/**
+ * Transaction status result, including finality status and execution status
+ */
+export type TXN_STATUS_RESULT = {
+  finality_status: TXN_STATUS;
+  execution_status?: TXN_EXECUTION_STATUS;
+  /**
+   * the failure reason, only appears if finality_status is REJECTED or execution_status is REVERTED
+   */
+  failure_reason?: string;
+};
+
+/**
+ * (contract_address, storage_keys) pairs
+ */
+export type CONTRACT_STORAGE_KEYS = {
+  contract_address: ADDRESS;
+  storage_keys: FELT[];
 };
