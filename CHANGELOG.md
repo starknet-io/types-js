@@ -1,3 +1,11 @@
+# [0.8.0-beta.11](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.10...v0.8.0-beta.11) (2025-04-10)
+
+
+### Bug Fixes
+
+* remove unused errors ([5093b77](https://github.com/starknet-io/types-js/commit/5093b7725f1b773194c61a751b9adafeb3f32001))
+* update rpc 8.0 ([#34](https://github.com/starknet-io/types-js/issues/34)) ([026ecb6](https://github.com/starknet-io/types-js/commit/026ecb6150dce902113ffd02ba15fa89633a8929))
+
 # [0.8.0-beta.10](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.9...v0.8.0-beta.10) (2025-02-15)
 
 
