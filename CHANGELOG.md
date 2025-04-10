@@ -1,3 +1,9 @@
+# [0.8.0](https://github.com/starknet-io/types-js/compare/v0.7.10...v0.8.0) (2025-04-10)
+
+
+### Features
+
+* new rpc specification 0.8.1 version ([#35](https://github.com/starknet-io/types-js/issues/35)) ([f1b79d1](https://github.com/starknet-io/types-js/commit/f1b79d1951bf93bc23cab96ad2f58f8675c29755))
 
 # [0.8.0-beta.11](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.10...v0.8.0-beta.11) (2025-04-10)
 
