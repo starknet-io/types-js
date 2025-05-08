@@ -29,7 +29,7 @@ export interface RpcTypeToMessageMap {
    */
   wallet_getPermissions: {
     params?: ApiVersionRequest;
-    result: Permission[] | [];
+    result: Permission[];
     errors: Errors.API_VERSION_NOT_SUPPORTED | Errors.UNKNOWN_ERROR;
   };
 
