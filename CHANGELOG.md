@@ -1,3 +1,10 @@
+## [0.8.2](https://github.com/starknet-io/types-js/compare/v0.8.1...v0.8.2) (2025-05-13)
+
+
+### Bug Fixes
+
+* add snip-29 implementation ([#37](https://github.com/starknet-io/types-js/issues/37)) ([944a9f5](https://github.com/starknet-io/types-js/commit/944a9f5f2c0eac82b8ec2da2ede72d9b72be5467))
+
 ## [0.8.1](https://github.com/starknet-io/types-js/compare/v0.8.0...v0.8.1) (2025-04-10)
 
 
