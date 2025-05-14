@@ -198,7 +198,7 @@ export type TIME_BOUNDS = {
  * Object containing data about the token: contract address, number of decimals and current price in STRK
  */
 export type TOKEN_DATA = {
-  address: ADDRESS;
+  token_address: ADDRESS;
   decimals: number;
   price_in_strk: u256;
 };
