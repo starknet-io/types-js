@@ -1,3 +1,11 @@
+## [0.8.3](https://github.com/starknet-io/types-js/compare/v0.8.2...v0.8.3) (2025-05-14)
+
+
+### Bug Fixes
+
+* clean & avoid duplication ([#39](https://github.com/starknet-io/types-js/issues/39)) ([dbea5de](https://github.com/starknet-io/types-js/commit/dbea5de409cd522d7aaa9eeef3703c04f514897a))
+* Fix token data model ([#38](https://github.com/starknet-io/types-js/issues/38)) ([89aa7fb](https://github.com/starknet-io/types-js/commit/89aa7fbd2b5b6bd39d29f8c2a6fd22fe20645a85))
+
 ## [0.8.2](https://github.com/starknet-io/types-js/compare/v0.8.1...v0.8.2) (2025-05-13)
 
 
