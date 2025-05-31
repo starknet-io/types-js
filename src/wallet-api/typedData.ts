@@ -1,22 +1,14 @@
 import { ADDRESS, FELT } from '../api/components.js';
 import type { ABI_TYPE_ENUM } from '../api/constants.js';
 
-/**
- * A string representing an unsigned integer
- * @pattern ^(0|[1-9]{1}[0-9]*)$
- */
-export type NUMERIC = string;
-/**
- * UNIX time
- */
-export type TIMESTAMP = NUMERIC;
+export type BLOCK_TIMESTAMP = number;
 
 /**
  * Object containing timestamps corresponding to `Execute After` and `Execute Before`
  */
 export type TIME_BOUNDS = {
-  execute_after: TIMESTAMP;
-  execute_before: TIMESTAMP;
+  execute_after: BLOCK_TIMESTAMP;
+  execute_before: BLOCK_TIMESTAMP;
 };
 
 export const TypedDataRevision = {
