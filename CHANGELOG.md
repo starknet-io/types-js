@@ -1,3 +1,10 @@
+## [0.8.4](https://github.com/starknet-io/types-js/compare/v0.8.3...v0.8.4) (2025-06-04)
+
+
+### Bug Fixes
+
+* time bounds data type & unit ([#40](https://github.com/starknet-io/types-js/issues/40)) ([4c1e1a4](https://github.com/starknet-io/types-js/commit/4c1e1a4b5e91e14396dde19eb0a48987ee163871))
+
 ## [0.8.3](https://github.com/starknet-io/types-js/compare/v0.8.2...v0.8.3) (2025-05-14)
 
 
