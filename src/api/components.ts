@@ -47,6 +47,9 @@ export type ETH_ADDRESS = string;
  * @pattern ^0x(0|[0-7]{1}[a-fA-F0-9]{0,62}$)
  */
 export type STORAGE_KEY = string;
+/**
+ * A contract address on Starknet
+ */
 export type ADDRESS = FELT;
 /**
  * string representing an integer number in prefixed hexadecimal format

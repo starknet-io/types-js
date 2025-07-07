@@ -1,3 +1,23 @@
+## [0.8.2](https://github.com/starknet-io/types-js/compare/v0.8.1...v0.8.2) (2025-05-13)
+
+
+### Bug Fixes
+
+* add snip-29 implementation ([#37](https://github.com/starknet-io/types-js/issues/37)) ([944a9f5](https://github.com/starknet-io/types-js/commit/944a9f5f2c0eac82b8ec2da2ede72d9b72be5467))
+
+## [0.8.1](https://github.com/starknet-io/types-js/compare/v0.8.0...v0.8.1) (2025-04-10)
+
+
+### Bug Fixes
+
+* readme versions fix, also match to rpc spec to fix potential confusion ([a0f8b84](https://github.com/starknet-io/types-js/commit/a0f8b84fa10e3e3f4f276d9f4b3151005a9ad78e))
+
+# [0.8.0](https://github.com/starknet-io/types-js/compare/v0.7.10...v0.8.0) (2025-04-10)
+
+
+### Features
+
+* new rpc specification 0.8.1 version ([#35](https://github.com/starknet-io/types-js/issues/35)) ([f1b79d1](https://github.com/starknet-io/types-js/commit/f1b79d1951bf93bc23cab96ad2f58f8675c29755))
 
 # [0.8.0-beta.11](https://github.com/starknet-io/types-js/compare/v0.8.0-beta.10...v0.8.0-beta.11) (2025-04-10)
 

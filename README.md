@@ -43,24 +43,16 @@
 
 ## Installation
 
-RPC 0.7 - Latest
+RPC 0.8 - Latest
 
 ```bash
 npm i @starknet-io/types-js
 ```
 
-RPC 0.8 (rc3) - Beta
-
-RPC 0.7 - Latest
+RPC 0.7
 
 ```bash
-npm i @starknet-io/types-js@beta
-```
-
-RPC 0.8 (rc3) - Beta
-
-```bash
-npm i @starknet-io/types-js@beta
+npm i @starknet-io/types-js@0.7.10
 ```
 
 ## Types
@@ -83,9 +75,19 @@ import type { SomeWalletApiType } from '@starknet-io/types-js';
 import { WALLET_API } from '@starknet-io/types-js';
 ```
 
-##### SNIPs [StarkNet Improvement Proposals](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-1.md)
+#### SNIPs [StarkNet Improvement Proposals](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-1.md)
 
 - [SNIP-12 Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md) - [/src/wallet-api/typedData.ts](https://github.com/starknet-io/types-js/blob/main/src/wallet-api/typedData.ts)
+```ts
+// type import
+import type { TypedData } from '@starknet-io/types-js';
+```
+
+- [SNIP-29 Applicative paymaster API standard](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-29.md)
+```ts
+// namespace import
+import { PAYMASTER_API } from '@starknet-io/types-js';
+```
 
 ## Versioning
 
