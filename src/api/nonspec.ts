@@ -20,13 +20,14 @@ import type {
   FEE_ESTIMATE,
   FEE_PAYMENT,
   FELT,
+  MESSAGE_FEE_ESTIMATE,
   MSG_FROM_L1,
   NODE_HASH_TO_NODE_MAPPING,
   NONCE_UPDATE,
-  PENDING_BLOCK_WITH_RECEIPTS,
-  PENDING_BLOCK_WITH_TXS,
-  PENDING_BLOCK_WITH_TX_HASHES,
-  PENDING_STATE_UPDATE,
+  PRE_CONFIRMED_BLOCK_WITH_RECEIPTS,
+  PRE_CONFIRMED_BLOCK_WITH_TXS,
+  PRE_CONFIRMED_BLOCK_WITH_TX_HASHES,
+  PRE_CONFIRMED_STATE_UPDATE,
   PRICE_UNIT,
   REPLACED_CLASS,
   RESOURCE_BOUNDS_MAPPING,
@@ -36,6 +37,7 @@ import type {
   SYNC_STATUS,
   TRANSACTION_TRACE,
   TXN,
+  TXN_EXECUTION_STATUS,
   TXN_HASH,
   TXN_RECEIPT_WITH_BLOCK_INFO,
   TXN_STATUS,
@@ -44,7 +46,8 @@ import type {
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import { OneOf } from './expansions/helpless.js';
-import { IsInBlock, IsPending } from './expansions/transactionReceipt.js';
+import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
+import type { STATUS_CANDIDATE, STATUS_RECEIVED } from './constants.js';
 
 // METHOD RESPONSES
 // response starknet_getClass, starknet_getClassAt
@@ -57,18 +60,20 @@ export type SimulateTransaction = {
 export type SimulateTransactionResponse = SimulateTransaction[];
 // response starknet_estimateFee
 export type FeeEstimate = FEE_ESTIMATE;
+// response starknet_estimateMessageFee
+export type MessageFeeEstimate = MESSAGE_FEE_ESTIMATE;
 // response starknet_getTransactionByHash, starknet_getTransactionByBlockIdAndIndex
 export type TransactionWithHash = TXN_WITH_HASH;
 // response starknet_blockHashAndNumber
 export type BlockHashAndNumber = { block_hash: BLOCK_HASH; block_number: BLOCK_NUMBER };
 // response starknet_getBlockWithTxs
-export type BlockWithTxs = OneOf<[BLOCK_WITH_TXS, PENDING_BLOCK_WITH_TXS]>;
+export type BlockWithTxs = OneOf<[BLOCK_WITH_TXS, PRE_CONFIRMED_BLOCK_WITH_TXS]>;
 // response starknet_getBlockWithTxHashes
-export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PENDING_BLOCK_WITH_TX_HASHES]>;
+export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PRE_CONFIRMED_BLOCK_WITH_TX_HASHES]>;
 // response starknet_getBlockWithReceipts
-export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PENDING_BLOCK_WITH_RECEIPTS]>;
+export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PRE_CONFIRMED_BLOCK_WITH_RECEIPTS]>;
 // response starknet_getStateUpdate
-export type StateUpdate = OneOf<[STATE_UPDATE, PENDING_STATE_UPDATE]>;
+export type StateUpdate = OneOf<[STATE_UPDATE, PRE_CONFIRMED_STATE_UPDATE]>;
 // response starknet_traceBlockTransactions
 export type BlockTransactionsTraces = { transaction_hash: FELT; trace_root: TRANSACTION_TRACE }[];
 // response starknet_syncing
@@ -131,9 +136,9 @@ export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
  */
 export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>;
 /**
- * All Type Transaction Receipt from pending block
+ * All Type Transaction Receipt from pre confirmed block
  */
-export type TransactionReceiptPendingBlock = IsPending<TransactionReceipt>;
+export type TransactionReceiptPreConfirmedBlock = IsPreConfirmed<TransactionReceipt>;
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST;
 export type SimulationFlags = Array<SIMULATION_FLAG>;
 export type L1Message = MSG_FROM_L1;
@@ -156,9 +161,13 @@ export type L1L2MessageStatus = {
   /**
    * finality status of the L1 -> L2 messages sent by the l1 transaction
    */
-  finality_status: TXN_STATUS;
+  finality_status: Exclude<TXN_STATUS, STATUS_RECEIVED | STATUS_CANDIDATE>;
   /**
    * the failure reason, only appears if finality_status is REJECTED
+   */
+  execution_status: TXN_EXECUTION_STATUS;
+  /**
+   * The failure reason. Only appears if `execution_status` is REVERTED
    */
   failure_reason?: string;
 };
