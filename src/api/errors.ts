@@ -84,7 +84,10 @@ export interface TRANSACTION_EXECUTION_ERROR {
      * @minimum 0
      */
     transaction_index: number;
-    execution_error: string;
+    /**
+     * the execution trace up to the point of failure
+     */
+    execution_error: CONTRACT_EXECUTION_ERROR;
   };
 }
 

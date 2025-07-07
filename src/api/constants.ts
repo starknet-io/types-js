@@ -1,28 +1,51 @@
+/**
+ * The transaction/block was accepted on L2 and included
+ */
 export type STATUS_ACCEPTED_ON_L2 = 'ACCEPTED_ON_L2';
 export const STATUS_ACCEPTED_ON_L2 = 'ACCEPTED_ON_L2';
 
+/**
+ * The transaction/block was accepted on Ethereum (L1)
+ */
 export type STATUS_ACCEPTED_ON_L1 = 'ACCEPTED_ON_L1';
 export const STATUS_ACCEPTED_ON_L1 = 'ACCEPTED_ON_L1';
 
+/**
+ * The transaction was successfully executed
+ */
 export type STATUS_SUCCEEDED = 'SUCCEEDED';
 export const STATUS_SUCCEEDED = 'SUCCEEDED';
 
+/**
+ * The transaction passed validation but failed during execution by the sequencer, and is included in a block as reverted
+ */
 export type STATUS_REVERTED = 'REVERTED';
 export const STATUS_REVERTED = 'REVERTED';
 
+/**
+ * The block was rejected and will not be included
+ */
 export type STATUS_REJECTED = 'REJECTED';
 export const STATUS_REJECTED = 'REJECTED';
 
+/**
+ * The transaction was received by the sequencer
+ */
 export type STATUS_RECEIVED = 'RECEIVED';
 export const STATUS_RECEIVED = 'RECEIVED';
 
+/**
+ * The transaction is a candidate for inclusion in the next block
+ */
 export type STATUS_CANDIDATE = 'CANDIDATE';
 export const STATUS_CANDIDATE = 'CANDIDATE';
 
+/**
+ * The transaction/block was written to the feeder gateway's storage by a sequencer
+ */
 export type STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
 export const STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
 
-// TODO: used ssot for de-duplication, test in production
 export type STATUS_PRE_CONFIRMED_LOWERCASE = InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;
 export const STATUS_PRE_CONFIRMED_LOWERCASE =
   STATUS_PRE_CONFIRMED.toLowerCase() as InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;

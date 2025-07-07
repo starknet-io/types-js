@@ -46,7 +46,7 @@ import type {
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import { OneOf } from './expansions/helpless.js';
-import { IsInBlock, IsPending } from './expansions/transactionReceipt.js';
+import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
 import type { STATUS_CANDIDATE, STATUS_RECEIVED } from './constants.js';
 
 // METHOD RESPONSES
@@ -136,9 +136,9 @@ export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
  */
 export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>;
 /**
- * All Type Transaction Receipt from pending block
+ * All Type Transaction Receipt from pre confirmed block
  */
-export type TransactionReceiptPendingBlock = IsPending<TransactionReceipt>;
+export type TransactionReceiptPreConfirmedBlock = IsPreConfirmed<TransactionReceipt>;
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST;
 export type SimulationFlags = Array<SIMULATION_FLAG>;
 export type L1Message = MSG_FROM_L1;
