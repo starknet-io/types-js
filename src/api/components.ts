@@ -19,7 +19,8 @@ import type {
   STATE_MUTABILITY_VIEW,
   STATUS_ACCEPTED_ON_L1,
   STATUS_ACCEPTED_ON_L2,
-  STATUS_PENDING,
+  STATUS_CANDIDATE,
+  STATUS_PRE_CONFIRMED,
   STATUS_RECEIVED,
   STATUS_REJECTED,
   STATUS_REVERTED,
@@ -52,22 +53,25 @@ export type STORAGE_KEY = string;
  */
 export type ADDRESS = FELT;
 /**
- * string representing an integer number in prefixed hexadecimal format
+ * string representing an unsigned integer number in prefixed hexadecimal format
  * @example "0x.."
  * @pattern ^0x[a-fA-F0-9]+$
  */
 export type NUM_AS_HEX = string;
 /**
- * 64 bit integers, represented by hex string of length at most 16
+ * 64 bit unsigned integers, represented by hex string of length at most 16
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,15})$"
  */
 export type u64 = string;
 /**
- * 128 bit integers, represented by hex string of length at most 32
+ * 128 bit unsigned integers, represented by hex string of length at most 32
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,31})$"
  */
 export type u128 = string;
 export type SIGNATURE = Array<FELT>;
+/**
+ * @minimum 0
+ */
 export type BLOCK_NUMBER = number;
 export type BLOCK_HASH = FELT;
 /**
@@ -102,7 +106,8 @@ export type ENTRY_POINT_TYPE =
  */
 export type TXN_STATUS =
   | STATUS_RECEIVED
-  | STATUS_REJECTED
+  | STATUS_CANDIDATE
+  | STATUS_PRE_CONFIRMED
   | STATUS_ACCEPTED_ON_L2
   | STATUS_ACCEPTED_ON_L1;
 /**
@@ -122,10 +127,13 @@ export type TXN_TYPE =
   | TXN_TYPE_DEPLOY_ACCOUNT
   | TXN_TYPE_INVOKE
   | Uppercase<ABI_TYPE_L1_HANDLER>;
-export type TXN_FINALITY_STATUS = STATUS_ACCEPTED_ON_L2 | STATUS_ACCEPTED_ON_L1;
+export type TXN_FINALITY_STATUS =
+  | STATUS_PRE_CONFIRMED
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1;
 export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
 export type BLOCK_STATUS =
-  | STATUS_PENDING
+  | STATUS_PRE_CONFIRMED
   | STATUS_ACCEPTED_ON_L2
   | STATUS_ACCEPTED_ON_L1
   | STATUS_REJECTED;
@@ -293,7 +301,10 @@ export type STATE_DIFF = {
   nonces: NONCE_UPDATE[];
 };
 
-export type PENDING_STATE_UPDATE = {
+/**
+ * Pre-confirmed block state update
+ */
+export type PRE_CONFIRMED_STATE_UPDATE = {
   old_root: FELT;
   state_diff: STATE_DIFF;
   block_hash: never; // diverge: this makes it distinct
@@ -335,14 +346,38 @@ export type BLOCK_HEADER = {
   starknet_version: string;
 };
 
-export type PENDING_BLOCK_HEADER = {
-  parent_hash: BLOCK_HASH;
+export type PRE_CONFIRMED_BLOCK_HEADER = {
+  /**
+   * The block number of the block that the proposer is currently building. Note that this is a local view of the node, whose accuracy depends on its polling interval length.
+   */
+  block_number: BLOCK_NUMBER;
+  /**
+   * The time in which the block was created, encoded in Unix time
+   */
   timestamp: number;
+  /**
+   * The StarkNet identity of the sequencer submitting this block
+   */
   sequencer_address: FELT;
+  /**
+   * The price of l1 gas in the block
+   */
   l1_gas_price: RESOURCE_PRICE;
+  /**
+   * The price of l2 gas in the block
+   */
   l2_gas_price: RESOURCE_PRICE;
+  /**
+   * The price of l1 data gas in the block
+   */
   l1_data_gas_price: RESOURCE_PRICE;
+  /**
+   * specifies whether the data of this block is published via blob data or calldata
+   */
   l1_da_mode: L1_DA_MODE;
+  /**
+   * Semver of the current Starknet protocol
+   */
   starknet_version: string;
 };
 
@@ -356,11 +391,13 @@ export type BLOCK_WITH_RECEIPTS = {
 } & BLOCK_HEADER &
   BLOCK_BODY_WITH_RECEIPTS;
 
-export type PENDING_BLOCK_WITH_TX_HASHES = BLOCK_BODY_WITH_TX_HASHES & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_TX_HASHES = BLOCK_BODY_WITH_TX_HASHES &
+  PRE_CONFIRMED_BLOCK_HEADER;
 
-export type PENDING_BLOCK_WITH_TXS = BLOCK_BODY_WITH_TXS & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_TXS = BLOCK_BODY_WITH_TXS & PRE_CONFIRMED_BLOCK_HEADER;
 
-export type PENDING_BLOCK_WITH_RECEIPTS = BLOCK_BODY_WITH_RECEIPTS & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_RECEIPTS = BLOCK_BODY_WITH_RECEIPTS &
+  PRE_CONFIRMED_BLOCK_HEADER;
 
 export type DEPLOYED_CONTRACT_ITEM = {
   address: FELT;
@@ -619,21 +656,21 @@ export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
   (
     | {
         /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
+         * "If this field is missing, it means the receipt belongs to the pre-confirmed block"
          */
         block_hash: BLOCK_HASH;
         /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
+         * "If this field is missing, it means the receipt belongs to the pre-confirmed block"
          */
         block_number: BLOCK_NUMBER;
       }
     | {
         /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
+         * "If this field is missing, it means the receipt belongs to the pre-confirmed block"
          */
         block_hash: never;
         /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
+         * "If this field is missing, it means the receipt belongs to the pre-confirmed block"
          */
         block_number: never;
       }
@@ -692,6 +729,9 @@ export type DEPRECATED_CAIRO_ENTRY_POINT = {
 
 export type SIERRA_ENTRY_POINT = {
   selector: FELT;
+  /**
+   * @minimum 0
+   */
   function_idx: number;
 };
 
@@ -715,6 +755,7 @@ export type STRUCT_ABI_ENTRY = {
 export type STRUCT_MEMBER = TYPED_PARAMETER & {
   /**
    * offset of this property within the struct
+   * @minimum 0
    */
   offset: number;
 };
@@ -771,38 +812,61 @@ export type TYPED_PARAMETER = {
 export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = typeof ESimulationFlag.SKIP_VALIDATE;
 export type PRICE_UNIT = PRICE_UNIT_WEI | PRICE_UNIT_FRI;
 
-export type FEE_ESTIMATE = {
+export type FEE_ESTIMATE_COMMON = {
   /**
    * The Ethereum gas consumption of the transaction, charged for L1->L2 messages and, depending on the block's DA_MODE, state diffs.
    * Prev. name gas_consumed
    */
-  l1_gas_consumed: number;
+  l1_gas_consumed: u64;
   /**
    * The gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name gas_price
    */
-  l1_gas_price: number;
+  l1_gas_price: u128;
   /**
    * The L2 gas consumption of the transaction.
    */
-  l2_gas_consumed: number;
+  l2_gas_consumed: u64;
   /**
    * The L2 gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    */
-  l2_gas_price: number;
+  l2_gas_price: u128;
   /**
    * The Ethereum data gas consumption of the transaction.
    * Prev. name data_gas_consumed
    */
-  l1_data_gas_consumed: number;
+  l1_data_gas_consumed: u64;
   /**
    * The data gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name data_gas_price
    */
-  l1_data_gas_price: number;
-  overall_fee: number;
-  unit: PRICE_UNIT;
+  l1_data_gas_price: u128;
+  /**
+   * The estimated fee for the transaction (in wei or fri, depending on the tx version), equals to l1_gas_consumed*l1_gas_price + l1_data_gas_consumed*l1_data_gas_price + l2_gas_consumed*l2_gas_price
+   */
+  overall_fee: u128; // TODO: in theory this could overflow ? It should be > 192 bits or u256 ?
 };
+
+export type FEE_ESTIMATE =
+  | FEE_ESTIMATE_COMMON
+  | {
+      /**
+       * Units in which the fee is given, can only be FRI
+       */
+      unit: PRICE_UNIT_FRI;
+    };
+
+/**
+ * Message fee estimate
+ */
+export type MESSAGE_FEE_ESTIMATE =
+  | FEE_ESTIMATE_COMMON
+  | {
+      /**
+       * Units in which the fee is given, can only be WEI
+       */
+      unit: PRICE_UNIT_WEI;
+    };
 
 export type FEE_PAYMENT = {
   amount: FELT;
@@ -841,16 +905,19 @@ export type EXECUTION_RESOURCES = {
   /**
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used.
    * integer
+   * @minimum 0
    */
   l1_gas: number;
   /**
    * data gas consumed by this transaction, 0 if blobs are not used
    * integer
+   * @minimum 0
    */
   l1_data_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
    * Integer
+   * @minimum 0
    */
   l2_gas: number;
 };
@@ -879,11 +946,12 @@ export type BINARY_NODE = {
  */
 export type EDGE_NODE = {
   /**
-   * an integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
+   * an unsigned integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
    */
   path: NUM_AS_HEX;
   /**
    * the length of the path (bounded by 251)
+   * @minimum 0
    */
   length: number;
   /**
@@ -941,7 +1009,10 @@ export type TRANSACTION_TRACE =
  */
 export type INVOKE_TXN_TRACE = {
   type: TXN_TYPE_INVOKE;
-  execute_invocation: SimpleOneOf<FUNCTION_INVOCATION, { revert_reason: string }>;
+  /**
+   * "the trace of the __execute__ call"
+   */
+  execute_invocation: REVERTIBLE_FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
@@ -964,6 +1035,9 @@ export type DECLARE_TXN_TRACE = {
  */
 export type DEPLOY_ACCOUNT_TXN_TRACE = {
   type: TXN_TYPE_DEPLOY_ACCOUNT;
+  /**
+   * the trace of the constructor call
+   */
   constructor_invocation: FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
@@ -976,6 +1050,9 @@ export type DEPLOY_ACCOUNT_TXN_TRACE = {
  */
 export type L1_HANDLER_TXN_TRACE = {
   type: Uppercase<ABI_TYPE_L1_HANDLER>;
+  /**
+   * the trace of the L1 handler call
+   */
   function_invocation: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
@@ -1032,18 +1109,28 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
 export type INNER_CALL_EXECUTION_RESOURCES = {
   /**
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used
+   * @minimum 0
    */
   l1_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
+   * @minimum 0
    */
   l2_gas: number;
 };
+
+export type REVERTIBLE_FUNCTION_INVOCATION = SimpleOneOf<
+  FUNCTION_INVOCATION,
+  { revert_reason: string }
+>;
 
 /**
  * Represents an ordered event alongside its order within the transaction.
  */
 export type ORDERED_EVENT = {
+  /**
+   * @minimum 0
+   */
   order: number;
   event: EVENT;
 };
@@ -1052,6 +1139,9 @@ export type ORDERED_EVENT = {
  * Represents an ordered message alongside its order within the transaction.
  */
 export type ORDERED_MESSAGE = {
+  /**
+   * @minimum 0
+   */
   order: number;
   message: MSG_TO_L1;
 };

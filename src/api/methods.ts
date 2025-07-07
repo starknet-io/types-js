@@ -27,6 +27,7 @@ import type {
   SubscriptionTransactionsStatusResponse,
   TXN_HASH,
 } from './components.js';
+import { STATUS_PRE_CONFIRMED_LOWERCASE } from './constants.js';
 import type * as Errors from './errors.js';
 import type { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import type {
@@ -42,6 +43,7 @@ import type {
   FeeEstimate,
   InvokedTransaction,
   L1L2MessagesStatus,
+  MessageFeeEstimate,
   Nonce,
   SimulateTransactionResponse,
   StateUpdate,
@@ -223,7 +225,7 @@ type ReadMethods = {
       message: MSG_FROM_L1;
       block_id: BLOCK_ID;
     };
-    result: FeeEstimate;
+    result: MessageFeeEstimate;
     errors: Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
   };
 
@@ -301,7 +303,7 @@ type ReadMethods = {
       /**
        * The hash of the requested block, or number (height) of the requested block, or a block tag
        */
-      block_id: SUBSCRIPTION_BLOCK_ID;
+      block_id: Exclude<BLOCK_ID, STATUS_PRE_CONFIRMED_LOWERCASE>;
       /**
        * a list of the class hashes for which we want to prove membership in the classes trie
        */
@@ -348,6 +350,8 @@ type WriteMethods = {
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
       | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.DUPLICATE_TX
@@ -368,6 +372,8 @@ type WriteMethods = {
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
       | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.DUPLICATE_TX
@@ -387,6 +393,8 @@ type WriteMethods = {
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
       | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.CLASS_HASH_NOT_FOUND
@@ -406,7 +414,7 @@ type TraceMethods = {
 
   // Returns the execution traces of all transactions included in the given block
   starknet_traceBlockTransactions: {
-    params: { block_id: BLOCK_ID };
+    params: { block_id: Exclude<BLOCK_ID, STATUS_PRE_CONFIRMED_LOWERCASE> };
     result: BlockTransactionsTraces;
     errors: Errors.BLOCK_NOT_FOUND;
   };

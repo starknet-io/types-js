@@ -10,14 +10,22 @@ export const STATUS_SUCCEEDED = 'SUCCEEDED';
 export type STATUS_REVERTED = 'REVERTED';
 export const STATUS_REVERTED = 'REVERTED';
 
-export type STATUS_PENDING = 'PENDING';
-export const STATUS_PENDING = 'PENDING';
-
 export type STATUS_REJECTED = 'REJECTED';
 export const STATUS_REJECTED = 'REJECTED';
 
 export type STATUS_RECEIVED = 'RECEIVED';
 export const STATUS_RECEIVED = 'RECEIVED';
+
+export type STATUS_CANDIDATE = 'CANDIDATE';
+export const STATUS_CANDIDATE = 'CANDIDATE';
+
+export type STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
+export const STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
+
+// TODO: used ssot for de-duplication, test in production
+export type STATUS_PRE_CONFIRMED_LOWERCASE = InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;
+export const STATUS_PRE_CONFIRMED_LOWERCASE =
+  STATUS_PRE_CONFIRMED.toLowerCase() as InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;
 
 export type TXN_TYPE_DECLARE = 'DECLARE';
 export const TXN_TYPE_DECLARE = 'DECLARE';
@@ -123,9 +131,11 @@ export const ETransactionExecutionStatus = {
 export type ETransactionExecutionStatus =
   (typeof ETransactionExecutionStatus)[keyof typeof ETransactionExecutionStatus];
 
+type InferLowercaseString<T extends string> = Lowercase<T>;
+
 export const EBlockTag = {
   LATEST: 'latest',
-  PENDING: 'pending',
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED_LOWERCASE,
 } as const;
 
 export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
