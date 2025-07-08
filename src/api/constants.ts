@@ -131,7 +131,8 @@ export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationF
 
 export const ETransactionStatus = {
   RECEIVED: STATUS_RECEIVED,
-  REJECTED: STATUS_REJECTED,
+  CANDIDATE: STATUS_CANDIDATE,
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
 } as const;
@@ -139,6 +140,7 @@ export const ETransactionStatus = {
 export type ETransactionStatus = (typeof ETransactionStatus)[keyof typeof ETransactionStatus];
 
 export const ETransactionFinalityStatus = {
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
 } as const;
