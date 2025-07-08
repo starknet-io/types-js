@@ -1,3 +1,10 @@
+# [0.9.0-beta.2](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.1...v0.9.0-beta.2) (2025-07-08)
+
+
+### Bug Fixes
+
+* consts transaction status ([#44](https://github.com/starknet-io/types-js/issues/44)) ([68bfa2f](https://github.com/starknet-io/types-js/commit/68bfa2fced110d1b107bd204834c5d5d0f4873b8))
+
 # [0.9.0-beta.1](https://github.com/starknet-io/types-js/compare/v0.8.4...v0.9.0-beta.1) (2025-07-07)
 
 
