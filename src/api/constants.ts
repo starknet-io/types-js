@@ -122,6 +122,8 @@ export const ETransactionType = {
 
 export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransactionType];
 
+// TODO: Should we also add broadcasted txn type? (e.g. DECLARE, INVOKE, DEPLOY_ACCOUNT) for L1 not sure ?
+
 export const ESimulationFlag = {
   SKIP_VALIDATE: 'SKIP_VALIDATE',
   SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
@@ -164,6 +166,15 @@ export const EBlockTag = {
 } as const;
 
 export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
+
+export const EBlockStatus = {
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
+  ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
+  ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
+  REJECTED: STATUS_REJECTED,
+} as const;
+
+export type EBlockStatus = (typeof EBlockStatus)[keyof typeof EBlockStatus];
 
 // 'L1' | 'L2'
 export const EDataAvailabilityMode = {
