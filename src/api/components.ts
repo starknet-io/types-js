@@ -7,6 +7,7 @@ import type {
   ABI_TYPE_FUNCTION,
   ABI_TYPE_L1_HANDLER,
   CALL_TYPE,
+  EBlockStatus,
   EBlockTag,
   EDataAvailabilityMode,
   ESimulationFlag,
@@ -22,7 +23,6 @@ import type {
   STATUS_CANDIDATE,
   STATUS_PRE_CONFIRMED,
   STATUS_RECEIVED,
-  STATUS_REJECTED,
   STATUS_REVERTED,
   STATUS_SUCCEEDED,
   STRUCT_ABI_TYPE,
@@ -144,11 +144,7 @@ export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
 /**
  * The status of the block
  */
-export type BLOCK_STATUS =
-  | STATUS_PRE_CONFIRMED
-  | STATUS_ACCEPTED_ON_L2
-  | STATUS_ACCEPTED_ON_L1
-  | STATUS_REJECTED;
+export type BLOCK_STATUS = EBlockStatus;
 /**
  * A block identifier that can be either a block hash, block number, or a block tag
  */
