@@ -160,9 +160,22 @@ export type ETransactionExecutionStatus =
 
 type InferLowercaseString<T extends string> = Lowercase<T>;
 
+/**
+ * A tag specifying a dynamic reference to a block.
+ */
 export const EBlockTag = {
+  /**
+   * Tag `latest` refers to the latest Starknet block finalized by the consensus on L2.
+   */
   LATEST: 'latest',
+  /**
+   * Tag `pre_confirmed` refers to the block which is currently being built by the block proposer in height `latest` + 1.
+   */
   PRE_CONFIRMED: STATUS_PRE_CONFIRMED_LOWERCASE,
+  /**
+   * Tag `l1_accepted` refers to the latest Starknet block which was included in a state update on L1 and finalized by the consensus on L1.
+   */
+  L1_ACCEPTED: 'l1_accepted',
 } as const;
 
 export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
@@ -171,7 +184,6 @@ export const EBlockStatus = {
   PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
-  REJECTED: STATUS_REJECTED,
 } as const;
 
 export type EBlockStatus = (typeof EBlockStatus)[keyof typeof EBlockStatus];

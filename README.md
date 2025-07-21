@@ -43,13 +43,19 @@
 
 ## Installation
 
+RPC 0.9 - Upcoming
+
+```bash
+npm i @starknet-io/types-js@beta
+```
+
 RPC 0.8 - Latest
 
 ```bash
 npm i @starknet-io/types-js
 ```
 
-RPC 0.7
+RPC 0.7 - Deprecated - deadline (28.07.2025)
 
 ```bash
 npm i @starknet-io/types-js@0.7.10
