@@ -7,48 +7,229 @@ on:
   workflow_dispatch:
     inputs:
       debug:
-        description: 'Debug'
+        description: 'Enable debug logging'
         type: boolean
-        default: true
+        default: false
       dry-run:
-        description: 'Dry run'
+        description: 'Dry run mode (no actual release)'
         type: boolean
         default: true
+      force-release:
+        description: 'Force release (skip validation)'
+        type: boolean
+        default: false
   push:
-    branches: ['main']
+    branches: [main, beta, alpha]
   pull_request:
-    branches: '*'
+    branches: [main, beta]
+
+env:
+  NODE_OPTIONS: '--max-old-space-size=4096'
 
 jobs:
   quality:
-    name: Quality test
+    name: Quality Assurance
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    outputs:
+      should-release: ${{ steps.release-check.outputs.should-release }}
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Run tests on Node lts/*
-        uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          node-version: lts/*
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run pretest
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-  publish:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' }}
-    needs: [quality]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-      - name: Run Release on Node lts/*
+      - name: Setup Node.js LTS
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - run: npx semantic-release --debug ${{ inputs.debug }} --dry-run ${{ inputs.dry-run }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Cache build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/
+            node_modules/.cache
+            .eslintcache
+          key: ${{ runner.os }}-quality-${{ hashFiles('**/package-lock.json', '**/tsconfig*.json') }}
+          restore-keys: |
+            ${{ runner.os }}-quality-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run comprehensive validation
+        run: |
+          echo "🔍 Running quality checks..." >> $GITHUB_STEP_SUMMARY
+          npm run validate
+          echo "✅ Quality checks passed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Bundle size validation
+        run: |
+          npm run analyze
+          echo "📦 Bundle size validation passed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Security audit
+        run: |
+          npm audit --audit-level=high || {
+            echo "⚠️ Security vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+            if [ "${{ inputs.force-release }}" != "true" ]; then
+              exit 1
+            fi
+          }
+
+      - name: Check release conditions
+        id: release-check
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && \
+             [[ "${{ github.ref }}" =~ ^refs/heads/(main|beta|alpha)$ ]]; then
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload QA artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-artifacts-${{ github.sha }}
+          path: |
+            dist/
+            docs/
+            .eslintcache
+          retention-days: 3
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run security scan
+        run: |
+          npx audit-ci --moderate --json-reporter > security-report.json || true
+          
+          # Check for critical/high vulnerabilities
+          CRITICAL=$(cat security-report.json | jq '.summary.critical // 0' 2>/dev/null || echo 0)
+          HIGH=$(cat security-report.json | jq '.summary.high // 0' 2>/dev/null || echo 0)
+          
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "::error::Critical or high vulnerabilities found!"
+            if [ "${{ inputs.force-release }}" != "true" ]; then
+              exit 1
+            fi
+          fi
+
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality, security-scan]
+    if: ${{ needs.quality.outputs.should-release == 'true' || inputs.dry-run }}
+    
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
+    environment:
+      name: ${{ github.ref_name }}
+      url: ${{ steps.release.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download QA artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: qa-artifacts-${{ github.sha }}
+          path: .
+
+      - name: Install dependencies
+        if: ${{ !hashFiles('node_modules/package-lock.json') }}
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Verify build artifacts
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "🔧 Building packages..."
+            npm run build
+          fi
+          
+          echo "📦 Verifying build outputs..."
+          ls -la dist/
+          npm run analyze
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run semantic release
+        id: release
+        run: |
+          echo "🚀 Starting release process..." >> $GITHUB_STEP_SUMMARY
+          
+          RELEASE_ARGS=""
+          if [ "${{ inputs.debug }}" = "true" ]; then
+            RELEASE_ARGS="$RELEASE_ARGS --debug"
+          fi
+          if [ "${{ inputs.dry-run }}" = "true" ]; then
+            RELEASE_ARGS="$RELEASE_ARGS --dry-run"
+          fi
+          
+          npx semantic-release $RELEASE_ARGS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Release summary
+        if: always()
+        run: |
+          echo "## Release Summary 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dry run: ${{ inputs.dry-run }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Debug: ${{ inputs.debug }}" >> $GITHUB_STEP_SUMMARY
+
+  post-release:
+    name: Post-Release Tasks
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: ${{ needs.release.result == 'success' && !inputs.dry-run }}
+    
+    steps:
+      - name: Notify release success
+        run: |
+          echo "✅ Release completed successfully"
+          echo "Package published to NPM registry"

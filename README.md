@@ -101,16 +101,46 @@ MAJOR and MINOR version of this package follows [starknet-spec](https://github.c
 
 Ex. Starknet types-js v0.7 == Starknet Spec v0.7
 
-## Devs Build
+## Development Scripts
 
+### 📦 Build Scripts
+- **`npm run build`** - Main build command (cleans and builds all formats in parallel)
+- **`npm run build:cjs`** - Builds CommonJS module format (Node.js)
+- **`npm run build:esm`** - Builds ES Module format (modern bundlers with tree-shaking)
+- **`npm run build:types`** - Generates TypeScript declaration files (.d.ts)
+
+### 🔍 Analysis & Debug Scripts
+- **`npm run build:analyze`** - Counts TypeScript processed files (compilation debugging)
+- **`npm run build:trace`** - Generates detailed TypeScript compilation trace
+- **`npm run analyze`** - Runs bundlesize check (ensures <10KB gzipped)
+
+### 🧹 Maintenance Scripts
+- **`npm run clean`** - Removes build artifacts (dist folder and trace files)
+- **`npm run format`** - Auto-formats all code files using Prettier
+
+### ✅ Quality Assurance Scripts
+- **`npm run lint`** - Runs ESLint to check code quality and auto-fix issues
+- **`npm run ts:check`** - Type-checks code without emitting files
+- **`npm run validate`** - Comprehensive validation: lint + type-check + build (parallel)
+- **`npm run test:types`** - Type-checks test files specifically
+
+### 📚 Documentation Scripts
+- **`npm run docs:generate`** - Creates API documentation using TypeDoc
+- **`npm run docs:serve`** - Serves documentation locally on port 3000
+
+### 🎯 Recommended Usage
+**For development:**
 ```bash
-npm run build
+npm run validate    # Before committing - checks everything
+npm run build      # When you need fresh builds
+npm run format     # To format code before committing
 ```
 
-## Devs Testing
-
+**For debugging:**
 ```bash
-npm run lint
+npm run build:analyze  # Count compiled files
+npm run build:trace   # Detailed compilation analysis
+npm run analyze       # Check bundle sizes
 ```
 
 ## License

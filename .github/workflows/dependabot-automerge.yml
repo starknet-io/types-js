@@ -1,0 +1,69 @@
+name: Dependabot Auto-merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  dependabot-automerge:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' && !github.event.pull_request.draft
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for status checks
+        uses: WyriHaximus/github-action-wait-for-status@v1.7.0
+        id: wait-for-status
+        with:
+          ignoreActions: "dependabot-automerge"
+          checkInterval: 30
+          timeout: 900
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-merge minor/patch updates
+        if: >
+          steps.wait-for-status.outputs.status == 'success' &&
+          (
+            steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' ||
+            steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor'
+          )
+        run: |
+          echo "✅ Auto-merging ${{ steps.dependabot-metadata.outputs.update-type }} update"
+          gh pr merge --auto --squash "${{ github.event.pull_request.html_url }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on major updates
+        if: steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major'
+        run: |
+          gh pr comment "${{ github.event.pull_request.html_url }}" --body \
+            "🚨 **Major version update detected** - Manual review required before merging.
+            
+            **Dependency:** ${{ steps.dependabot-metadata.outputs.dependency-names }}
+            **Update type:** ${{ steps.dependabot-metadata.outputs.update-type }}
+            
+            Please review the changelog and breaking changes before approving."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Label security updates
+        if: steps.dependabot-metadata.outputs.package-ecosystem == 'npm' && contains(steps.dependabot-metadata.outputs.dependency-names, 'security')
+        run: |
+          gh pr edit "${{ github.event.pull_request.html_url }}" --add-label "security,priority:high"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

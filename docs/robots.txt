@@ -1,0 +1,20 @@
+# Robots.txt for @starknet-io/types-js Documentation
+# https://starknet-io.github.io/types-js/
+
+User-agent: *
+Allow: /
+
+# Encourage indexing of main documentation
+Allow: /index.html
+Allow: /functions/
+Allow: /types/
+Allow: /interfaces/
+Allow: /variables/
+
+# Sitemap location (if generated)
+# Sitemap: https://starknet-io.github.io/types-js/sitemap.xml
+
+# Notes:
+# - Developer guides are hosted on GitHub and linked from the documentation
+# - This robots.txt allows search engines to index the TypeDoc-generated API documentation
+# - The documentation includes links to GitHub-hosted guides for better discoverability

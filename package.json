@@ -42,7 +42,7 @@
     "lint": "eslint . --cache --fix --ext .ts",
     "ts:check": "tsc --noEmit --resolveJsonModule --project tsconfig.eslint.json",
     "validate": "npm-run-all --parallel lint ts:check build",
-    "docs:generate": "typedoc src/index.ts --out docs --theme default",
+    "docs:generate": "typedoc src/index.ts --tsconfig tsconfig.docs.json",
     "docs:serve": "serve docs -p 3000",
     "analyze": "bundlesize",
     "test:types": "tsc --noEmit --project ./tsconfig.test.json"
@@ -86,5 +86,17 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/esm/index.js",
+      "maxSize": "10 KB",
+      "compression": "gzip"
+    },
+    {
+      "path": "./dist/cjs/index.js",
+      "maxSize": "10 KB",
+      "compression": "gzip"
+    }
+  ]
 }

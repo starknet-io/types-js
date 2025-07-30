@@ -65,7 +65,10 @@
   "sidebarLinks": {
     "GitHub": "https://github.com/starknet-io/types-js",
     "NPM": "https://www.npmjs.com/package/@starknet-io/types-js",
-    "Starknet Docs": "https://docs.starknet.io/"
+    "Starknet Docs": "https://docs.starknet.io/",
+    "📋 Developer Guides": "https://github.com/starknet-io/types-js/tree/main/guides",
+    "📊 Performance Guide": "https://github.com/starknet-io/types-js/blob/main/guides/PERFORMANCE_GUIDE.md",
+    "🌳 Tree Shaking Guide": "https://github.com/starknet-io/types-js/blob/main/guides/TREE_SHAKING_GUIDE.md"
   },
   "customCss": "./docs-theme.css"
 }

@@ -5,6 +5,7 @@
   "exclude": [],
   "references": [{ "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noEmit": true // Prevent emitting files during development - only tsconfig.build.json should emit
   }
 }

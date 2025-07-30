@@ -1,0 +1,248 @@
+name: 🔧 Manual Documentation Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - 'production'
+          - 'staging'
+      force_rebuild:
+        description: 'Force complete rebuild'
+        required: false
+        default: false
+        type: boolean
+      include_dev_guides:
+        description: 'Include development guides'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "manual-pages-${{ github.event.inputs.environment }}"
+  cancel-in-progress: true
+
+jobs:
+  manual-deploy:
+    name: 🚀 Manual Documentation Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 📋 Display Deployment Configuration
+        run: |
+          echo "🔧 Manual Deployment Configuration:"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "Force Rebuild: ${{ github.event.inputs.force_rebuild }}"
+          echo "Include Dev Guides: ${{ github.event.inputs.include_dev_guides }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🧹 Clean Previous Build (if forced)
+        if: github.event.inputs.force_rebuild == 'true'
+        run: |
+          echo "🧹 Force rebuild requested - cleaning previous builds..."
+          npm run clean || true
+          rm -rf docs/ || true
+          rm -rf node_modules/.cache/ || true
+
+      - name: 🔧 Install Dependencies
+        run: |
+          echo "📦 Installing dependencies..."
+          npm ci --prefer-offline --no-audit
+
+      - name: 🏗️ Build TypeScript
+        run: |
+          echo "🏗️ Building TypeScript..."
+          npm run build
+
+      - name: 📊 Pre-build Analysis
+        run: |
+          echo "📊 Pre-build Analysis:"
+          echo "Source files: $(find src -name "*.ts" | wc -l)"
+          echo "Guide files: $(find guides -name "*.md" | wc -l)"
+          echo "Package version: $(node -p "require('./package.json').version")"
+
+      - name: 📚 Generate Documentation
+        run: |
+          echo "📚 Generating TypeDoc documentation..."
+          
+          # Ensure clean docs directory
+          rm -rf docs/
+          
+          # Generate documentation
+          npm run docs:generate
+          
+          echo "✅ Documentation generation complete"
+
+      - name: 🔗 Configure Guide Integration
+        if: github.event.inputs.include_dev_guides == 'true'
+        run: |
+          echo "🔗 Configuring guide integration..."
+          
+          # Verify guide links are in the generated documentation
+          if grep -q "Developer Guides" docs/index.html; then
+            echo "✅ Guide links found in documentation"
+          else
+            echo "⚠️ Guide links not found - this may indicate a configuration issue"
+          fi
+          
+          # Create a guides index redirect (for direct access)
+          mkdir -p docs/guides/
+          cat > docs/guides/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Developer Guides - @starknet-io/types-js</title>
+            <meta http-equiv="refresh" content="0;url=https://github.com/starknet-io/types-js/tree/main/guides">
+            <link rel="canonical" href="https://github.com/starknet-io/types-js/tree/main/guides">
+          </head>
+          <body>
+            <h1>Redirecting to Developer Guides...</h1>
+            <p>If you are not redirected, <a href="https://github.com/starknet-io/types-js/tree/main/guides">click here to view the developer guides</a>.</p>
+          </body>
+          </html>
+          EOF
+
+      - name: 🎨 Apply Custom Styling
+        run: |
+          echo "🎨 Applying custom documentation styling..."
+          
+          # Check if custom CSS exists and is being used
+          if [ -f "docs-theme.css" ]; then
+            echo "✅ Custom CSS file found"
+            
+            # Verify it's referenced in TypeDoc config
+            if grep -q "docs-theme.css" typedoc.json; then
+              echo "✅ Custom CSS properly configured in TypeDoc"
+            else
+              echo "⚠️ Custom CSS not referenced in typedoc.json"
+            fi
+          fi
+
+      - name: 🔍 Quality Validation
+        run: |
+          echo "🔍 Running quality validation..."
+          
+          # File structure validation
+          test -f docs/index.html || { echo "❌ Missing main index.html"; exit 1; }
+          test -d docs/functions || { echo "❌ Missing functions directory"; exit 1; }
+          test -d docs/types || { echo "❌ Missing types directory"; exit 1; }
+          
+          # Content validation
+          if ! grep -q "@starknet-io/types-js" docs/index.html; then
+            echo "❌ Package name not found in documentation"
+            exit 1
+          fi
+          
+          # Size validation
+          DOCS_SIZE=$(du -sm docs | cut -f1)
+          if [ "$DOCS_SIZE" -gt 50 ]; then
+            echo "⚠️ Documentation size is large: ${DOCS_SIZE}MB"
+          else
+            echo "✅ Documentation size acceptable: ${DOCS_SIZE}MB"
+          fi
+          
+          echo "✅ Quality validation passed"
+
+      - name: 📊 Generate Deployment Report
+        run: |
+          echo "📊 Generating deployment report..."
+          
+          cat > deployment-report.md << EOF
+          # 📚 Documentation Deployment Report
+          
+          **Deployment Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Environment**: ${{ github.event.inputs.environment }}
+          **Triggered by**: ${{ github.actor }}
+          **Branch**: ${{ github.ref_name }}
+          **Commit**: ${{ github.sha }}
+          
+          ## 📊 Statistics
+          - **Total HTML files**: $(find docs -name "*.html" | wc -l)
+          - **Total assets**: $(find docs/assets -type f 2>/dev/null | wc -l)
+          - **Documentation size**: $(du -sh docs | cut -f1)
+          - **Functions documented**: $(find docs/functions -name "*.html" 2>/dev/null | wc -l)
+          - **Types documented**: $(find docs/types -name "*.html" 2>/dev/null | wc -l)
+          
+          ## 🔗 Integration Status
+          - **Guide links**: ${{ github.event.inputs.include_dev_guides == 'true' && '✅ Included' || '❌ Excluded' }}
+          - **Custom CSS**: $([ -f docs-theme.css ] && echo "✅ Applied" || echo "❌ Not found")
+          - **Search functionality**: $(grep -q "search" docs/index.html && echo "✅ Available" || echo "❌ Not available")
+          
+          ## 📋 Available Resources
+          - 🏠 [Main Documentation](https://starknet-io.github.io/types-js/)
+          - 📋 [Developer Guides](https://github.com/starknet-io/types-js/tree/main/guides)
+          - 📊 [Performance Guide](https://github.com/starknet-io/types-js/blob/main/guides/PERFORMANCE_GUIDE.md)
+          - 🌳 [Tree Shaking Guide](https://github.com/starknet-io/types-js/blob/main/guides/TREE_SHAKING_GUIDE.md)
+          - 🚀 [Usage Guide](https://github.com/starknet-io/types-js/blob/main/guides/USAGE_GUIDE.md)
+          - 🔄 [Migration Guide](https://github.com/starknet-io/types-js/blob/main/guides/MIGRATION_GUIDE.md)
+          EOF
+          
+          echo "📋 Deployment Report:"
+          cat deployment-report.md
+
+      - name: 📁 Upload Documentation Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+          name: github-pages-manual
+          retention-days: 30
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-manual
+
+      - name: ✅ Deployment Complete
+        run: |
+          echo "🎉 Manual deployment completed successfully!"
+          echo ""
+          echo "📍 Deployment Details:"
+          echo "  URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "  Environment: ${{ github.event.inputs.environment }}"
+          echo "  Deployment ID: ${{ github.run_id }}"
+          echo ""
+          echo "🔗 Quick Links:"
+          echo "  • Documentation: ${{ steps.deployment.outputs.page_url }}"
+          echo "  • Developer Guides: https://github.com/starknet-io/types-js/tree/main/guides"
+          echo "  • Repository: https://github.com/starknet-io/types-js"
+          echo ""
+          echo "⏱️ The documentation should be available within 5-10 minutes."
+
+      - name: 📧 Deployment Notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Deployment notification: SUCCESS"
+            echo "Documentation deployed to: ${{ steps.deployment.outputs.page_url }}"
+          else
+            echo "❌ Deployment notification: FAILED"
+            echo "Check the workflow logs for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi

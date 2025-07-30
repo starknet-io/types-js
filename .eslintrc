@@ -15,6 +15,7 @@
     "project": "./tsconfig.eslint.json"
   },
   "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["**/*.d.ts", "dist/**/*", "node_modules/**/*"],
   "rules": {
     "class-methods-use-this": 0,
     "import/prefer-default-export": 0,
@@ -34,6 +35,12 @@
       "ForInStatement",
       "LabeledStatement", 
       "WithStatement"
-    ]
+    ],
+    
+    // Allow .js extensions for proper ESM compatibility
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "always",
+      "ts": "never"
+    }]
   }
 }

@@ -1,14 +1,14 @@
 /**
  * Types that are not in spec but required for UX
  */
-import { TXN_HASH } from '../api';
-import { OutsideExecutionTypedData } from '../wallet-api';
+import { TXN_HASH } from '../api/index.js';
+import { OutsideExecutionTypedData } from '../wallet-api/index.js';
 import {
   ACCOUNT_DEPLOYMENT_DATA,
   EXECUTION_PARAMETERS,
   FEE_ESTIMATE,
   TRACKING_ID,
-} from './components';
+} from './components.js';
 
 // METHOD RESPONSES
 // response paymaster_buildTransaction

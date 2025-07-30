@@ -1,4 +1,4 @@
-import { CONTRACT_EXECUTION_ERROR } from '../api/components';
+import { CONTRACT_EXECUTION_ERROR } from '../api/components.js';
 
 export interface INVALID_ADDRESS {
   code: 150;

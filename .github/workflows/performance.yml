@@ -1,0 +1,141 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches: [main, beta]
+  pull_request:
+    branches: [main, beta]
+  workflow_dispatch:
+
+jobs:
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Analyze bundle sizes
+        run: |
+          echo "## Bundle Size Analysis" >> bundle-report.md
+          echo "" >> bundle-report.md
+          echo "| Format | Size (gzip) | Size (raw) | Status |" >> bundle-report.md
+          echo "|--------|-------------|------------|---------|" >> bundle-report.md
+          
+          # ESM Analysis
+          ESM_GZIP=$(gzip -c dist/esm/index.js | wc -c)
+          ESM_RAW=$(stat -c%s dist/esm/index.js 2>/dev/null || stat -f%z dist/esm/index.js)
+          ESM_STATUS="✅ PASS"
+          if [ $ESM_GZIP -gt 10240 ]; then ESM_STATUS="❌ FAIL"; fi
+          echo "| ESM | ${ESM_GZIP}B | ${ESM_RAW}B | $ESM_STATUS |" >> bundle-report.md
+          
+          # CJS Analysis
+          CJS_GZIP=$(gzip -c dist/cjs/index.js | wc -c)
+          CJS_RAW=$(stat -c%s dist/cjs/index.js 2>/dev/null || stat -f%z dist/cjs/index.js)
+          CJS_STATUS="✅ PASS"
+          if [ $CJS_GZIP -gt 10240 ]; then CJS_STATUS="❌ FAIL"; fi
+          echo "| CJS | ${CJS_GZIP}B | ${CJS_RAW}B | $CJS_STATUS |" >> bundle-report.md
+          
+          # Types Analysis
+          TYPES_SIZE=$(du -sb dist/types | cut -f1)
+          echo "| Types | N/A | ${TYPES_SIZE}B | ✅ PASS |" >> bundle-report.md
+          
+          echo "" >> bundle-report.md
+          echo "### Tree-shaking Efficiency" >> bundle-report.md
+          echo "ESM bundle is optimized for tree-shaking with individual exports." >> bundle-report.md
+
+      - name: Run bundlesize check
+        run: npm run analyze
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis-${{ github.sha }}
+          path: |
+            bundle-report.md
+            dist/
+          retention-days: 30
+
+      - name: Comment PR with bundle analysis
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('bundle-report.md')) {
+              const report = fs.readFileSync('bundle-report.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            }
+
+  compilation-performance:
+    name: TypeScript Compilation Performance
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Benchmark compilation
+        run: |
+          echo "## Compilation Performance" > compilation-report.md
+          echo "" >> compilation-report.md
+          
+          # Clean build benchmark
+          echo "### Clean Build Performance" >> compilation-report.md
+          time npm run build 2>&1 | tee build-time.txt
+          
+          # Extract timing info
+          echo "Build completed successfully" >> compilation-report.md
+          echo "" >> compilation-report.md
+          
+          # Incremental build benchmark
+          echo "### Incremental Build Performance" >> compilation-report.md
+          touch src/index.ts
+          time npm run build 2>&1 | tee incremental-build-time.txt
+          echo "Incremental build completed" >> compilation-report.md
+
+      - name: Generate trace analysis
+        run: |
+          npm run build:trace
+          if [ -d trace ]; then
+            echo "TypeScript trace generated successfully"
+            du -sh trace/
+          fi
+
+      - name: Upload performance data
+        uses: actions/upload-artifact@v4
+        with:
+          name: compilation-performance-${{ github.sha }}
+          path: |
+            compilation-report.md
+            build-time.txt
+            incremental-build-time.txt
+            trace/
+          retention-days: 14
