@@ -1,0 +1,54 @@
+/* Custom TypeDoc theme for Starknet Types */
+
+:root {
+  --starknet-primary: #ff6b35;
+  --starknet-secondary: #0c0c4f;
+  --starknet-accent: #f0f8ff;
+}
+
+.tsd-page-title h1 {
+  color: var(--starknet-secondary);
+  border-bottom: 2px solid var(--starknet-primary);
+  padding-bottom: 0.5rem;
+}
+
+.tsd-navigation .tsd-accordion-summary {
+  color: var(--starknet-secondary);
+}
+
+.tsd-navigation .tsd-accordion-summary:hover {
+  background: var(--starknet-accent);
+}
+
+.tsd-signature-type {
+  color: var(--starknet-primary);
+  font-weight: 600;
+}
+
+.tsd-kind-icon {
+  background: var(--starknet-primary);
+}
+
+a {
+  color: var(--starknet-primary);
+}
+
+a:hover {
+  color: var(--starknet-secondary);
+}
+
+.tsd-panel-group {
+  margin-bottom: 2rem;
+}
+
+.tsd-comment {
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+code {
+  background: var(--starknet-accent);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}

@@ -1,0 +1,71 @@
+{
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "theme": "default",
+  "name": "@starknet-io/types-js",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "categorizeByGroup": true,
+  "categoryOrder": [
+    "Core Types",
+    "API Types",
+    "Wallet API Types",
+    "Paymaster API Types",
+    "Type Guards",
+    "Validators",
+    "Utilities",
+    "*"
+  ],
+  "groupOrder": [
+    "Primitives",
+    "Components",
+    "Methods",
+    "Errors",
+    "Constants",
+    "*"
+  ],
+  "sort": [
+    "source-order"
+  ],
+  "kindSortOrder": [
+    "Reference",
+    "Project",
+    "Module",
+    "Namespace",
+    "Enum",
+    "EnumMember",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Constructor",
+    "Property",
+    "Variable",
+    "Function",
+    "Accessor",
+    "Method",
+    "Parameter",
+    "TypeParameter",
+    "TypeLiteral",
+    "CallSignature",
+    "ConstructorSignature",
+    "IndexSignature",
+    "GetSignature",
+    "SetSignature"
+  ],
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "searchInComments": true,
+  "cleanOutputDir": true,
+  "titleLink": "https://github.com/starknet-io/types-js",
+  "sidebarLinks": {
+    "GitHub": "https://github.com/starknet-io/types-js",
+    "NPM": "https://www.npmjs.com/package/@starknet-io/types-js",
+    "Starknet Docs": "https://docs.starknet.io/"
+  },
+  "customCss": "./docs-theme.css"
+}
