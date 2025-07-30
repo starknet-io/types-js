@@ -17,6 +17,8 @@ yarn.lock
 .mcp.json
 claude-flow.config.json
 .swarm/
+.roo/
+.claude/
 .hive-mind/
 memory/claude-flow-data.json
 memory/sessions/*
