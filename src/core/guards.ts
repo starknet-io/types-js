@@ -4,19 +4,19 @@
  */
 
 import type {
-  FELT,
   ADDRESS,
-  ETH_ADDRESS,
-  STORAGE_KEY,
-  NUM_AS_HEX,
-  u64,
-  u128,
-  TXN_HASH,
-  L1_TXN_HASH,
   BLOCK_HASH,
-  CHAIN_ID,
   BLOCK_NUMBER,
+  CHAIN_ID,
+  ETH_ADDRESS,
+  FELT,
+  L1_TXN_HASH,
+  NUM_AS_HEX,
   SIGNATURE,
+  STORAGE_KEY,
+  TXN_HASH,
+  u128,
+  u64,
 } from './types.js';
 
 /**
@@ -26,6 +26,14 @@ import type {
  */
 export const isFELT = (value: string): value is FELT =>
   /^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,62})$/.test(value);
+
+/**
+ * Validates if a string is a valid PADDED_FELT
+ * @param value - String to validate
+ * @returns Type predicate indicating if value is FELT
+ */
+export const isPaddedFELT = (value: string): value is FELT =>
+  /^0x(0[0-8]{1}[a-fA-F0-9]{62}$)/.test(value);
 
 /**
  * Validates if a string is a valid ADDRESS (must also be valid FELT)
@@ -48,7 +56,7 @@ export const isEthAddress = (value: string): value is ETH_ADDRESS =>
  * @returns Type predicate indicating if value is STORAGE_KEY
  */
 export const isStorageKey = (value: string): value is STORAGE_KEY =>
-  /^0x(0|[0-7]{1}[a-fA-F0-9]{0,62})$/.test(value);
+  /^0x(0|[0-7]{1}[a-fA-F0-9]{0,62}$)/.test(value);
 
 /**
  * Validates if a string is a valid hex number
@@ -129,7 +137,7 @@ export const assertFELT = (value: string, message = 'Invalid FELT'): asserts val
 
 export const assertAddress = (
   value: string,
-  message = 'Invalid ADDRESS'
+  message = 'Invalid address'
 ): asserts value is ADDRESS => {
   if (!isAddress(value)) {
     throw new TypeError(`${message}: ${value}`);
@@ -138,7 +146,7 @@ export const assertAddress = (
 
 export const assertEthAddress = (
   value: string,
-  message = 'Invalid ETH_ADDRESS'
+  message = 'Invalid Ethereum address'
 ): asserts value is ETH_ADDRESS => {
   if (!isEthAddress(value)) {
     throw new TypeError(`${message}: ${value}`);
@@ -147,7 +155,7 @@ export const assertEthAddress = (
 
 export const assertBlockNumber = (
   value: number,
-  message = 'Invalid BLOCK_NUMBER'
+  message = 'Invalid block number'
 ): asserts value is BLOCK_NUMBER => {
   if (!isBlockNumber(value)) {
     throw new TypeError(`${message}: ${value}`);

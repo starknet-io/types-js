@@ -48,10 +48,7 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-/**
- * Removes null and undefined from a type
- */
-export type NonNullable<T> = T extends null | undefined ? never : T;
+// Note: NonNullable<T> is a built-in TypeScript utility type
 
 /**
  * Type-safe Object.keys alternative
@@ -73,10 +70,15 @@ export const typedFromEntries = <K extends string | number | symbol, V>(
 ): Record<K, V> => Object.fromEntries(entries) as Record<K, V>;
 
 /**
+ * Brand type for creating nominal types
+ */
+export type Brand<T, B> = T & { readonly __brand: B };
+
+/**
  * Creates a branded type factory
  */
 export const createBrand = <T, B extends string>() => {
-  return (value: T): T & { readonly __brand: B } => value as T & { readonly __brand: B };
+  return (value: T): Brand<T, B> => value as Brand<T, B>;
 };
 
 /**
@@ -99,20 +101,5 @@ export const includes = <T extends readonly unknown[]>(
  */
 export type If<C extends boolean, T, F> = C extends true ? T : F;
 
-/**
- * Extracts function parameters as a tuple
- */
-export type Parameters<T extends (...args: unknown[]) => unknown> = T extends (
-  ...args: infer P
-) => unknown
-  ? P
-  : never;
-
-/**
- * Extracts function return type
- */
-export type ReturnType<T extends (...args: unknown[]) => unknown> = T extends (
-  ...args: unknown[]
-) => infer R
-  ? R
-  : never;
+// Note: Parameters<T> and ReturnType<T> are built-in TypeScript utility types
+// and do not need to be redefined here

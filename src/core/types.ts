@@ -3,8 +3,7 @@
  * These types provide runtime validation and better developer experience
  */
 
-// Base branded type utility
-type Brand<T, B> = T & { readonly __brand: B };
+import type { Brand } from './utils.js';
 
 /**
  * A field element represented by at most 63 hex digits
