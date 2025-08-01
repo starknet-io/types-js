@@ -14,18 +14,18 @@ import type {
   FUNCTION_CALL,
   L1_TXN_HASH,
   MSG_FROM_L1,
+  NewHeadsEvent,
+  NewTransactionEvent,
+  NewTransactionReceiptsEvent,
+  ReorgEvent,
   RESULT_PAGE_REQUEST,
   SIMULATION_FLAG,
   SIMULATION_FLAG_FOR_ESTIMATE_FEE,
+  StarknetEventsEvent,
   STORAGE_KEY,
   SUBSCRIPTION_BLOCK_ID,
   SUBSCRIPTION_ID,
-  SubscriptionEventsResponse,
-  SubscriptionNewHeadsResponse,
-  SubscriptionNewTransactionReceiptsResponse,
-  SubscriptionNewTransactionResponse,
-  SubscriptionReorgResponse,
-  SubscriptionTransactionsStatusResponse,
+  TransactionsStatusEvent,
   TXN_FINALITY_STATUS,
   TXN_HASH,
   TXN_STATUS_WITHOUT_L1,
@@ -448,7 +448,11 @@ export type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
-    events: ['starknet_subscriptionNewHeads', 'starknet_subscriptionReorg'];
+    /**
+     * starknet_subscriptionNewHeads
+     * starknet_subscriptionReorg
+     */
+    events: [NewHeadsEvent, ReorgEvent];
   };
 
   /**
@@ -476,7 +480,11 @@ export type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
-    events: ['starknet_subscriptionEvents', 'starknet_subscriptionReorg'];
+    /**
+     * starknet_subscriptionEvents
+     * starknet_subscriptionReorg
+     */
+    events: [StarknetEventsEvent, ReorgEvent];
   };
 
   /**
@@ -488,7 +496,11 @@ export type WebSocketMethods = {
       transaction_hash: FELT;
     };
     result: SUBSCRIPTION_ID;
-    events: ['starknet_subscriptionTransactionStatus', 'starknet_subscriptionReorg'];
+    /**
+     * starknet_subscriptionTransactionStatus
+     * starknet_subscriptionReorg
+     */
+    events: [TransactionsStatusEvent, ReorgEvent];
   };
 
   /**
@@ -509,7 +521,10 @@ export type WebSocketMethods = {
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
-    events: ['starknet_subscriptionNewTransactionReceipts'];
+    /**
+     * starknet_subscriptionNewTransactionReceipts
+     */
+    events: [NewTransactionReceiptsEvent];
   };
 
   /**
@@ -522,14 +537,17 @@ export type WebSocketMethods = {
       /**
        * A vector of finality statuses to receive updates for, default is [ACCEPTED_ON_L2]
        */
-      finality_status?: TXN_STATUS_WITHOUT_L1[]; // TODO: this should be called transaction_status
+      finality_status?: TXN_STATUS_WITHOUT_L1[];
       /**
        * Filter to only include transactions sent by the specified addresses
        */
       sender_address?: ADDRESS[];
     };
     result: SUBSCRIPTION_ID;
-    events: ['starknet_subscriptionNewTransaction'];
+    /**
+     * starknet_subscriptionNewTransaction
+     */
+    events: [NewTransactionEvent];
   };
 
   /**
@@ -542,16 +560,4 @@ export type WebSocketMethods = {
     result: Boolean;
     errors: Errors.INVALID_SUBSCRIPTION_ID;
   };
-};
-
-/**
- * Server -> Client events over WebSockets
- */
-export type WebSocketEvents = {
-  starknet_subscriptionReorg: SubscriptionReorgResponse;
-  starknet_subscriptionNewHeads: SubscriptionNewHeadsResponse;
-  starknet_subscriptionEvents: SubscriptionEventsResponse;
-  starknet_subscriptionTransactionStatus: SubscriptionTransactionsStatusResponse;
-  starknet_subscriptionNewTransactionReceipts: SubscriptionNewTransactionReceiptsResponse;
-  starknet_subscriptionNewTransaction: SubscriptionNewTransactionResponse;
 };
