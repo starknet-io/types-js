@@ -1,3 +1,8 @@
+# Validation Workflow - Build & Quality Checks
+# 
+# This workflow focuses on build validation and code quality.
+# For test coverage, see: .github/workflows/test-coverage.yml
+
 name: Validate Build
 
 on:

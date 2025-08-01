@@ -6,6 +6,11 @@
     "baseUrl": ".",
     "noEmit": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "types": ["jest", "@jest/globals", "node"]
   }
 }

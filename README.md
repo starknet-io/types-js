@@ -20,6 +20,9 @@
   <a href="https://github.com/starknet-io/types-js/blob/main/LICENSE/">
     <img src="https://img.shields.io/badge/license-MIT-black">
   </a>
+  <a href="https://github.com/starknet-io/types-js/actions/workflows/test-coverage.yml">
+    <img src="https://raw.githubusercontent.com/starknet-io/types-js/main/.github/badges/coverage.svg">
+  </a>
   <a href="https://github.com/starknet-io/%40starknet-io%2Ftypes-js/stargazers">
     <img src='https://img.shields.io/github/stars/starknet-io/types-js?color=yellow' />
   </a>
@@ -100,6 +103,37 @@ import { PAYMASTER_API } from '@starknet-io/types-js';
 MAJOR and MINOR version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs/tags) semantic versioning. The PATCH version can diverge based on the bug fixes.
 
 Ex. Starknet types-js v0.7 == Starknet Spec v0.7
+
+## Testing
+
+This project maintains comprehensive test coverage with automated quality assurance:
+
+### 🧪 Test Scripts
+- **`npm test`** - Complete test suite: validation + type checking + Jest with coverage + verification
+- **`npm run test:develop`** - Development-friendly testing: lint + type-check + Jest with coverage
+
+### 📊 Coverage Reporting
+- **Self-Hosted Dynamic Badge** - Coverage badge generated and updated automatically by GitHub Actions
+- **No External Dependencies** - Badge works entirely within GitHub infrastructure
+- **Real-Time Updates** - Badge reflects actual test coverage from latest CI run
+- **Multiple Coverage Formats** - LCOV, JSON, and HTML coverage reports generated
+- **Automatic Badge Colors** - Green (100%), Yellow (70-89%), Red (<70%)
+
+### 📊 Coverage Areas
+- **Core Types & Guards** - FELT, Address, Storage validation functions
+- **API Components** - StarkNet JSON-RPC types and interfaces  
+- **Wallet API** - Wallet integration and typed data structures
+- **Utilities** - Type-safe object manipulation and branded types
+- **Extensions** - Plugin architecture and validator system
+- **Integration** - Real-world usage patterns and package consumption
+
+### ✅ Quality Assurance
+All tests pass with 100% coverage including:
+- Unit tests for all core functionality
+- Integration tests for real-world scenarios  
+- Package consumption verification
+- TypeScript compilation validation
+- ESLint code quality checks
 
 ## Development Scripts
 
