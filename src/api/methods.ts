@@ -22,12 +22,15 @@ import type {
   SUBSCRIPTION_ID,
   SubscriptionEventsResponse,
   SubscriptionNewHeadsResponse,
-  SubscriptionPendingTransactionsResponse,
+  SubscriptionNewTransactionReceiptsResponse,
+  SubscriptionNewTransactionResponse,
   SubscriptionReorgResponse,
   SubscriptionTransactionsStatusResponse,
+  TXN_FINALITY_STATUS,
   TXN_HASH,
+  TXN_STATUS_WITHOUT_L1,
 } from './components.js';
-import { STATUS_PRE_CONFIRMED_LOWERCASE } from './constants.js';
+import { STATUS_ACCEPTED_ON_L1, STATUS_PRE_CONFIRMED_LOWERCASE } from './constants.js';
 import type * as Errors from './errors.js';
 import type { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import type {
@@ -450,7 +453,7 @@ export type WebSocketMethods = {
 
   /**
    * New events subscription.
-   * Creates a WebSocket stream which will fire events for new Starknet events with applied filters.
+   * Creates a WebSocket stream which will fire events for new Starknet events from the specified block_id, up to the latest block.
    */
   starknet_subscribeEvents: {
     params: {
@@ -458,11 +461,18 @@ export type WebSocketMethods = {
        * Filter events by from_address which emitted the event
        */
       from_address?: ADDRESS;
+      /**
+       * The keys to filter events by. If not provided, all events will be returned.
+       */
       keys?: EVENT_KEYS;
       /**
        * The block to get notifications from, default is latest, limited to 1024 blocks back
        */
       block_id?: SUBSCRIPTION_BLOCK_ID;
+      /**
+       * The finality status of the most recent events to include, default is ACCEPTED_ON_L2
+       */
+      finality_status?: Exclude<TXN_FINALITY_STATUS, STATUS_ACCEPTED_ON_L1>;
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
@@ -482,23 +492,44 @@ export type WebSocketMethods = {
   };
 
   /**
-   * New Pending Transactions subscription.
-   * Creates a WebSocket stream which will fire events when a new pending transaction is added. While there is no mempool, this notifies of transactions in the pending block.
+   * Creates a WebSocket stream which will fire events when new transaction receipts are created.
+   * The endpoint receives a vector of finality statuses. An event is fired for each finality status update.
+   * It is possible for receipts for pre-confirmed transactions to be received multiple times, or not at all.
    */
-  starknet_subscribePendingTransactions: {
+  starknet_subscribeNewTransactionReceipts: {
     params: {
       /**
-       * "Get all transaction details, and not only the hash. If not provided, only hash is returned. Default is false"
+       * A vector of finality statuses to receive updates for, default is [ACCEPTED_ON_L2]
        */
-      transaction_details?: Boolean;
+      finality_status?: Exclude<TXN_FINALITY_STATUS, STATUS_ACCEPTED_ON_L1>[];
       /**
-       * Filter transactions to only receive notification from address list
+       * Filter transaction receipts to only include transactions sent by the specified addresses
        */
       sender_address?: ADDRESS[];
     };
     result: SUBSCRIPTION_ID;
     errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
-    events: ['starknet_subscriptionPendingTransactions'];
+    events: ['starknet_subscriptionNewTransactionReceipts'];
+  };
+
+  /**
+   * Creates a WebSocket stream which will fire events when new transaction are created.
+   * The endpoint receives a vector of finality statuses. An event is fired for each finality status update.
+   * It is possible for events for pre-confirmed and candidate transactions to be received multiple times, or not at all.
+   */
+  starknet_subscribeNewTransactions: {
+    params: {
+      /**
+       * A vector of finality statuses to receive updates for, default is [ACCEPTED_ON_L2]
+       */
+      finality_status?: TXN_STATUS_WITHOUT_L1[]; // TODO: this should be called transaction_status
+      /**
+       * Filter to only include transactions sent by the specified addresses
+       */
+      sender_address?: ADDRESS[];
+    };
+    result: SUBSCRIPTION_ID;
+    events: ['starknet_subscriptionNewTransaction'];
   };
 
   /**
@@ -521,5 +552,6 @@ export type WebSocketEvents = {
   starknet_subscriptionNewHeads: SubscriptionNewHeadsResponse;
   starknet_subscriptionEvents: SubscriptionEventsResponse;
   starknet_subscriptionTransactionStatus: SubscriptionTransactionsStatusResponse;
-  starknet_subscriptionPendingTransactions: SubscriptionPendingTransactionsResponse;
+  starknet_subscriptionNewTransactionReceipts: SubscriptionNewTransactionReceiptsResponse;
+  starknet_subscriptionNewTransaction: SubscriptionNewTransactionResponse;
 };

@@ -171,7 +171,6 @@ export const EBlockStatus = {
   PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
-  REJECTED: STATUS_REJECTED,
 } as const;
 
 export type EBlockStatus = (typeof EBlockStatus)[keyof typeof EBlockStatus];

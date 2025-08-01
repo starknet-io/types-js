@@ -1,7 +1,6 @@
 //    ******************
 //    * PRIMITIVES
 //    ******************
-
 import type {
   ABI_TYPE_CONSTRUCTOR,
   ABI_TYPE_FUNCTION,
@@ -164,7 +163,7 @@ export type BLOCK_SELECTOR = SimpleOneOf<
  * A block tag specifying a dynamic reference to a block
  */
 export type BLOCK_TAG = EBlockTag;
-export type SUBSCRIPTION_BLOCK_TAG = 'latest';
+export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>;
 
 //    *****************
 //    * WEBSOCKET API
@@ -206,9 +205,12 @@ export type SubscriptionNewHeadsResponse = {
   result: BLOCK_HEADER;
 };
 
+/**
+ * Notification to the client of a new event. The event also includes the finality status of the transaction emitting the event
+ */
 export type SubscriptionEventsResponse = {
   subscription_id: SUBSCRIPTION_ID;
-  result: EMITTED_EVENT;
+  result: EMITTED_EVENT & { finality_status: TXN_FINALITY_STATUS }; // TODO: check name of the property as spec do not define it
 };
 
 export type SubscriptionTransactionsStatusResponse = {
@@ -216,9 +218,20 @@ export type SubscriptionTransactionsStatusResponse = {
   result: NEW_TXN_STATUS;
 };
 
-export type SubscriptionPendingTransactionsResponse = {
+export type SubscriptionNewTransactionReceiptsResponse = {
   subscription_id: SUBSCRIPTION_ID;
-  result: TXN_HASH | TXN_WITH_HASH;
+  result: TXN_RECEIPT_WITH_BLOCK_INFO;
+};
+
+/**
+ * Notification to the client of a new transaction, with its current finality status
+ */
+export type SubscriptionNewTransactionResponse = {
+  subscription_id: SUBSCRIPTION_ID;
+  /**
+   * A transaction and its current finality status
+   */
+  result: TXN_WITH_HASH & { finality_status: TXN_STATUS_WITHOUT_L1 }; // TODO: this should be called transaction_status
 };
 
 export type SubscriptionReorgResponse = {
@@ -281,9 +294,10 @@ export type EVENT_FILTER = {
 };
 
 /**
- * same as BLOCK_ID, but without 'pre_confirmed'
+ * same as BLOCK_ID, but without 'pre_confirmed' and 'l1_accepted'
  */
-export type SUBSCRIPTION_BLOCK_ID = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
+// export type SUBSCRIPTION_BLOCK_ID9 = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
+export type SUBSCRIPTION_BLOCK_ID = Exclude<BLOCK_ID, 'pre_confirmed' | 'l1_accepted'>; // TODO: Provjeri tagove na tipu.
 
 /**
  * An object describing the node synchronization status
@@ -729,27 +743,13 @@ export type TXN_RECEIPT =
 /**
  * A transaction receipt with block information
  */
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
-  (
-    | {
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_hash: BLOCK_HASH;
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_number: BLOCK_NUMBER;
-      }
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & { block_number: BLOCK_NUMBER } & (
+    | { block_hash: BLOCK_HASH }
     | {
         /**
          * If this field is missing, it means the receipt belongs to the pre-confirmed block
          */
         block_hash: never;
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_number: never;
       }
   );
 
