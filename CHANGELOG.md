@@ -1,3 +1,10 @@
+# [0.9.0-beta.5](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.4...v0.9.0-beta.5) (2025-08-01)
+
+
+### Bug Fixes
+
+* rpc09-rc3 ([#48](https://github.com/starknet-io/types-js/issues/48)) ([22ed60b](https://github.com/starknet-io/types-js/commit/22ed60b2055620ea332bd52590ab379b8ebf4b1e))
+
 # [0.9.0-beta.4](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.3...v0.9.0-beta.4) (2025-07-21)
 
 
