@@ -11,3 +11,14 @@ node_modules
 npm-debug.log
 package
 yarn.lock
+.claude/
+.hive-mind/
+.mcp.json
+.roo/
+.roomodes
+.swarm/
+claude-flow
+claude-flow.bat
+claude-flow.config.json
+claude-flow.ps1
+memory/

@@ -1,7 +1,6 @@
 //    ******************
 //    * PRIMITIVES
 //    ******************
-
 import type {
   ABI_TYPE_CONSTRUCTOR,
   ABI_TYPE_FUNCTION,
@@ -102,25 +101,18 @@ export type ENTRY_POINT_TYPE =
   | Uppercase<ABI_TYPE_CONSTRUCTOR>;
 
 /**
- * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
- */
-export type TXN_STATUS =
-  | STATUS_RECEIVED
-  | STATUS_CANDIDATE
-  | STATUS_PRE_CONFIRMED
-  | STATUS_ACCEPTED_ON_L2
-  | STATUS_ACCEPTED_ON_L1;
-/**
  * Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
  */
 export type SIMULATION_FLAG =
   | typeof ESimulationFlag.SKIP_VALIDATE
   | typeof ESimulationFlag.SKIP_FEE_CHARGE;
+
 /**
  * Data availability mode.
  * Specifies a storage domain in Starknet. Each domain has different guarantees regarding availability
  */
 export type DA_MODE = EDataAvailabilityMode;
+
 /**
  * The type of the transaction
  */
@@ -130,6 +122,17 @@ export type TXN_TYPE =
   | TXN_TYPE_DEPLOY_ACCOUNT
   | TXN_TYPE_INVOKE
   | Uppercase<ABI_TYPE_L1_HANDLER>;
+
+/**
+ * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
+ */
+export type TXN_STATUS =
+  | STATUS_RECEIVED
+  | STATUS_CANDIDATE
+  | STATUS_PRE_CONFIRMED
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1;
+
 /**
  * The finality status of the transaction
  */
@@ -137,18 +140,22 @@ export type TXN_FINALITY_STATUS =
   | STATUS_PRE_CONFIRMED
   | STATUS_ACCEPTED_ON_L2
   | STATUS_ACCEPTED_ON_L1;
+
 /**
  * The execution status of the transaction
  */
 export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
+
 /**
  * The status of the block
  */
 export type BLOCK_STATUS = EBlockStatus;
+
 /**
  * A block identifier that can be either a block hash, block number, or a block tag
  */
 export type BLOCK_ID = BLOCK_SELECTOR | BLOCK_TAG;
+
 /**
  * A block selector that can be either a block hash or block number
  */
@@ -160,6 +167,7 @@ export type BLOCK_SELECTOR = SimpleOneOf<
     block_number: BLOCK_NUMBER;
   }
 >;
+
 /**
  * A tag specifying a dynamic reference to a block.
  * Tag `l1_accepted` refers to the latest Starknet block which was included in a state update on L1 and finalized by the consensus on L1.
@@ -168,7 +176,7 @@ export type BLOCK_SELECTOR = SimpleOneOf<
  * @see EBlockTag
  */
 export type BLOCK_TAG = EBlockTag;
-export type SUBSCRIPTION_BLOCK_TAG = 'latest';
+export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>;
 
 //    *****************
 //    * WEBSOCKET API
@@ -205,27 +213,47 @@ export type REORG_DATA = {
   ending_block_number: BLOCK_NUMBER;
 };
 
-export type SubscriptionNewHeadsResponse = {
+export type NewHeadsEvent = {
   subscription_id: SUBSCRIPTION_ID;
   result: BLOCK_HEADER;
 };
 
-export type SubscriptionEventsResponse = {
+/**
+ * Notification to the client of a new event. The event also includes the finality status of the transaction emitting the event
+ */
+export type StarknetEventsEvent = {
   subscription_id: SUBSCRIPTION_ID;
-  result: EMITTED_EVENT;
+  result: EMITTED_EVENT & { finality_status: TXN_FINALITY_STATUS }; // TODO: check name of the property as spec do not define it
 };
 
-export type SubscriptionTransactionsStatusResponse = {
+/**
+ * Notification to the client of a new transaction status update
+ */
+export type TransactionsStatusEvent = {
   subscription_id: SUBSCRIPTION_ID;
+  /**
+   * Transaction status result, including tx hash, finality status and execution status
+   */
   result: NEW_TXN_STATUS;
 };
 
-export type SubscriptionPendingTransactionsResponse = {
+export type NewTransactionReceiptsEvent = {
   subscription_id: SUBSCRIPTION_ID;
-  result: TXN_HASH | TXN_WITH_HASH;
+  result: TXN_RECEIPT_WITH_BLOCK_INFO;
 };
 
-export type SubscriptionReorgResponse = {
+/**
+ * Notification to the client of a new transaction, with its current finality status
+ */
+export type NewTransactionEvent = {
+  subscription_id: SUBSCRIPTION_ID;
+  /**
+   * A transaction and its current finality status
+   */
+  result: TXN_WITH_HASH & { finality_status: TXN_STATUS_WITHOUT_L1 }; // TODO: this should be called transaction_status
+};
+
+export type ReorgEvent = {
   subscription_id: SUBSCRIPTION_ID;
   result: REORG_DATA;
 };
@@ -285,9 +313,9 @@ export type EVENT_FILTER = {
 };
 
 /**
- * same as BLOCK_ID, but without 'pre_confirmed'
+ * same as BLOCK_ID, but without 'pre_confirmed' and 'l1_accepted'
  */
-export type SUBSCRIPTION_BLOCK_ID = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
+export type SUBSCRIPTION_BLOCK_ID = Exclude<BLOCK_ID, 'pre_confirmed' | 'l1_accepted'>;
 
 /**
  * An object describing the node synchronization status
@@ -733,27 +761,13 @@ export type TXN_RECEIPT =
 /**
  * A transaction receipt with block information
  */
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
-  (
-    | {
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_hash: BLOCK_HASH;
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_number: BLOCK_NUMBER;
-      }
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & { block_number: BLOCK_NUMBER } & (
+    | { block_hash: BLOCK_HASH }
     | {
         /**
          * If this field is missing, it means the receipt belongs to the pre-confirmed block
          */
         block_hash: never;
-        /**
-         * If this field is missing, it means the receipt belongs to the pre-confirmed block
-         */
-        block_number: never;
       }
   );
 
