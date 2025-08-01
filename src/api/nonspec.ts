@@ -38,16 +38,15 @@ import type {
   TRANSACTION_TRACE,
   TXN,
   TXN_EXECUTION_STATUS,
+  TXN_FINALITY_STATUS,
   TXN_HASH,
   TXN_RECEIPT_WITH_BLOCK_INFO,
-  TXN_STATUS,
   TXN_STATUS_RESULT,
   TXN_WITH_HASH,
 } from './components.js';
 import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import { OneOf } from './expansions/helpless.js';
 import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
-import type { STATUS_CANDIDATE, STATUS_RECEIVED } from './constants.js';
 
 // METHOD RESPONSES
 // response starknet_getClass, starknet_getClassAt
@@ -161,7 +160,7 @@ export type L1L2MessageStatus = {
   /**
    * finality status of the L1 -> L2 messages sent by the l1 transaction
    */
-  finality_status: Exclude<TXN_STATUS, STATUS_RECEIVED | STATUS_CANDIDATE>;
+  finality_status: TXN_FINALITY_STATUS;
   /**
    * the failure reason, only appears if finality_status is REJECTED
    */

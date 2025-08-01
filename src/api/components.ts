@@ -160,7 +160,11 @@ export type BLOCK_SELECTOR = SimpleOneOf<
   }
 >;
 /**
- * A block tag specifying a dynamic reference to a block
+ * A tag specifying a dynamic reference to a block.
+ * Tag `l1_accepted` refers to the latest Starknet block which was included in a state update on L1 and finalized by the consensus on L1.
+ * Tag `latest` refers to the latest Starknet block finalized by the consensus on L2.
+ * Tag `pre_confirmed` refers to the block which is currently being built by the block proposer in height `latest` + 1.
+ * @see EBlockTag
  */
 export type BLOCK_TAG = EBlockTag;
 export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>;
@@ -1231,7 +1235,7 @@ export type TXN_STATUS_RESULT = {
   finality_status: TXN_STATUS;
   execution_status?: TXN_EXECUTION_STATUS;
   /**
-   * The failure reason, only appears if finality_status is REJECTED or execution_status is REVERTED
+   * The failure reason, only appears if execution_status is REVERTED
    */
   failure_reason?: string;
 };
