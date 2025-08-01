@@ -1,0 +1,14 @@
+{
+  // TypeDoc-specific configuration to avoid module resolution conflicts
+  "extends": "./tsconfig.base.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "module": "es2015",
+    "target": "ES2021",
+    "declaration": true,
+    "noEmit": false,
+    "skipLibCheck": true
+  }
+}

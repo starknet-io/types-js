@@ -1,5 +1,5 @@
-import { ADDRESS, FELT, SIGNATURE } from '../api/components';
-import { OutsideExecutionTypedData, TIME_BOUNDS } from '../wallet-api';
+import { ADDRESS, FELT, SIGNATURE } from '../api/components.js';
+import { OutsideExecutionTypedData, TIME_BOUNDS } from '../wallet-api/index.js';
 
 //    ******************
 //    * PRIMITIVES

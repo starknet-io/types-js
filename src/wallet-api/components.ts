@@ -1,4 +1,4 @@
-import type { CONTRACT_CLASS, FELT, ADDRESS, SIGNATURE } from '../api/components.js';
+import type { ADDRESS, CONTRACT_CLASS, FELT, SIGNATURE } from '../api/components.js';
 import type { ChainId } from '../api/index.js';
 
 /**
@@ -11,13 +11,13 @@ export type Signature = SIGNATURE;
 /**
  * The transaction hash, as assigned in Starknet
  */
-export type PADDED_TXN_HASH = PADDED_FELT; // TODO: Should be like TXN_HASH_PADDED to avoid collision with api TXN_HASH
+export type PADDED_TXN_HASH = PADDED_FELT;
 
 /**
- * A padded felt represent 0x0 + (0-7) + (62 hex digits)
- * @pattern ^0x(0[0-7]{1}[a-fA-F0-9]{62}$)
+ * A padded felt represented as 62 hex digits, 3 bits, and 5 leading zero bits.
+ * @pattern ^0x(0[0-8]{1}[a-fA-F0-9]{62}$)
  */
-export type PADDED_FELT = string; // TODO: STORAGE_KEY should also be PADDED_FELT to remove duplication, and padded felt added to api spec ?
+export type PADDED_FELT = string;
 
 /**
  * A Starknet RPC spec version, only two numbers are provided
@@ -29,7 +29,7 @@ export type SpecVersion = string;
  * ERC20 Token Symbol (min:1 char - max:6 chars)
  * @pattern ^[A-Za-z0-9]{1,6}$
  */
-export type TokenSymbol = string; // TODO: I would recommend rename to TOKEN_SYMBOL to avoid collision with js Symbol (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)
+export type TokenSymbol = string;
 
 /**
  * Starknet Token

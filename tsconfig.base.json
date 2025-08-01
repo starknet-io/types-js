@@ -4,7 +4,8 @@
   "compilerOptions": {
     // Incremental builds
     // NOTE: Enabling incremental builds speeds up `tsc`. Keep in mind though that it does not reliably bust the cache when the `tsconfig.json` file changes.
-    // "incremental": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
 
     // Type checking
     "strict": true,
@@ -15,9 +16,14 @@
     "noImplicitOverride": true, // Not enabled by default in `strict` mode.
     "noUnusedLocals": true, // Not enabled by default in `strict` mode.
     "noUnusedParameters": true, // Not enabled by default in `strict` mode.
-    // TODO: The following options are also not enabled by default in `strict` mode and would be nice to have but would require some adjustments to the codebase.
-    // "exactOptionalPropertyTypes": true,
-    // "noUncheckedIndexedAccess": true,
+    // Enhanced type safety - Gradual adoption for 10/10 architecture
+    // Note: Enable these progressively after codebase adaptation
+    // "exactOptionalPropertyTypes": true,  // TODO: Enable after fixing optional property usage
+    // "noUncheckedIndexedAccess": true,    // TODO: Enable after adding index signature guards
+    
+    // Additional strict checks (these are safer to enable)
+    "noImplicitAny": true,
+    "noImplicitThis": true,
 
     // JavaScript support
     "allowJs": false,

@@ -3,9 +3,9 @@ import {
   TOKEN_DATA,
   EXECUTION_PARAMETERS,
   EXECUTABLE_USER_TRANSACTION,
-} from './components';
-import * as Errors from './errors';
-import { BuildTransactionResponse, ExecuteResponse } from './nonspec';
+} from './components.js';
+import * as Errors from './errors.js';
+import { BuildTransactionResponse, ExecuteResponse } from './nonspec.js';
 
 type ReadMethods = {
   // Returns the status of the paymaster service

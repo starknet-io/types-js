@@ -1,0 +1,132 @@
+# Validation Workflow - Build & Quality Checks
+# 
+# This workflow focuses on build validation and code quality.
+# For test coverage, see: .github/workflows/test-coverage.yml
+
+name: Validate Build
+
+on:
+  push:
+    branches: [main, develop, beta, alpha]
+  pull_request:
+    branches: [main, develop, beta]
+  workflow_dispatch:
+    inputs:
+      skip_cache:
+        description: 'Skip build cache'
+        type: boolean
+        default: false
+
+env:
+  NODE_OPTIONS: '--max-old-space-size=4096'
+
+jobs:
+  validate:
+    name: Validate (${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    outputs:
+      esm-size: ${{ steps.bundle-check.outputs.esm-size }}
+      cjs-size: ${{ steps.bundle-check.outputs.cjs-size }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Cache TypeScript compilation
+        if: ${{ !inputs.skip_cache }}
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/.tsbuildinfo
+            node_modules/.cache
+            .eslintcache
+          key: ${{ runner.os }}-build-${{ matrix.node-version }}-${{ hashFiles('**/tsconfig*.json', '**/package-lock.json', '**/.eslintrc*') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ matrix.node-version }}-${{ hashFiles('**/tsconfig*.json') }}
+            ${{ runner.os }}-build-${{ matrix.node-version }}-
+            ${{ runner.os }}-build-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Validate code quality
+        run: |
+          npm run lint
+          npm run ts:check
+
+      - name: Run build pipeline
+        run: npm run build
+
+      - name: Bundle size analysis
+        id: bundle-check
+        run: |
+          npm run analyze
+          
+          # Output sizes for matrix summary
+          ESM_SIZE=$(gzip -c dist/esm/index.js | wc -c)
+          CJS_SIZE=$(gzip -c dist/cjs/index.js | wc -c)
+          
+          echo "esm-size=${ESM_SIZE}" >> $GITHUB_OUTPUT
+          echo "cjs-size=${CJS_SIZE}" >> $GITHUB_OUTPUT
+          
+          echo "### Bundle Analysis 📦" >> $GITHUB_STEP_SUMMARY
+          echo "| Format | Size (gzip) | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------------|---------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ESM | ${ESM_SIZE}B | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| CJS | ${CJS_SIZE}B | ✅ |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Type-check test files
+        run: npm run test:types
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'
+        with:
+          name: build-artifacts-${{ github.sha }}
+          path: |
+            dist/
+            docs/
+          retention-days: 7
+          compression-level: 9
+
+      - name: Upload TypeScript trace
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x' && failure()
+        with:
+          name: typescript-trace-${{ github.sha }}
+          path: trace/
+          retention-days: 3
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: validate
+    if: always()
+    
+    steps:
+      - name: Check validation results
+        run: |
+          if [ "${{ needs.validate.result }}" != "success" ]; then
+            echo "::error::Validation failed"
+            exit 1
+          fi
+          
+          echo "✅ All validation checks passed"
+          echo "📊 Bundle sizes:"
+          echo "  ESM: ${{ needs.validate.outputs.esm-size }}B (gzip)"
+          echo "  CJS: ${{ needs.validate.outputs.cjs-size }}B (gzip)"

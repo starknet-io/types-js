@@ -20,6 +20,9 @@
   <a href="https://github.com/starknet-io/types-js/blob/main/LICENSE/">
     <img src="https://img.shields.io/badge/license-MIT-black">
   </a>
+  <a href="https://github.com/starknet-io/types-js/actions/workflows/test-coverage.yml">
+    <img src="https://raw.githubusercontent.com/starknet-io/types-js/main/.github/badges/coverage.svg">
+  </a>
   <a href="https://github.com/starknet-io/%40starknet-io%2Ftypes-js/stargazers">
     <img src='https://img.shields.io/github/stars/starknet-io/types-js?color=yellow' />
   </a>
@@ -101,16 +104,77 @@ MAJOR and MINOR version of this package follows [starknet-spec](https://github.c
 
 Ex. Starknet types-js v0.7 == Starknet Spec v0.7
 
-## Devs Build
+## Testing
 
+This project maintains comprehensive test coverage with automated quality assurance:
+
+### 🧪 Test Scripts
+- **`npm test`** - Complete test suite: validation + type checking + Jest with coverage + verification
+- **`npm run test:develop`** - Development-friendly testing: lint + type-check + Jest with coverage
+
+### 📊 Coverage Reporting
+- **Self-Hosted Dynamic Badge** - Coverage badge generated and updated automatically by GitHub Actions
+- **No External Dependencies** - Badge works entirely within GitHub infrastructure
+- **Real-Time Updates** - Badge reflects actual test coverage from latest CI run
+- **Multiple Coverage Formats** - LCOV, JSON, and HTML coverage reports generated
+- **Automatic Badge Colors** - Green (100%), Yellow (70-89%), Red (<70%)
+
+### 📊 Coverage Areas
+- **Core Types & Guards** - FELT, Address, Storage validation functions
+- **API Components** - StarkNet JSON-RPC types and interfaces  
+- **Wallet API** - Wallet integration and typed data structures
+- **Utilities** - Type-safe object manipulation and branded types
+- **Extensions** - Plugin architecture and validator system
+- **Integration** - Real-world usage patterns and package consumption
+
+### ✅ Quality Assurance
+All tests pass with 100% coverage including:
+- Unit tests for all core functionality
+- Integration tests for real-world scenarios  
+- Package consumption verification
+- TypeScript compilation validation
+- ESLint code quality checks
+
+## Development Scripts
+
+### 📦 Build Scripts
+- **`npm run build`** - Main build command (cleans and builds all formats in parallel)
+- **`npm run build:cjs`** - Builds CommonJS module format (Node.js)
+- **`npm run build:esm`** - Builds ES Module format (modern bundlers with tree-shaking)
+- **`npm run build:types`** - Generates TypeScript declaration files (.d.ts)
+
+### 🔍 Analysis & Debug Scripts
+- **`npm run build:analyze`** - Counts TypeScript processed files (compilation debugging)
+- **`npm run build:trace`** - Generates detailed TypeScript compilation trace
+- **`npm run analyze`** - Runs bundlesize check (ensures <10KB gzipped)
+
+### 🧹 Maintenance Scripts
+- **`npm run clean`** - Removes build artifacts (dist folder and trace files)
+- **`npm run format`** - Auto-formats all code files using Prettier
+
+### ✅ Quality Assurance Scripts
+- **`npm run lint`** - Runs ESLint to check code quality and auto-fix issues
+- **`npm run ts:check`** - Type-checks code without emitting files
+- **`npm run validate`** - Comprehensive validation: lint + type-check + build (parallel)
+- **`npm run test:types`** - Type-checks test files specifically
+
+### 📚 Documentation Scripts
+- **`npm run docs:generate`** - Creates API documentation using TypeDoc
+- **`npm run docs:serve`** - Serves documentation locally on port 3000
+
+### 🎯 Recommended Usage
+**For development:**
 ```bash
-npm run build
+npm run validate    # Before committing - checks everything
+npm run build      # When you need fresh builds
+npm run format     # To format code before committing
 ```
 
-## Devs Testing
-
+**For debugging:**
 ```bash
-npm run lint
+npm run build:analyze  # Count compiled files
+npm run build:trace   # Detailed compilation analysis
+npm run analyze       # Check bundle sizes
 ```
 
 ## License

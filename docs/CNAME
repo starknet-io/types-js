@@ -1,0 +1,14 @@
+# GitHub Pages Custom Domain Configuration
+# 
+# To use a custom domain for your documentation:
+# 1. Uncomment the line below and replace with your domain
+# 2. Configure DNS records:
+#    - CNAME record: docs.yourdomain.com -> starknet-io.github.io
+#    - Or A records for apex domain to GitHub Pages IPs
+# 3. Enable HTTPS in repository settings
+#
+# Example:
+# docs.starknet-types.io
+
+# For now, using default GitHub Pages domain:
+# https://starknet-io.github.io/types-js/
