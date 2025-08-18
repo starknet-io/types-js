@@ -1,3 +1,37 @@
+# [0.9.0](https://github.com/starknet-io/types-js/compare/v0.8.4...v0.9.0) (2025-08-18)
+
+
+### Bug Fixes
+
+* add excplusive OneOf to the most of the unions, TRANSACTION_TRACE should be fixed if spec is correct ([d4dda7e](https://github.com/starknet-io/types-js/commit/d4dda7e456c5d0ecc189c213e0e9dfed563a472f))
+* beta update ([d10b199](https://github.com/starknet-io/types-js/commit/d10b199346dedda1f37073405cef428f46d63a7d))
+* consts transaction status ([#44](https://github.com/starknet-io/types-js/issues/44)) ([68bfa2f](https://github.com/starknet-io/types-js/commit/68bfa2fced110d1b107bd204834c5d5d0f4873b8))
+* export all from executable ([175e8ab](https://github.com/starknet-io/types-js/commit/175e8aba665688a26feb8e4042ebd395c6395a55))
+* export CompiledCasm response type, add logo svg ([5a019eb](https://github.com/starknet-io/types-js/commit/5a019ebc8f5d15c55b42a0a81c62da2cab43910d))
+* proposed changes on exports ([#23](https://github.com/starknet-io/types-js/issues/23)) ([5e966b9](https://github.com/starknet-io/types-js/commit/5e966b90126d5054bf519f09575271d04e4ffc25))
+* readme beta install path ([51a6174](https://github.com/starknet-io/types-js/commit/51a61746d2935e16271c2963f37f614d3e37b6c4))
+* remove rejected constant ([#49](https://github.com/starknet-io/types-js/issues/49)) ([fa98159](https://github.com/starknet-io/types-js/commit/fa98159a5e793db3f81a09067b5189ab5d6394fc))
+* remove unused errors ([5093b77](https://github.com/starknet-io/types-js/commit/5093b7725f1b773194c61a751b9adafeb3f32001))
+* rpc09 fix2 ([#45](https://github.com/starknet-io/types-js/issues/45)) ([9b65f09](https://github.com/starknet-io/types-js/commit/9b65f096550ff5cea82795c21608b5ecbdf7e1e5))
+* rpc09-rc3 ([#48](https://github.com/starknet-io/types-js/issues/48)) ([22ed60b](https://github.com/starknet-io/types-js/commit/22ed60b2055620ea332bd52590ab379b8ebf4b1e))
+* Spec rc3 ([5ec8eac](https://github.com/starknet-io/types-js/commit/5ec8eac31250beb6822f87319e3d4e21cf8b78a7))
+* spec to 0.8.0 rc1 ([faa86db](https://github.com/starknet-io/types-js/commit/faa86db6c67124deccbbe3daf6687352627fbe28))
+* split ws and https methods ([669f003](https://github.com/starknet-io/types-js/commit/669f003aea2ddae9fcc166e957dcc74995fdf646))
+* transaction receipt block info properties ([edc9e25](https://github.com/starknet-io/types-js/commit/edc9e25cf9c13e409d43f7b1c01758fde9788f5b))
+* update rpc 8.0 ([#34](https://github.com/starknet-io/types-js/issues/34)) ([026ecb6](https://github.com/starknet-io/types-js/commit/026ecb6150dce902113ffd02ba15fa89633a8929))
+* Update spec to 0.8.0 rc1 ([#22](https://github.com/starknet-io/types-js/issues/22)) ([8016199](https://github.com/starknet-io/types-js/commit/80161996d4f072e36a6f65f50ca58a57bd4b0d0a))
+* update to rc2 tag ([#46](https://github.com/starknet-io/types-js/issues/46)) ([cbe44d2](https://github.com/starknet-io/types-js/commit/cbe44d2f34877f14c8ac3a395cb4dbfa0b6da738))
+* update to spec 0.8-rc2, deprecate <v3 transactions ([1bc1339](https://github.com/starknet-io/types-js/commit/1bc1339041b5b17739cb5444632be6661a8c367f))
+
+
+### Features
+
+* beta release ([e830783](https://github.com/starknet-io/types-js/commit/e830783ed5501d6b78ed737c229a132b16f91a39))
+* narrow filter for transaction receipts ([38ead6a](https://github.com/starknet-io/types-js/commit/38ead6a51daa39cab67de06e634a5222cb83f92e))
+* narrow filter for transaction receipts ([3471b55](https://github.com/starknet-io/types-js/commit/3471b55cbe650b54f24000308ccaf116ba66f494))
+* rpc spec 0.8.rc0 implementation, with known issues ([#19](https://github.com/starknet-io/types-js/issues/19)) ([d0bc541](https://github.com/starknet-io/types-js/commit/d0bc54162ef42c39a0665c7fc76b2e7fb4c22b80))
+* v0.9.0 rc.2 ([#42](https://github.com/starknet-io/types-js/issues/42)) ([7e9736a](https://github.com/starknet-io/types-js/commit/7e9736afa4700b51bf64e853529891455ff6461d))
+
 # [0.9.0-beta.6](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.5...v0.9.0-beta.6) (2025-08-18)
 
 
