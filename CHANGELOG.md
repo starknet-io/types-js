@@ -1,3 +1,10 @@
+## [0.9.1](https://github.com/starknet-io/types-js/compare/v0.9.0...v0.9.1) (2025-08-18)
+
+
+### Bug Fixes
+
+* readme ([8b2ed41](https://github.com/starknet-io/types-js/commit/8b2ed41e3cb5a45ab8d6385713ea91e1ef31346d))
+
 # [0.9.0](https://github.com/starknet-io/types-js/compare/v0.8.4...v0.9.0) (2025-08-18)
 
 
