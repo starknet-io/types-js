@@ -1,12 +1,12 @@
 //    ******************
 //    * PRIMITIVES
 //    ******************
-
 import type {
   ABI_TYPE_CONSTRUCTOR,
   ABI_TYPE_FUNCTION,
   ABI_TYPE_L1_HANDLER,
   CALL_TYPE,
+  EBlockStatus,
   EBlockTag,
   EDataAvailabilityMode,
   ESimulationFlag,
@@ -19,9 +19,9 @@ import type {
   STATE_MUTABILITY_VIEW,
   STATUS_ACCEPTED_ON_L1,
   STATUS_ACCEPTED_ON_L2,
-  STATUS_PENDING,
+  STATUS_CANDIDATE,
+  STATUS_PRE_CONFIRMED,
   STATUS_RECEIVED,
-  STATUS_REJECTED,
   STATUS_REVERTED,
   STATUS_SUCCEEDED,
   STRUCT_ABI_TYPE,
@@ -52,22 +52,25 @@ export type STORAGE_KEY = string;
  */
 export type ADDRESS = FELT;
 /**
- * string representing an integer number in prefixed hexadecimal format
+ * string representing an unsigned integer number in prefixed hexadecimal format
  * @example "0x.."
  * @pattern ^0x[a-fA-F0-9]+$
  */
 export type NUM_AS_HEX = string;
 /**
- * 64 bit integers, represented by hex string of length at most 16
+ * 64 bit unsigned integers, represented by hex string of length at most 16
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,15})$"
  */
 export type u64 = string;
 /**
- * 128 bit integers, represented by hex string of length at most 32
+ * 128 bit unsigned integers, represented by hex string of length at most 32
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,31})$"
  */
 export type u128 = string;
 export type SIGNATURE = Array<FELT>;
+/**
+ * @minimum 0
+ */
 export type BLOCK_NUMBER = number;
 export type BLOCK_HASH = FELT;
 /**
@@ -98,37 +101,64 @@ export type ENTRY_POINT_TYPE =
   | Uppercase<ABI_TYPE_CONSTRUCTOR>;
 
 /**
- * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
- */
-export type TXN_STATUS =
-  | STATUS_RECEIVED
-  | STATUS_REJECTED
-  | STATUS_ACCEPTED_ON_L2
-  | STATUS_ACCEPTED_ON_L1;
-/**
  * Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
  */
 export type SIMULATION_FLAG =
   | typeof ESimulationFlag.SKIP_VALIDATE
   | typeof ESimulationFlag.SKIP_FEE_CHARGE;
+
 /**
  * Data availability mode.
  * Specifies a storage domain in Starknet. Each domain has different guarantees regarding availability
  */
 export type DA_MODE = EDataAvailabilityMode;
+
+/**
+ * The type of the transaction
+ */
 export type TXN_TYPE =
   | TXN_TYPE_DECLARE
   | TXN_TYPE_DEPLOY
   | TXN_TYPE_DEPLOY_ACCOUNT
   | TXN_TYPE_INVOKE
   | Uppercase<ABI_TYPE_L1_HANDLER>;
-export type TXN_FINALITY_STATUS = STATUS_ACCEPTED_ON_L2 | STATUS_ACCEPTED_ON_L1;
-export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
-export type BLOCK_STATUS =
-  | STATUS_PENDING
+
+/**
+ * Represents the finality status of the transaction, including the case the txn is still in the mempool or failed validation during the block construction phase
+ */
+export type TXN_STATUS =
+  | STATUS_RECEIVED
+  | STATUS_CANDIDATE
+  | STATUS_PRE_CONFIRMED
   | STATUS_ACCEPTED_ON_L2
-  | STATUS_ACCEPTED_ON_L1
-  | STATUS_REJECTED;
+  | STATUS_ACCEPTED_ON_L1;
+
+/**
+ * The finality status of the transaction
+ */
+export type TXN_FINALITY_STATUS =
+  | STATUS_PRE_CONFIRMED
+  | STATUS_ACCEPTED_ON_L2
+  | STATUS_ACCEPTED_ON_L1;
+
+/**
+ * The execution status of the transaction
+ */
+export type TXN_EXECUTION_STATUS = STATUS_SUCCEEDED | STATUS_REVERTED;
+
+/**
+ * The status of the block
+ */
+export type BLOCK_STATUS = EBlockStatus;
+
+/**
+ * A block identifier that can be either a block hash, block number, or a block tag
+ */
+export type BLOCK_ID = BLOCK_SELECTOR | BLOCK_TAG;
+
+/**
+ * A block selector that can be either a block hash or block number
+ */
 export type BLOCK_SELECTOR = SimpleOneOf<
   {
     block_hash: BLOCK_HASH;
@@ -137,8 +167,16 @@ export type BLOCK_SELECTOR = SimpleOneOf<
     block_number: BLOCK_NUMBER;
   }
 >;
+
+/**
+ * A tag specifying a dynamic reference to a block.
+ * Tag `l1_accepted` refers to the latest Starknet block which was included in a state update on L1 and finalized by the consensus on L1.
+ * Tag `latest` refers to the latest Starknet block finalized by the consensus on L2.
+ * Tag `pre_confirmed` refers to the block which is currently being built by the block proposer in height `latest` + 1.
+ * @see EBlockTag
+ */
 export type BLOCK_TAG = EBlockTag;
-export type SUBSCRIPTION_BLOCK_TAG = 'latest';
+export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>;
 
 //    *****************
 //    * WEBSOCKET API
@@ -175,27 +213,47 @@ export type REORG_DATA = {
   ending_block_number: BLOCK_NUMBER;
 };
 
-export type SubscriptionNewHeadsResponse = {
+export type NewHeadsEvent = {
   subscription_id: SUBSCRIPTION_ID;
   result: BLOCK_HEADER;
 };
 
-export type SubscriptionEventsResponse = {
+/**
+ * Notification to the client of a new event. The event also includes the finality status of the transaction emitting the event
+ */
+export type StarknetEventsEvent = {
   subscription_id: SUBSCRIPTION_ID;
-  result: EMITTED_EVENT;
+  result: EMITTED_EVENT & { finality_status: TXN_FINALITY_STATUS }; // TODO: check name of the property as spec do not define it
 };
 
-export type SubscriptionTransactionsStatusResponse = {
+/**
+ * Notification to the client of a new transaction status update
+ */
+export type TransactionsStatusEvent = {
   subscription_id: SUBSCRIPTION_ID;
+  /**
+   * Transaction status result, including tx hash, finality status and execution status
+   */
   result: NEW_TXN_STATUS;
 };
 
-export type SubscriptionPendingTransactionsResponse = {
+export type NewTransactionReceiptsEvent = {
   subscription_id: SUBSCRIPTION_ID;
-  result: TXN_HASH | TXN_WITH_HASH;
+  result: TXN_RECEIPT_WITH_BLOCK_INFO;
 };
 
-export type SubscriptionReorgResponse = {
+/**
+ * Notification to the client of a new transaction, with its current finality status
+ */
+export type NewTransactionEvent = {
+  subscription_id: SUBSCRIPTION_ID;
+  /**
+   * A transaction and its current finality status
+   */
+  result: TXN_WITH_HASH & { finality_status: TXN_STATUS_WITHOUT_L1 }; // TODO: this should be called transaction_status
+};
+
+export type ReorgEvent = {
   subscription_id: SUBSCRIPTION_ID;
   result: REORG_DATA;
 };
@@ -254,12 +312,14 @@ export type EVENT_FILTER = {
   keys?: EVENT_KEYS;
 };
 
-export type BLOCK_ID = BLOCK_SELECTOR | BLOCK_TAG;
 /**
- * same as BLOCK_ID, but without 'pending'
+ * same as BLOCK_ID, but without 'pre_confirmed' and 'l1_accepted'
  */
-export type SUBSCRIPTION_BLOCK_ID = BLOCK_SELECTOR | SUBSCRIPTION_BLOCK_TAG;
+export type SUBSCRIPTION_BLOCK_ID = Exclude<BLOCK_ID, 'pre_confirmed' | 'l1_accepted'>;
 
+/**
+ * An object describing the node synchronization status
+ */
 export type SYNC_STATUS = {
   starting_block_hash: BLOCK_HASH;
   starting_block_num: BLOCK_NUMBER;
@@ -269,21 +329,33 @@ export type SYNC_STATUS = {
   highest_block_num: BLOCK_NUMBER;
 };
 
+/**
+ * The declared class hash and compiled class hash
+ */
 export type NEW_CLASSES = {
   class_hash: FELT;
   compiled_class_hash: FELT;
 };
 
+/**
+ * The list of contracts whose class was replaced
+ */
 export type REPLACED_CLASS = {
   class_hash: FELT;
   contract_address: FELT;
 };
 
+/**
+ * The updated nonce per contract address
+ */
 export type NONCE_UPDATE = {
   contract_address: ADDRESS;
   nonce: FELT;
 };
 
+/**
+ * The change in state applied in this block
+ */
 export type STATE_DIFF = {
   storage_diffs: CONTRACT_STORAGE_DIFF_ITEM[];
   deprecated_declared_classes: FELT[];
@@ -293,7 +365,10 @@ export type STATE_DIFF = {
   nonces: NONCE_UPDATE[];
 };
 
-export type PENDING_STATE_UPDATE = {
+/**
+ * Pre-confirmed block state update
+ */
+export type PRE_CONFIRMED_STATE_UPDATE = {
   old_root: FELT;
   state_diff: STATE_DIFF;
   block_hash: never; // diverge: this makes it distinct
@@ -335,33 +410,71 @@ export type BLOCK_HEADER = {
   starknet_version: string;
 };
 
-export type PENDING_BLOCK_HEADER = {
-  parent_hash: BLOCK_HASH;
+export type PRE_CONFIRMED_BLOCK_HEADER = {
+  /**
+   * The block number of the block that the proposer is currently building. Note that this is a local view of the node, whose accuracy depends on its polling interval length.
+   */
+  block_number: BLOCK_NUMBER;
+  /**
+   * The time in which the block was created, encoded in Unix time
+   */
   timestamp: number;
+  /**
+   * The StarkNet identity of the sequencer submitting this block
+   */
   sequencer_address: FELT;
+  /**
+   * The price of l1 gas in the block
+   */
   l1_gas_price: RESOURCE_PRICE;
+  /**
+   * The price of l2 gas in the block
+   */
   l2_gas_price: RESOURCE_PRICE;
+  /**
+   * The price of l1 data gas in the block
+   */
   l1_data_gas_price: RESOURCE_PRICE;
+  /**
+   * specifies whether the data of this block is published via blob data or calldata
+   */
   l1_da_mode: L1_DA_MODE;
+  /**
+   * Semver of the current Starknet protocol
+   */
   starknet_version: string;
 };
 
+/**
+ * A block with transaction hashes
+ */
 export type BLOCK_WITH_TX_HASHES = { status: BLOCK_STATUS } & BLOCK_HEADER &
   BLOCK_BODY_WITH_TX_HASHES;
 
+/**
+ * A block with full transactions
+ */
 export type BLOCK_WITH_TXS = { status: BLOCK_STATUS } & BLOCK_HEADER & BLOCK_BODY_WITH_TXS;
 
+/**
+ * A block with full transactions and receipts
+ */
 export type BLOCK_WITH_RECEIPTS = {
   status: BLOCK_STATUS;
 } & BLOCK_HEADER &
   BLOCK_BODY_WITH_RECEIPTS;
 
-export type PENDING_BLOCK_WITH_TX_HASHES = BLOCK_BODY_WITH_TX_HASHES & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_TX_HASHES = BLOCK_BODY_WITH_TX_HASHES &
+  PRE_CONFIRMED_BLOCK_HEADER;
 
-export type PENDING_BLOCK_WITH_TXS = BLOCK_BODY_WITH_TXS & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_TXS = BLOCK_BODY_WITH_TXS & PRE_CONFIRMED_BLOCK_HEADER;
 
-export type PENDING_BLOCK_WITH_RECEIPTS = BLOCK_BODY_WITH_RECEIPTS & PENDING_BLOCK_HEADER;
+export type PRE_CONFIRMED_BLOCK_WITH_RECEIPTS = BLOCK_BODY_WITH_RECEIPTS &
+  PRE_CONFIRMED_BLOCK_HEADER;
 
+/**
+ * A new contract deployed as part of the state update
+ */
 export type DEPLOYED_CONTRACT_ITEM = {
   address: FELT;
   class_hash: FELT;
@@ -391,6 +504,9 @@ export type StorageDiffItem = {
 
 export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLOY_ACCOUNT_TXN;
 
+/**
+ * A transaction with its hash
+ */
 export type TXN_WITH_HASH = TXN & { transaction_hash: TXN_HASH };
 
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3;
@@ -567,6 +683,9 @@ export type L1_HANDLER_TXN = {
   nonce: NUM_AS_HEX;
 } & FUNCTION_CALL;
 
+/**
+ * Common properties shared by all transaction receipts
+ */
 export type COMMON_RECEIPT_PROPERTIES = {
   transaction_hash: TXN_HASH;
   actual_fee: FEE_PAYMENT;
@@ -576,38 +695,62 @@ export type COMMON_RECEIPT_PROPERTIES = {
   execution_resources: EXECUTION_RESOURCES;
 } & SimpleOneOf<SUCCESSFUL_COMMON_RECEIPT_PROPERTIES, REVERTED_COMMON_RECEIPT_PROPERTIES>;
 
+/**
+ * Properties specific to a successful transaction receipt
+ */
 type SUCCESSFUL_COMMON_RECEIPT_PROPERTIES = {
   execution_status: STATUS_SUCCEEDED;
 };
 
+/**
+ * Properties specific to a reverted transaction receipt
+ */
 type REVERTED_COMMON_RECEIPT_PROPERTIES = {
   execution_status: STATUS_REVERTED;
   revert_reason: string;
 };
 
+/**
+ * A transaction receipt for an invoke transaction
+ */
 export type INVOKE_TXN_RECEIPT = {
   type: TXN_TYPE_INVOKE;
 } & COMMON_RECEIPT_PROPERTIES;
 
+/**
+ * A transaction receipt for a declare transaction
+ */
 export type DECLARE_TXN_RECEIPT = {
   type: TXN_TYPE_DECLARE;
 } & COMMON_RECEIPT_PROPERTIES;
 
+/**
+ * A transaction receipt for a deploy account transaction
+ */
 export type DEPLOY_ACCOUNT_TXN_RECEIPT = {
   type: TXN_TYPE_DEPLOY_ACCOUNT;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
+/**
+ * A transaction receipt for a deploy transaction
+ */
 export type DEPLOY_TXN_RECEIPT = {
   type: TXN_TYPE_DEPLOY;
   contract_address: FELT;
 } & COMMON_RECEIPT_PROPERTIES;
 
+/**
+ * A transaction receipt for an L1 handler transaction
+ */
 export type L1_HANDLER_TXN_RECEIPT = {
   type: Uppercase<ABI_TYPE_L1_HANDLER>;
   message_hash: NUM_AS_HEX;
 } & COMMON_RECEIPT_PROPERTIES;
 
+/**
+ * All possible transaction receipt types
+ */
 export type TXN_RECEIPT =
   | INVOKE_TXN_RECEIPT
   | L1_HANDLER_TXN_RECEIPT
@@ -615,36 +758,31 @@ export type TXN_RECEIPT =
   | DEPLOY_TXN_RECEIPT
   | DEPLOY_ACCOUNT_TXN_RECEIPT;
 
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT &
-  (
+/**
+ * A transaction receipt with block information
+ */
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & { block_number: BLOCK_NUMBER } & (
+    | { block_hash: BLOCK_HASH }
     | {
         /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
-         */
-        block_hash: BLOCK_HASH;
-        /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
-         */
-        block_number: BLOCK_NUMBER;
-      }
-    | {
-        /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
+         * If this field is missing, it means the receipt belongs to the pre-confirmed block
          */
         block_hash: never;
-        /**
-         * "If this field is missing, it means the receipt belongs to the pending block"
-         */
-        block_number: never;
       }
   );
 
+/**
+ * A message sent from L2 to L1
+ */
 export type MSG_TO_L1 = {
   from_address: FELT;
   to_address: FELT;
   payload: FELT[];
 };
 
+/**
+ * A message sent from L1 to L2
+ */
 export type MSG_FROM_L1 = {
   from_address: ETH_ADDRESS;
   to_address: ADDRESS;
@@ -652,12 +790,18 @@ export type MSG_FROM_L1 = {
   payload: FELT[];
 };
 
+/**
+ * Function call information
+ */
 export type FUNCTION_CALL = {
   contract_address: ADDRESS;
   entry_point_selector: FELT;
   calldata: FELT[];
 };
 
+/**
+ * The definition of a StarkNet contract class
+ */
 export type CONTRACT_CLASS = {
   sierra_program: FELT[];
   contract_class_version: string;
@@ -692,6 +836,9 @@ export type DEPRECATED_CAIRO_ENTRY_POINT = {
 
 export type SIERRA_ENTRY_POINT = {
   selector: FELT;
+  /**
+   * @minimum 0
+   */
   function_idx: number;
 };
 
@@ -715,6 +862,7 @@ export type STRUCT_ABI_ENTRY = {
 export type STRUCT_MEMBER = TYPED_PARAMETER & {
   /**
    * offset of this property within the struct
+   * @minimum 0
    */
   offset: number;
 };
@@ -771,37 +919,56 @@ export type TYPED_PARAMETER = {
 export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = typeof ESimulationFlag.SKIP_VALIDATE;
 export type PRICE_UNIT = PRICE_UNIT_WEI | PRICE_UNIT_FRI;
 
-export type FEE_ESTIMATE = {
+export type FEE_ESTIMATE_COMMON = {
   /**
    * The Ethereum gas consumption of the transaction, charged for L1->L2 messages and, depending on the block's DA_MODE, state diffs.
    * Prev. name gas_consumed
    */
-  l1_gas_consumed: number;
+  l1_gas_consumed: u64;
   /**
    * The gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name gas_price
    */
-  l1_gas_price: number;
+  l1_gas_price: u128;
   /**
    * The L2 gas consumption of the transaction.
    */
-  l2_gas_consumed: number;
+  l2_gas_consumed: u64;
   /**
    * The L2 gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    */
-  l2_gas_price: number;
+  l2_gas_price: u128;
   /**
    * The Ethereum data gas consumption of the transaction.
    * Prev. name data_gas_consumed
    */
-  l1_data_gas_consumed: number;
+  l1_data_gas_consumed: u64;
   /**
    * The data gas price (in wei or fri, depending on the tx version) that was used in the cost estimation.
    * Prev. name data_gas_price
    */
-  l1_data_gas_price: number;
-  overall_fee: number;
-  unit: PRICE_UNIT;
+  l1_data_gas_price: u128;
+  /**
+   * The estimated fee for the transaction (in wei or fri, depending on the tx version), equals to l1_gas_consumed*l1_gas_price + l1_data_gas_consumed*l1_data_gas_price + l2_gas_consumed*l2_gas_price
+   */
+  overall_fee: u128;
+};
+
+export type FEE_ESTIMATE = FEE_ESTIMATE_COMMON & {
+  /**
+   * Units in which the fee is given, can only be FRI
+   */
+  unit: PRICE_UNIT_FRI;
+};
+
+/**
+ * Message fee estimate
+ */
+export type MESSAGE_FEE_ESTIMATE = FEE_ESTIMATE_COMMON & {
+  /**
+   * Units in which the fee is given, can only be WEI
+   */
+  unit: PRICE_UNIT_WEI;
 };
 
 export type FEE_PAYMENT = {
@@ -841,16 +1008,19 @@ export type EXECUTION_RESOURCES = {
   /**
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used.
    * integer
+   * @minimum 0
    */
   l1_gas: number;
   /**
    * data gas consumed by this transaction, 0 if blobs are not used
    * integer
+   * @minimum 0
    */
   l1_data_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
    * Integer
+   * @minimum 0
    */
   l2_gas: number;
 };
@@ -879,11 +1049,12 @@ export type BINARY_NODE = {
  */
 export type EDGE_NODE = {
   /**
-   * an integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
+   * an unsigned integer whose binary representation represents the path from the current node to its highest non-zero descendant (bounded by 2^251)
    */
   path: NUM_AS_HEX;
   /**
    * the length of the path (bounded by 251)
+   * @minimum 0
    */
   length: number;
   /**
@@ -921,27 +1092,23 @@ export type CONTRACT_EXECUTION_ERROR_INNER =
 //    *****************
 
 /**
- * Represents a transaction trace including the execution details.
+ * A transaction trace including the execution details
  */
 export type TRANSACTION_TRACE =
   | INVOKE_TXN_TRACE
   | DECLARE_TXN_TRACE
   | DEPLOY_ACCOUNT_TXN_TRACE
   | L1_HANDLER_TXN_TRACE;
-/* {
-  invoke_tx_trace?: INVOKE_TXN_TRACE;
-  declare_tx_trace?: DECLARE_TXN_TRACE;
-  deploy_account_tx_trace?: DEPLOY_ACCOUNT_TXN_TRACE;
-  l1_handler_tx_trace?: L1_HANDLER_TXN_TRACE;
-}; */
-// TODO: is it possible that this was false defined or is it a mistake in Spec or Implementation??? Test this response on node in production!!!
 
 /**
- * Represents a transaction trace for an invoke transaction.
+ * A transaction trace for an invoke transaction
  */
 export type INVOKE_TXN_TRACE = {
   type: TXN_TYPE_INVOKE;
-  execute_invocation: SimpleOneOf<FUNCTION_INVOCATION, { revert_reason: string }>;
+  /**
+   * The trace of the __execute__ call
+   */
+  execute_invocation: REVERTIBLE_FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
@@ -949,7 +1116,7 @@ export type INVOKE_TXN_TRACE = {
 };
 
 /**
- * Represents a transaction trace for a declare transaction.
+ * A transaction trace for a declare transaction
  */
 export type DECLARE_TXN_TRACE = {
   type: TXN_TYPE_DECLARE;
@@ -960,10 +1127,13 @@ export type DECLARE_TXN_TRACE = {
 };
 
 /**
- * Represents a transaction trace for a deploy account transaction.
+ * A transaction trace for a deploy account transaction
  */
 export type DEPLOY_ACCOUNT_TXN_TRACE = {
   type: TXN_TYPE_DEPLOY_ACCOUNT;
+  /**
+   * The trace of the constructor call
+   */
   constructor_invocation: FUNCTION_INVOCATION;
   validate_invocation?: FUNCTION_INVOCATION;
   fee_transfer_invocation?: FUNCTION_INVOCATION;
@@ -972,11 +1142,14 @@ export type DEPLOY_ACCOUNT_TXN_TRACE = {
 };
 
 /**
- * Represents a transaction trace for an L1 handler transaction.
+ * A transaction trace for an L1 handler transaction
  */
 export type L1_HANDLER_TXN_TRACE = {
   type: Uppercase<ABI_TYPE_L1_HANDLER>;
-  function_invocation: FUNCTION_INVOCATION;
+  /**
+   * The trace of the L1 handler call
+   */
+  function_invocation: REVERTIBLE_FUNCTION_INVOCATION;
   state_diff?: STATE_DIFF;
   execution_resources: EXECUTION_RESOURCES;
 };
@@ -1032,18 +1205,28 @@ export type FUNCTION_INVOCATION = FUNCTION_CALL & {
 export type INNER_CALL_EXECUTION_RESOURCES = {
   /**
    * l1 gas consumed by this transaction, used for l2-->l1 messages and state updates if blobs are not used
+   * @minimum 0
    */
   l1_gas: number;
   /**
    * l2 gas consumed by this transaction, used for computation and calldata
+   * @minimum 0
    */
   l2_gas: number;
 };
+
+export type REVERTIBLE_FUNCTION_INVOCATION = SimpleOneOf<
+  FUNCTION_INVOCATION,
+  { revert_reason: string }
+>;
 
 /**
  * Represents an ordered event alongside its order within the transaction.
  */
 export type ORDERED_EVENT = {
+  /**
+   * @minimum 0
+   */
   order: number;
   event: EVENT;
 };
@@ -1052,6 +1235,9 @@ export type ORDERED_EVENT = {
  * Represents an ordered message alongside its order within the transaction.
  */
 export type ORDERED_MESSAGE = {
+  /**
+   * @minimum 0
+   */
   order: number;
   message: MSG_TO_L1;
 };
@@ -1063,7 +1249,7 @@ export type TXN_STATUS_RESULT = {
   finality_status: TXN_STATUS;
   execution_status?: TXN_EXECUTION_STATUS;
   /**
-   * the failure reason, only appears if finality_status is REJECTED or execution_status is REVERTED
+   * The failure reason, only appears if execution_status is REVERTED
    */
   failure_reason?: string;
 };

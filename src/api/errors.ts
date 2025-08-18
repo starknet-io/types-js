@@ -1,5 +1,5 @@
 import type { CONTRACT_EXECUTION_ERROR } from './components.js';
-import type { STATUS_RECEIVED, STATUS_REJECTED } from './constants.js';
+import type { STATUS_RECEIVED } from './constants.js';
 
 export interface FAILED_TO_RECEIVE_TXN {
   code: 1;
@@ -10,7 +10,7 @@ export interface NO_TRACE_AVAILABLE {
   code: 10;
   message: 'No trace available for transaction';
   data: {
-    status: STATUS_RECEIVED | STATUS_REJECTED;
+    status: STATUS_RECEIVED | 'REJECTED'; // TODO: this is probably for old transactions
   };
 }
 
@@ -79,8 +79,15 @@ export interface TRANSACTION_EXECUTION_ERROR {
   code: 41;
   message: 'Transaction execution error';
   data: {
+    /**
+     * The index of the first transaction failing in a sequence of given transactions
+     * @minimum 0
+     */
     transaction_index: number;
-    execution_error: string;
+    /**
+     * the execution trace up to the point of failure
+     */
+    execution_error: CONTRACT_EXECUTION_ERROR;
   };
 }
 
@@ -97,6 +104,7 @@ export interface CLASS_ALREADY_DECLARED {
 export interface INVALID_TRANSACTION_NONCE {
   code: 52;
   message: 'Invalid transaction nonce';
+  data: string;
 }
 
 export interface INSUFFICIENT_RESOURCES_FOR_VALIDATE {
@@ -123,12 +131,12 @@ export interface COMPILATION_FAILED {
 
 export interface CONTRACT_CLASS_SIZE_IS_TOO_LARGE {
   code: 57;
-  message: 'Contract class size it too large';
+  message: 'Contract class size is too large';
 }
 
 export interface NON_ACCOUNT {
   code: 58;
-  message: 'Sender address in not an account contract';
+  message: 'Sender address is not an account contract';
 }
 
 export interface DUPLICATE_TX {
@@ -155,6 +163,14 @@ export interface UNEXPECTED_ERROR {
   code: 63;
   message: 'An unexpected error occurred';
   data: string;
+}
+export interface REPLACEMENT_TRANSACTION_UNDERPRICED {
+  code: 64;
+  message: 'Replacement transaction is underpriced';
+}
+export interface FEE_BELOW_MINIMUM {
+  code: 65;
+  message: 'Transaction fee below minimum';
 }
 
 export interface INVALID_SUBSCRIPTION_ID {

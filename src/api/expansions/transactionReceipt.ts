@@ -35,7 +35,7 @@ LIFE IN FINAL BLOCK
 
 // TransactionReceipt_<block(PENDING/PRODUCTION)>_<status(Reverted/Succeeded)>_<TX_TYPE>
 
-export type IsPending<T> = Extract<T, { block_hash: never; block_number: never }>;
+export type IsPreConfirmed<T> = Extract<T, { block_hash: never }>;
 export type IsInBlock<T> = T extends { block_hash: string; block_number: number }
   ? T extends { block_hash: never }
     ? never
