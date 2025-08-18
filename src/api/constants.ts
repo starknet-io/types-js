@@ -23,12 +23,6 @@ export type STATUS_REVERTED = 'REVERTED';
 export const STATUS_REVERTED = 'REVERTED';
 
 /**
- * The block was rejected and will not be included
- */
-export type STATUS_REJECTED = 'REJECTED';
-export const STATUS_REJECTED = 'REJECTED';
-
-/**
  * The transaction was received by the sequencer
  */
 export type STATUS_RECEIVED = 'RECEIVED';
