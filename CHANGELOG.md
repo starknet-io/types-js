@@ -1,3 +1,10 @@
+# [0.9.0-beta.6](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.5...v0.9.0-beta.6) (2025-08-18)
+
+
+### Bug Fixes
+
+* remove rejected constant ([#49](https://github.com/starknet-io/types-js/issues/49)) ([fa98159](https://github.com/starknet-io/types-js/commit/fa98159a5e793db3f81a09067b5189ab5d6394fc))
+
 # [0.9.0-beta.5](https://github.com/starknet-io/types-js/compare/v0.9.0-beta.4...v0.9.0-beta.5) (2025-08-01)
 
 
