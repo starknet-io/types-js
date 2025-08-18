@@ -1,23 +1,48 @@
+/**
+ * The transaction/block was accepted on L2 and included
+ */
 export type STATUS_ACCEPTED_ON_L2 = 'ACCEPTED_ON_L2';
 export const STATUS_ACCEPTED_ON_L2 = 'ACCEPTED_ON_L2';
 
+/**
+ * The transaction/block was accepted on Ethereum (L1)
+ */
 export type STATUS_ACCEPTED_ON_L1 = 'ACCEPTED_ON_L1';
 export const STATUS_ACCEPTED_ON_L1 = 'ACCEPTED_ON_L1';
 
+/**
+ * The transaction was successfully executed
+ */
 export type STATUS_SUCCEEDED = 'SUCCEEDED';
 export const STATUS_SUCCEEDED = 'SUCCEEDED';
 
+/**
+ * The transaction passed validation but failed during execution by the sequencer, and is included in a block as reverted
+ */
 export type STATUS_REVERTED = 'REVERTED';
 export const STATUS_REVERTED = 'REVERTED';
 
-export type STATUS_PENDING = 'PENDING';
-export const STATUS_PENDING = 'PENDING';
-
-export type STATUS_REJECTED = 'REJECTED';
-export const STATUS_REJECTED = 'REJECTED';
-
+/**
+ * The transaction was received by the sequencer
+ */
 export type STATUS_RECEIVED = 'RECEIVED';
 export const STATUS_RECEIVED = 'RECEIVED';
+
+/**
+ * The transaction is a candidate for inclusion in the next block
+ */
+export type STATUS_CANDIDATE = 'CANDIDATE';
+export const STATUS_CANDIDATE = 'CANDIDATE';
+
+/**
+ * The transaction/block was written to the feeder gateway's storage by a sequencer
+ */
+export type STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
+export const STATUS_PRE_CONFIRMED = 'PRE_CONFIRMED';
+
+export type STATUS_PRE_CONFIRMED_LOWERCASE = InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;
+export const STATUS_PRE_CONFIRMED_LOWERCASE =
+  STATUS_PRE_CONFIRMED.toLowerCase() as InferLowercaseString<typeof STATUS_PRE_CONFIRMED>;
 
 export type TXN_TYPE_DECLARE = 'DECLARE';
 export const TXN_TYPE_DECLARE = 'DECLARE';
@@ -91,6 +116,8 @@ export const ETransactionType = {
 
 export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransactionType];
 
+// TODO: Should we also add broadcasted txn type? (e.g. DECLARE, INVOKE, DEPLOY_ACCOUNT) for L1 not sure ?
+
 export const ESimulationFlag = {
   SKIP_VALIDATE: 'SKIP_VALIDATE',
   SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
@@ -100,7 +127,8 @@ export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationF
 
 export const ETransactionStatus = {
   RECEIVED: STATUS_RECEIVED,
-  REJECTED: STATUS_REJECTED,
+  CANDIDATE: STATUS_CANDIDATE,
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
 } as const;
@@ -108,6 +136,7 @@ export const ETransactionStatus = {
 export type ETransactionStatus = (typeof ETransactionStatus)[keyof typeof ETransactionStatus];
 
 export const ETransactionFinalityStatus = {
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
   ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
   ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
 } as const;
@@ -123,12 +152,35 @@ export const ETransactionExecutionStatus = {
 export type ETransactionExecutionStatus =
   (typeof ETransactionExecutionStatus)[keyof typeof ETransactionExecutionStatus];
 
+type InferLowercaseString<T extends string> = Lowercase<T>;
+
+/**
+ * A tag specifying a dynamic reference to a block.
+ */
 export const EBlockTag = {
+  /**
+   * Tag `latest` refers to the latest Starknet block finalized by the consensus on L2.
+   */
   LATEST: 'latest',
-  PENDING: 'pending',
+  /**
+   * Tag `pre_confirmed` refers to the block which is currently being built by the block proposer in height `latest` + 1.
+   */
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED_LOWERCASE,
+  /**
+   * Tag `l1_accepted` refers to the latest Starknet block which was included in a state update on L1 and finalized by the consensus on L1.
+   */
+  L1_ACCEPTED: 'l1_accepted',
 } as const;
 
 export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
+
+export const EBlockStatus = {
+  PRE_CONFIRMED: STATUS_PRE_CONFIRMED,
+  ACCEPTED_ON_L2: STATUS_ACCEPTED_ON_L2,
+  ACCEPTED_ON_L1: STATUS_ACCEPTED_ON_L1,
+} as const;
+
+export type EBlockStatus = (typeof EBlockStatus)[keyof typeof EBlockStatus];
 
 // 'L1' | 'L2'
 export const EDataAvailabilityMode = {
