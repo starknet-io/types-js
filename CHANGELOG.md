@@ -1,3 +1,10 @@
+## [0.9.2](https://github.com/starknet-io/types-js/compare/v0.9.1...v0.9.2) (2025-09-15)
+
+
+### Bug Fixes
+
+* ordered event with event content ([27d92a2](https://github.com/starknet-io/types-js/commit/27d92a2c924f5c41a6be35a2e83531647a4af70d))
+
 ## [0.9.1](https://github.com/starknet-io/types-js/compare/v0.9.0...v0.9.1) (2025-08-18)
 
 
