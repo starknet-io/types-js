@@ -1228,8 +1228,7 @@ export type ORDERED_EVENT = {
    * @minimum 0
    */
   order: number;
-  event: EVENT;
-};
+} & EVENT_CONTENT;
 
 /**
  * Represents an ordered message alongside its order within the transaction.
