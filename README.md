@@ -43,6 +43,8 @@
 
 ## Installation
 
+Check [releases](https://github.com/starknet-io/types-js/releases) or [NPM](https://www.npmjs.com/package/@starknet-io/types-js?activeTab=versions) for the upcoming versions (alpha, beta)
+
 RPC 0.9 - latest (Starknet 0.14)
 
 ```bash
