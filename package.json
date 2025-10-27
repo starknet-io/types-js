@@ -1,6 +1,6 @@
 {
   "name": "@starknet-io/types-js",
-  "version": "0.10.0-alpha.1",
+  "version": "0.10.0-alpha.2",
   "author": "Toni Tabak <tabaktoni@gmail.com>",
   "repository": {
     "type": "git",
@@ -11,7 +11,15 @@
   },
   "description": "Shared TypeScript definitions for Starknet projects",
   "homepage": "https://github.com/starknet-io/types-js",
-  "keywords": ["starknet", "starkware", "l2", "zk", "rollup", "wallet", "dapp"],
+  "keywords": [
+    "starknet",
+    "starkware",
+    "l2",
+    "zk",
+    "rollup",
+    "wallet",
+    "dapp"
+  ],
   "license": "MIT",
   "exports": {
     ".": {
@@ -26,7 +34,9 @@
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
   "sideEffects": false,
-  "files": ["dist/**"],
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
     "pretest": "npm run lint && npm run ts:check",
     "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
