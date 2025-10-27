@@ -1,3 +1,15 @@
+# [0.10.0-alpha.1](https://github.com/starknet-io/types-js/compare/v0.9.2...v0.10.0-alpha.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
+
+
+### Features
+
+* a RPC 0.10.0-rc1 ([e982748](https://github.com/starknet-io/types-js/commit/e982748d98de7e5aa99e7f012c8a288913ee9d9f))
+
 ## [0.9.2](https://github.com/starknet-io/types-js/compare/v0.9.1...v0.9.2) (2025-09-15)
 
 ### Bug Fixes
