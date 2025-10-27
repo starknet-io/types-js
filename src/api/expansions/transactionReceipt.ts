@@ -35,15 +35,15 @@ LIFE IN FINAL BLOCK
 
 // TransactionReceipt_<block(PENDING/PRODUCTION)>_<status(Reverted/Succeeded)>_<TX_TYPE>
 
-export type IsPreConfirmed<T> = Extract<T, { block_hash: never }>;
+export type IsPreConfirmed<T> = Extract<T, { block_hash: never }>
 export type IsInBlock<T> = T extends { block_hash: string; block_number: number }
   ? T extends { block_hash: never }
     ? never
     : T
-  : never;
-export type IsType<T, ETransactionType> = Extract<T, { type: ETransactionType }>;
-export type IsSucceeded<T> = Extract<T, { execution_status: 'SUCCEEDED' }>;
-export type IsReverted<T> = Extract<T, { execution_status: 'REVERTED' }>;
+  : never
+export type IsType<T, ETransactionType> = Extract<T, { type: ETransactionType }>
+export type IsSucceeded<T> = Extract<T, { execution_status: 'SUCCEEDED' }>
+export type IsReverted<T> = Extract<T, { execution_status: 'REVERTED' }>
 
 // Usage Examples
 /* type TransactionReceipt_Pending_InvokeReverted = IsReverted<
