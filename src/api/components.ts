@@ -285,9 +285,29 @@ export type RESULT_PAGE_REQUEST = {
 };
 
 export type EMITTED_EVENT = EVENT & {
-  block_hash: BLOCK_HASH;
-  block_number: BLOCK_NUMBER;
+  /**
+   * The transaction that emitted the event
+   */
   transaction_hash: TXN_HASH;
+  /**
+   * The index of the transaction in the block by which the event was emitted
+   * @minimum 0
+   */
+  transaction_index: number;
+  /**
+   * The index of the event in the transaction by which it was emitted
+   * @minimum 0
+   */
+  event_index: number;
+  /**
+   * The hash of the block in which the event was emitted
+   */
+  block_hash?: BLOCK_HASH;
+  /**
+   * The number of the block in which the event was emitted
+   * @minimum 0
+   */
+  block_number?: BLOCK_NUMBER;
 };
 
 export type EVENT = {
@@ -357,20 +377,51 @@ export type NONCE_UPDATE = {
  * The change in state applied in this block
  */
 export type STATE_DIFF = {
+  /**
+   * The changes in storage per contract address
+   */
   storage_diffs: CONTRACT_STORAGE_DIFF_ITEM[];
+  /**
+   * Deprecated classes declared in this block
+   */
   deprecated_declared_classes: FELT[];
+  /**
+   * New classes declared in this block, with their declared class hash and compiled class hash
+   */
   declared_classes: NEW_CLASSES[];
+  /**
+   * A new contract deployed as part of the state update
+   */
   deployed_contracts: DEPLOYED_CONTRACT_ITEM[];
+  /**
+   * The list of contracts whose class was replaced
+   */
   replaced_classes: REPLACED_CLASS[];
+  /**
+   * The updated nonce per contract address
+   */
   nonces: NONCE_UPDATE[];
+  /**
+   * The list of class hash and the new Blake-migrated compiled class hash pair
+   */
+  migrated_compiled_classes?: {
+    class_hash: FELT;
+    compiled_class_hash: FELT;
+  }[];
 };
 
 /**
  * Pre-confirmed block state update
  */
 export type PRE_CONFIRMED_STATE_UPDATE = {
-  old_root: FELT;
+  /**
+   * The state diff of the pre-confirmed block
+   */
   state_diff: STATE_DIFF;
+  /**
+   * The previous global state root
+   */
+  old_root?: FELT;
   block_hash: never; // diverge: this makes it distinct
 };
 
@@ -1258,5 +1309,5 @@ export type TXN_STATUS_RESULT = {
  */
 export type CONTRACT_STORAGE_KEYS = {
   contract_address: ADDRESS;
-  storage_keys: FELT[];
+  storage_keys: STORAGE_KEY[];
 };

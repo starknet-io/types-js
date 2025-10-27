@@ -219,7 +219,7 @@ type ReadMethods = {
       block_id: BLOCK_ID;
     };
     result: FeeEstimate[];
-    errors: Errors.TRANSACTION_EXECUTION_ERROR | Errors.BLOCK_NOT_FOUND;
+    errors: Errors.TRANSACTION_EXECUTION_ERROR | Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND;
   };
 
   // Estimate the L2 fee of a message sent on L1
@@ -229,7 +229,7 @@ type ReadMethods = {
       block_id: BLOCK_ID;
     };
     result: MessageFeeEstimate;
-    errors: Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
+    errors: Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND;
   };
 
   // Get the most recent accepted block number
@@ -524,7 +524,7 @@ export type WebSocketMethods = {
     /**
      * starknet_subscriptionNewTransactionReceipts
      */
-    events: [NewTransactionReceiptsEvent];
+    events: [NewTransactionReceiptsEvent, ReorgEvent];
   };
 
   /**
@@ -547,7 +547,7 @@ export type WebSocketMethods = {
     /**
      * starknet_subscriptionNewTransaction
      */
-    events: [NewTransactionEvent];
+    events: [NewTransactionEvent, ReorgEvent];
   };
 
   /**

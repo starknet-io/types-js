@@ -21,7 +21,7 @@ export interface CONTRACT_NOT_FOUND {
 
 export interface ENTRYPOINT_NOT_FOUND {
   code: 21;
-  message: 'Requested entrypoint does not exist in the contract';
+  message: 'Requested entry point does not exist in the contract';
 }
 
 export interface BLOCK_NOT_FOUND {
