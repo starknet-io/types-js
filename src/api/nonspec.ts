@@ -20,12 +20,14 @@ import type {
   FEE_ESTIMATE,
   FEE_PAYMENT,
   FELT,
+  MESSAGE_FEE_ESTIMATE,
   MSG_FROM_L1,
+  NODE_HASH_TO_NODE_MAPPING,
   NONCE_UPDATE,
-  PENDING_BLOCK_WITH_RECEIPTS,
-  PENDING_BLOCK_WITH_TXS,
-  PENDING_BLOCK_WITH_TX_HASHES,
-  PENDING_STATE_UPDATE,
+  PRE_CONFIRMED_BLOCK_WITH_RECEIPTS,
+  PRE_CONFIRMED_BLOCK_WITH_TXS,
+  PRE_CONFIRMED_BLOCK_WITH_TX_HASHES,
+  PRE_CONFIRMED_STATE_UPDATE,
   PRICE_UNIT,
   REPLACED_CLASS,
   RESOURCE_BOUNDS_MAPPING,
@@ -36,15 +38,19 @@ import type {
   TRANSACTION_TRACE,
   TXN,
   TXN_EXECUTION_STATUS,
+  TXN_FINALITY_STATUS,
   TXN_HASH,
-  TXN_RECEIPT,
   TXN_RECEIPT_WITH_BLOCK_INFO,
-  TXN_STATUS,
+  TXN_STATUS_RESULT,
+  TXN_WITH_HASH,
 } from './components.js';
+import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
+import { OneOf } from './expansions/helpless.js';
+import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
 
 // METHOD RESPONSES
-// response starknet_getClass
-export type ContractClass = CONTRACT_CLASS | DEPRECATED_CONTRACT_CLASS;
+// response starknet_getClass, starknet_getClassAt
+export type ContractClass = OneOf<[CONTRACT_CLASS, DEPRECATED_CONTRACT_CLASS]>;
 // response starknet_simulateTransactions
 export type SimulateTransaction = {
   transaction_trace: TRANSACTION_TRACE;
@@ -53,22 +59,24 @@ export type SimulateTransaction = {
 export type SimulateTransactionResponse = SimulateTransaction[];
 // response starknet_estimateFee
 export type FeeEstimate = FEE_ESTIMATE;
+// response starknet_estimateMessageFee
+export type MessageFeeEstimate = MESSAGE_FEE_ESTIMATE;
 // response starknet_getTransactionByHash, starknet_getTransactionByBlockIdAndIndex
-export type TransactionWithHash = TXN & { transaction_hash: TXN_HASH };
+export type TransactionWithHash = TXN_WITH_HASH;
 // response starknet_blockHashAndNumber
 export type BlockHashAndNumber = { block_hash: BLOCK_HASH; block_number: BLOCK_NUMBER };
 // response starknet_getBlockWithTxs
-export type BlockWithTxs = BLOCK_WITH_TXS | PENDING_BLOCK_WITH_TXS;
+export type BlockWithTxs = OneOf<[BLOCK_WITH_TXS, PRE_CONFIRMED_BLOCK_WITH_TXS]>;
 // response starknet_getBlockWithTxHashes
-export type BlockWithTxHashes = BLOCK_WITH_TX_HASHES | PENDING_BLOCK_WITH_TX_HASHES;
+export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PRE_CONFIRMED_BLOCK_WITH_TX_HASHES]>;
 // response starknet_getBlockWithReceipts
-export type BlockWithTxReceipts = BLOCK_WITH_RECEIPTS | PENDING_BLOCK_WITH_RECEIPTS;
+export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PRE_CONFIRMED_BLOCK_WITH_RECEIPTS]>;
 // response starknet_getStateUpdate
-export type StateUpdate = STATE_UPDATE | PENDING_STATE_UPDATE;
+export type StateUpdate = OneOf<[STATE_UPDATE, PRE_CONFIRMED_STATE_UPDATE]>;
 // response starknet_traceBlockTransactions
 export type BlockTransactionsTraces = { transaction_hash: FELT; trace_root: TRANSACTION_TRACE }[];
 // response starknet_syncing
-export type Syncing = false | SYNC_STATUS;
+export type Syncing = false | SYNC_STATUS; // TODO: propose in spec SYNC_STATUS to be names SYNC_STATS as it represent syncing data and not syncing status like true or false
 // response starknet_getEvents
 export type Events = EVENTS_CHUNK;
 export type EmittedEvent = EMITTED_EVENT;
@@ -79,6 +87,37 @@ export type InvokedTransaction = { transaction_hash: TXN_HASH };
 export type DeclaredTransaction = { transaction_hash: TXN_HASH; class_hash: FELT };
 // response starknet_addDeployAccountTransaction
 export type DeployedAccountTransaction = { transaction_hash: TXN_HASH; contract_address: FELT };
+// response starknet_getMessagesStatus (ordered by the l1 tx sending order)
+export type L1L2MessagesStatus = Array<L1L2MessageStatus>;
+// response starknet_getStorageProof (merkle paths)
+export type StorageProof = {
+  classes_proof: NODE_HASH_TO_NODE_MAPPING;
+  contracts_proof: {
+    /**
+     * The nodes in the union of the paths from the contracts tree root to the requested leaves
+     */
+    nodes: NODE_HASH_TO_NODE_MAPPING;
+    /**
+     * The nonce and class hash for each requested contract address, in the order in which they appear in the request. These values are needed to construct the associated leaf node
+     */
+    contract_leaves_data: {
+      nonce: FELT;
+      class_hash: FELT;
+      storage_root: FELT;
+    }[];
+  };
+  contracts_storage_proofs: NODE_HASH_TO_NODE_MAPPING[];
+  global_roots: {
+    contracts_tree_root: FELT;
+    classes_tree_root: FELT;
+    /**
+     * the associated block hash (needed in case the caller used a block tag for the block_id parameter)
+     */
+    block_hash: FELT;
+  };
+};
+// response starknet_getCompiledCasm
+export type CompiledCasm = CASM_COMPILED_CONTRACT_CLASS;
 
 // Nice Components names
 export type ContractAddress = ADDRESS;
@@ -87,133 +126,53 @@ export type Nonce = FELT;
 export type TransactionHash = TXN_HASH;
 export type TransactionTrace = TRANSACTION_TRACE;
 export type BlockHash = BLOCK_HASH;
+/**
+ * All Type Transaction Receipt
+ */
 export type TransactionReceipt = TXN_RECEIPT_WITH_BLOCK_INFO;
-export type Receipt = TXN_RECEIPT_WITH_BLOCK_INFO & BlockHashAndNumber;
-export type PendingReceipt = TXN_RECEIPT;
+/**
+ * All Type Transaction Receipt from production block
+ */
+export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>;
+/**
+ * All Type Transaction Receipt from pre confirmed block
+ */
+export type TransactionReceiptPreConfirmedBlock = IsPreConfirmed<TransactionReceipt>;
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST;
 export type SimulationFlags = Array<SIMULATION_FLAG>;
 export type L1Message = MSG_FROM_L1;
 export type BaseTransaction = BROADCASTED_TXN;
 export type ChainId = CHAIN_ID;
 export type Transaction = TXN;
-export type TransactionStatus = {
-  finality_status: TXN_STATUS;
-  execution_status?: TXN_EXECUTION_STATUS;
-};
+export type TransactionStatus = TXN_STATUS_RESULT;
 export type ResourceBounds = RESOURCE_BOUNDS_MAPPING;
 export type FeePayment = FEE_PAYMENT;
 export type PriceUnit = PRICE_UNIT;
+
+/**
+ * Ethereum l1_handler tx hash and status for L1 -> L2 messages sent by the l1 transaction
+ */
+export type L1L2MessageStatus = {
+  /**
+   * l1_handler tx hash
+   */
+  transaction_hash: TXN_HASH;
+  /**
+   * finality status of the L1 -> L2 messages sent by the l1 transaction
+   */
+  finality_status: TXN_FINALITY_STATUS;
+  /**
+   * the failure reason, only appears if finality_status is REJECTED
+   */
+  execution_status: TXN_EXECUTION_STATUS;
+  /**
+   * The failure reason. Only appears if `execution_status` is REVERTED
+   */
+  failure_reason?: string;
+};
 
 // Diff Than Seq
 export type StorageDiffs = Array<CONTRACT_STORAGE_DIFF_ITEM>;
 export type DeprecatedDeclaredClasses = Array<FELT>;
 export type NonceUpdates = NONCE_UPDATE[];
 export type ReplacedClasses = REPLACED_CLASS[];
-
-// Enums Derived From Spec Types (require manual check for changes)
-export const ETransactionType = {
-  DECLARE: 'DECLARE',
-  DEPLOY: 'DEPLOY',
-  DEPLOY_ACCOUNT: 'DEPLOY_ACCOUNT',
-  INVOKE: 'INVOKE',
-  L1_HANDLER: 'L1_HANDLER',
-} as const;
-
-export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransactionType];
-
-export const ESimulationFlag = {
-  SKIP_VALIDATE: 'SKIP_VALIDATE',
-  SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
-} as const;
-
-export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag];
-
-export const ETransactionStatus = {
-  RECEIVED: 'RECEIVED',
-  REJECTED: 'REJECTED',
-  ACCEPTED_ON_L2: 'ACCEPTED_ON_L2',
-  ACCEPTED_ON_L1: 'ACCEPTED_ON_L1',
-} as const;
-
-export type ETransactionStatus = (typeof ETransactionStatus)[keyof typeof ETransactionStatus];
-
-export const ETransactionFinalityStatus = {
-  ACCEPTED_ON_L2: 'ACCEPTED_ON_L2',
-  ACCEPTED_ON_L1: 'ACCEPTED_ON_L1',
-} as const;
-
-export type ETransactionFinalityStatus =
-  (typeof ETransactionFinalityStatus)[keyof typeof ETransactionFinalityStatus];
-
-export const ETransactionExecutionStatus = {
-  SUCCEEDED: 'SUCCEEDED',
-  REVERTED: 'REVERTED',
-} as const;
-
-export type ETransactionExecutionStatus =
-  (typeof ETransactionExecutionStatus)[keyof typeof ETransactionExecutionStatus];
-
-export const EBlockTag = {
-  LATEST: 'latest',
-  PENDING: 'pending',
-} as const;
-
-export type EBlockTag = (typeof EBlockTag)[keyof typeof EBlockTag];
-
-// 'L1' | 'L2'
-export const EDataAvailabilityMode = {
-  L1: 'L1',
-  L2: 'L2',
-} as const;
-
-export type EDataAvailabilityMode =
-  (typeof EDataAvailabilityMode)[keyof typeof EDataAvailabilityMode];
-
-// 0 | 1
-export const EDAMode = {
-  L1: 0,
-  L2: 1,
-} as const;
-
-export type EDAMode = (typeof EDAMode)[keyof typeof EDAMode];
-
-/**
- * V_ Transaction versions HexString
- * F_ Fee Transaction Versions HexString (2 ** 128 + TRANSACTION_VERSION)
- */
-export const ETransactionVersion = {
-  V0: '0x0',
-  V1: '0x1',
-  V2: '0x2',
-  V3: '0x3',
-  F0: '0x100000000000000000000000000000000',
-  F1: '0x100000000000000000000000000000001',
-  F2: '0x100000000000000000000000000000002',
-  F3: '0x100000000000000000000000000000003',
-} as const;
-
-export type ETransactionVersion = (typeof ETransactionVersion)[keyof typeof ETransactionVersion];
-/**
- * Old Transaction Versions
- */
-
-export const ETransactionVersion2 = {
-  V0: '0x0',
-  V1: '0x1',
-  V2: '0x2',
-  F0: '0x100000000000000000000000000000000',
-  F1: '0x100000000000000000000000000000001',
-  F2: '0x100000000000000000000000000000002',
-} as const;
-export type ETransactionVersion2 = (typeof ETransactionVersion2)[keyof typeof ETransactionVersion2];
-
-/**
- * V3 Transaction Versions
- */
-
-export const ETransactionVersion3 = {
-  V3: '0x3',
-  F3: '0x100000000000000000000000000000003',
-} as const;
-
-export type ETransactionVersion3 = (typeof ETransactionVersion3)[keyof typeof ETransactionVersion3];

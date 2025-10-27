@@ -1,17 +1,58 @@
-# Starknet types JS/TS
+<p align="center">
+  <img width='300' src="https://raw.githubusercontent.com/starknet-io/types-js/9c98311bfdeda3440b0d65d2eaa3c5869ddedcab/types%20js%20logo.png">
+</p>
+<p align="center">
+    <a href="https://github.com/starknet-io/types-js/actions/workflows/publish.yml">
+    <img src="https://github.com/starknet-io/types-js/actions/workflows/publish.yml/badge.svg">
+  </a>
+  <a href="https://www.npmjs.com/package/@starknet-io/types-js">
+    <img src='https://img.shields.io/npm/v/%40starknet-io%2Ftypes-js' />
+  </a>
+  <a href="https://www.npmjs.com/package/@starknet-io/types-js">
+    <img src='https://img.shields.io/npm/v/%40starknet-io%2Ftypes-js/beta' />
+  </a>
+  <a href="https://bundlephobia.com/package/%40starknet-io%2Ftypes-js">
+    <img src='https://img.shields.io/bundlephobia/minzip/%40starknet-io%2Ftypes-js?color=success&label=size' />
+  </a>
+  <a href="https://www.npmjs.com/package/%40starknet-io%2Ftypes-js">
+    <img src='https://img.shields.io/npm/dt/%40starknet-io%2Ftypes-js?color=blueviolet' />
+  </a>
+  <a href="https://github.com/starknet-io/types-js/blob/main/LICENSE/">
+    <img src="https://img.shields.io/badge/license-MIT-black">
+  </a>
+  <a href="https://github.com/starknet-io/%40starknet-io%2Ftypes-js/stargazers">
+    <img src='https://img.shields.io/github/stars/starknet-io/types-js?color=yellow' />
+  </a>
+  <a href="https://starkware.co/">
+    <img src="https://img.shields.io/badge/powered_by-StarkWare-navy">
+  </a>
+  <a href="https://twitter.com/starknetjs">
+    <img src="https://img.shields.io/badge/follow_us-Twitter-blue">
+  </a>
+  <a href="https://www.drips.network/app/projects/github/starknet-io/starknet.js" target="_blank">
+    <img src="https://www.drips.network/api/embed/project/https%3A%2F%2Fgithub.com%2Fstarknet-io%2Fstarknet.js/support.png?background=light&style=github&text=project&stat=none" alt="Support starknet.js on drips.network" height="20">
+  </a>
+  <a href="https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22">
+    <img src="https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square">
+  </a>
+</p>
 
-🐺 Starknet TypeScript types 🚀
-
-[![GitHub Workflow Status](https://github.com/starknet-io/types-js/actions/workflows/publish.yml/badge.svg)](https://github.com/starknet-io/types-js/actions/workflows/publish.yml)
-[![Project license](https://img.shields.io/github/license/starknet-io/types-js.svg?style=flat-square)](LICENSE)
-[![Pull Requests welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg?style=flat-square)](https://github.com/starknet-io/types-js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
-
-Shared TypeScript type definitions for Starknet projects
+<p align="center">
+🐺 Starknet TypeScript types 🚀 definitions for Starknet projects
+</p>
 
 ## Installation
 
+RPC 0.9 - latest (Starknet 0.14)
+
 ```bash
 npm i @starknet-io/types-js
+```
+
+RPC 0.8 - previous (Starknet 0.13)
+
+```bash
+npm i @starknet-io/types-js@0.8.4
 ```
 
 ## Types
@@ -34,15 +75,29 @@ import type { SomeWalletApiType } from '@starknet-io/types-js';
 import { WALLET_API } from '@starknet-io/types-js';
 ```
 
-##### SNIP-12 [Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md)
+#### SNIPs [StarkNet Improvement Proposals](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-1.md)
 
-- /src/wallet-api/typedData.ts
+- [SNIP-12 Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md) - [/src/wallet-api/typedData.ts](https://github.com/starknet-io/types-js/blob/main/src/wallet-api/typedData.ts)
 
-## Versioning (pending SPEC PR merge)
+```ts
+// type import
+import type { TypedData } from '@starknet-io/types-js';
+```
 
-(MAJOR.MINOR) Version of this package should follow [starknet-spec](https://github.com/starkware-libs/starknet-specs) semantic versioning.
-PATCH version can diverge based on bug-fixes
-ex. Starknet types v0.7.x <-> Starknet Spec v0.7.x
+- [SNIP-29 Applicative paymaster API standard](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-29.md)
+
+```ts
+// namespace import
+import { PAYMASTER_API } from '@starknet-io/types-js';
+```
+
+## Versioning
+
+MAJOR and MINOR version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs/tags) semantic versioning. The PATCH version can diverge based on the bug fixes.
+
+Ex. Starknet types-js v0.7 == Starknet Spec v0.7
+
+To prevent auto update of the minor, meaning significant RPC JSON specification change use fixed or patch range ex. ~0.9.0
 
 ## Devs Build
 

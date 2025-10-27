@@ -7,17 +7,32 @@ import type {
   BROADCASTED_INVOKE_TXN,
   BROADCASTED_TXN,
   CHAIN_ID,
+  CONTRACT_STORAGE_KEYS,
   EVENT_FILTER,
+  EVENT_KEYS,
   FELT,
   FUNCTION_CALL,
+  L1_TXN_HASH,
   MSG_FROM_L1,
+  NewHeadsEvent,
+  NewTransactionEvent,
+  NewTransactionReceiptsEvent,
+  ReorgEvent,
   RESULT_PAGE_REQUEST,
   SIMULATION_FLAG,
   SIMULATION_FLAG_FOR_ESTIMATE_FEE,
+  StarknetEventsEvent,
   STORAGE_KEY,
+  SUBSCRIPTION_BLOCK_ID,
+  SUBSCRIPTION_ID,
+  TransactionsStatusEvent,
+  TXN_FINALITY_STATUS,
   TXN_HASH,
+  TXN_STATUS_WITHOUT_L1,
 } from './components.js';
+import { STATUS_ACCEPTED_ON_L1, STATUS_PRE_CONFIRMED_LOWERCASE } from './constants.js';
 import type * as Errors from './errors.js';
+import type { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import type {
   BlockHashAndNumber,
   BlockTransactionsTraces,
@@ -30,9 +45,12 @@ import type {
   Events,
   FeeEstimate,
   InvokedTransaction,
+  L1L2MessagesStatus,
+  MessageFeeEstimate,
   Nonce,
   SimulateTransactionResponse,
   StateUpdate,
+  StorageProof,
   Syncing,
   TransactionReceipt,
   TransactionStatus,
@@ -46,6 +64,10 @@ type ReadMethods = {
   // Returns the version of the Starknet JSON-RPC specification being used
   starknet_specVersion: {
     params: [];
+    /**
+     * Semver of Starknet's JSON-RPC spec being used
+     * @example 0.7.1
+     */
     result: string;
   };
 
@@ -179,14 +201,21 @@ type ReadMethods = {
       block_id: BLOCK_ID;
     };
     result: FELT[];
-    errors: Errors.CONTRACT_NOT_FOUND | Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
+    errors:
+      | Errors.CONTRACT_NOT_FOUND
+      | Errors.ENTRYPOINT_NOT_FOUND
+      | Errors.CONTRACT_ERROR
+      | Errors.BLOCK_NOT_FOUND;
   };
 
-  // Estimate the fee for Starknet transactions
+  /**
+   * Estimate the fee for Starknet transactions
+   * Estimates the resources required by a given sequence of transactions when applied on a given state. If one of the transactions reverts or fails due to any reason (e.g. validation failure or an internal error), a TRANSACTION_EXECUTION_ERROR is returned.
+   */
   starknet_estimateFee: {
     params: {
       request: BROADCASTED_TXN[];
-      simulation_flags?: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | []; // Diverged from spec (0.5 can't be, 0.6 must be)
+      simulation_flags: [SIMULATION_FLAG_FOR_ESTIMATE_FEE] | [];
       block_id: BLOCK_ID;
     };
     result: FeeEstimate[];
@@ -199,7 +228,7 @@ type ReadMethods = {
       message: MSG_FROM_L1;
       block_id: BLOCK_ID;
     };
-    result: FeeEstimate;
+    result: MessageFeeEstimate;
     errors: Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND;
   };
 
@@ -226,6 +255,9 @@ type ReadMethods = {
   // Returns an object about the sync status, or false if the node is not syncing
   starknet_syncing: {
     params: [];
+    /**
+     * false if the node is not syncing, or an object with data about the syncing status
+     */
     result: Syncing;
   };
 
@@ -251,6 +283,63 @@ type ReadMethods = {
     result: Nonce;
     errors: Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND;
   };
+
+  /**
+   * Given an l1 tx hash, returns the associated l1_handler tx hashes and statuses for all L1 -> L2 messages sent by the l1 transaction, ordered by the l1 tx sending order
+   */
+  starknet_getMessagesStatus: {
+    params: {
+      /**
+       * The hash of the L1 transaction that sent L1->L2 messages
+       */
+      transaction_hash: L1_TXN_HASH;
+    };
+    result: L1L2MessagesStatus;
+    errors: Errors.TXN_HASH_NOT_FOUND;
+  };
+
+  /**
+   * Get merkle paths in one of the state tries: global state, classes, individual contract
+   */
+  starknet_getStorageProof: {
+    params: {
+      /**
+       * The hash of the requested block, or number (height) of the requested block, or a block tag
+       */
+      block_id: Exclude<BLOCK_ID, STATUS_PRE_CONFIRMED_LOWERCASE>;
+      /**
+       * a list of the class hashes for which we want to prove membership in the classes trie
+       */
+      class_hashes?: FELT[];
+      /**
+       * a list of contracts for which we want to prove membership in the global state trie
+       */
+      contract_addresses?: ADDRESS[];
+      /**
+       * a list of (contract_address, storage_keys) pairs
+       */
+      contracts_storage_keys?: CONTRACT_STORAGE_KEYS[];
+    };
+    /**
+     * The requested storage proofs. Note that if a requested leaf has the default value, the path to it may end in an edge node whose path is not a prefix of the requested leaf, thus effectively proving non-membership
+     */
+    result: StorageProof;
+    errors: Errors.BLOCK_NOT_FOUND | Errors.STORAGE_PROOF_NOT_SUPPORTED;
+  };
+
+  /**
+   * Get the CASM code resulting from compiling a given class
+   */
+  starknet_getCompiledCasm: {
+    params: {
+      /**
+       * The hash of the contract class whose CASM will be returned
+       */
+      class_hash: FELT;
+    };
+    result: CASM_COMPILED_CONTRACT_CLASS;
+    errors: Errors.COMPILATION_ERROR | Errors.CLASS_HASH_NOT_FOUND;
+  };
 };
 
 type WriteMethods = {
@@ -262,8 +351,10 @@ type WriteMethods = {
     result: InvokedTransaction;
     errors:
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
-      | Errors.INSUFFICIENT_MAX_FEE
+      | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.DUPLICATE_TX
@@ -282,8 +373,10 @@ type WriteMethods = {
       | Errors.COMPILATION_FAILED
       | Errors.COMPILED_CLASS_HASH_MISMATCH
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
-      | Errors.INSUFFICIENT_MAX_FEE
+      | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.DUPLICATE_TX
@@ -301,8 +394,10 @@ type WriteMethods = {
     result: DeployedAccountTransaction;
     errors:
       | Errors.INSUFFICIENT_ACCOUNT_BALANCE
-      | Errors.INSUFFICIENT_MAX_FEE
+      | Errors.INSUFFICIENT_RESOURCES_FOR_VALIDATE
       | Errors.INVALID_TRANSACTION_NONCE
+      | Errors.REPLACEMENT_TRANSACTION_UNDERPRICED
+      | Errors.FEE_BELOW_MINIMUM
       | Errors.VALIDATION_FAILURE
       | Errors.NON_ACCOUNT
       | Errors.CLASS_HASH_NOT_FOUND
@@ -322,7 +417,7 @@ type TraceMethods = {
 
   // Returns the execution traces of all transactions included in the given block
   starknet_traceBlockTransactions: {
-    params: { block_id: BLOCK_ID };
+    params: { block_id: Exclude<BLOCK_ID, STATUS_PRE_CONFIRMED_LOWERCASE> };
     result: BlockTransactionsTraces;
     errors: Errors.BLOCK_NOT_FOUND;
   };
@@ -336,5 +431,133 @@ type TraceMethods = {
     };
     result: SimulateTransactionResponse;
     errors: Errors.BLOCK_NOT_FOUND | Errors.TRANSACTION_EXECUTION_ERROR;
+  };
+};
+
+export type WebSocketMethods = {
+  /**
+   * New block headers subscription.
+   * Creates a WebSocket stream which will fire events for new block headers.
+   */
+  starknet_subscribeNewHeads: {
+    params: {
+      /**
+       * The block to get notifications from, default is latest, limited to 1024 blocks back
+       */
+      block_id?: SUBSCRIPTION_BLOCK_ID;
+    };
+    result: SUBSCRIPTION_ID;
+    errors: Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
+    /**
+     * starknet_subscriptionNewHeads
+     * starknet_subscriptionReorg
+     */
+    events: [NewHeadsEvent, ReorgEvent];
+  };
+
+  /**
+   * New events subscription.
+   * Creates a WebSocket stream which will fire events for new Starknet events from the specified block_id, up to the latest block.
+   */
+  starknet_subscribeEvents: {
+    params: {
+      /**
+       * Filter events by from_address which emitted the event
+       */
+      from_address?: ADDRESS;
+      /**
+       * The keys to filter events by. If not provided, all events will be returned.
+       */
+      keys?: EVENT_KEYS;
+      /**
+       * The block to get notifications from, default is latest, limited to 1024 blocks back
+       */
+      block_id?: SUBSCRIPTION_BLOCK_ID;
+      /**
+       * The finality status of the most recent events to include, default is ACCEPTED_ON_L2
+       */
+      finality_status?: Exclude<TXN_FINALITY_STATUS, STATUS_ACCEPTED_ON_L1>;
+    };
+    result: SUBSCRIPTION_ID;
+    errors: Errors.TOO_MANY_KEYS_IN_FILTER | Errors.TOO_MANY_BLOCKS_BACK | Errors.BLOCK_NOT_FOUND;
+    /**
+     * starknet_subscriptionEvents
+     * starknet_subscriptionReorg
+     */
+    events: [StarknetEventsEvent, ReorgEvent];
+  };
+
+  /**
+   * New transaction status subscription.
+   * Creates a WebSocket stream which at first fires an event with the current known transaction status, followed by events for every transaction status update
+   */
+  starknet_subscribeTransactionStatus: {
+    params: {
+      transaction_hash: FELT;
+    };
+    result: SUBSCRIPTION_ID;
+    /**
+     * starknet_subscriptionTransactionStatus
+     * starknet_subscriptionReorg
+     */
+    events: [TransactionsStatusEvent, ReorgEvent];
+  };
+
+  /**
+   * Creates a WebSocket stream which will fire events when new transaction receipts are created.
+   * The endpoint receives a vector of finality statuses. An event is fired for each finality status update.
+   * It is possible for receipts for pre-confirmed transactions to be received multiple times, or not at all.
+   */
+  starknet_subscribeNewTransactionReceipts: {
+    params: {
+      /**
+       * A vector of finality statuses to receive updates for, default is [ACCEPTED_ON_L2]
+       */
+      finality_status?: Exclude<TXN_FINALITY_STATUS, STATUS_ACCEPTED_ON_L1>[];
+      /**
+       * Filter transaction receipts to only include transactions sent by the specified addresses
+       */
+      sender_address?: ADDRESS[];
+    };
+    result: SUBSCRIPTION_ID;
+    errors: Errors.TOO_MANY_ADDRESSES_IN_FILTER;
+    /**
+     * starknet_subscriptionNewTransactionReceipts
+     */
+    events: [NewTransactionReceiptsEvent];
+  };
+
+  /**
+   * Creates a WebSocket stream which will fire events when new transaction are created.
+   * The endpoint receives a vector of finality statuses. An event is fired for each finality status update.
+   * It is possible for events for pre-confirmed and candidate transactions to be received multiple times, or not at all.
+   */
+  starknet_subscribeNewTransactions: {
+    params: {
+      /**
+       * A vector of finality statuses to receive updates for, default is [ACCEPTED_ON_L2]
+       */
+      finality_status?: TXN_STATUS_WITHOUT_L1[];
+      /**
+       * Filter to only include transactions sent by the specified addresses
+       */
+      sender_address?: ADDRESS[];
+    };
+    result: SUBSCRIPTION_ID;
+    /**
+     * starknet_subscriptionNewTransaction
+     */
+    events: [NewTransactionEvent];
+  };
+
+  /**
+   * Close a previously opened ws stream, with the corresponding subscription id
+   */
+  starknet_unsubscribe: {
+    params: {
+      subscription_id: SUBSCRIPTION_ID;
+    };
+    result: Boolean;
+    errors: Errors.INVALID_SUBSCRIPTION_ID;
   };
 };
