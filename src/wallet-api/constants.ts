@@ -1,5 +1,5 @@
 export const Permission = {
   ACCOUNTS: 'accounts',
-} as const;
+} as const
 
-export type Permission = (typeof Permission)[keyof typeof Permission];
+export type Permission = (typeof Permission)[keyof typeof Permission]
