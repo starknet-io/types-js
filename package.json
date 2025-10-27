@@ -11,7 +11,15 @@
   },
   "description": "Shared TypeScript definitions for Starknet projects",
   "homepage": "https://github.com/starknet-io/types-js",
-  "keywords": ["starknet", "starkware", "l2", "zk", "rollup", "wallet", "dapp"],
+  "keywords": [
+    "starknet",
+    "starkware",
+    "l2",
+    "zk",
+    "rollup",
+    "wallet",
+    "dapp"
+  ],
   "license": "MIT",
   "exports": {
     ".": {
@@ -26,7 +34,9 @@
   "types": "./dist/types/index.d.ts",
   "typings": "./dist/types/index.d.ts",
   "sideEffects": false,
-  "files": ["dist/**"],
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
     "pretest": "npm run lint && npm run ts:check",
     "build": "npm run clean && npm run build:cjs && npm run build:esm && npm run build:types",
@@ -46,16 +56,10 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^13.1.1",
     "@semantic-release/release-notes-generator": "^14.0.0",
-    "cz-conventional-changelog": "^3.3.0",
     "semantic-release": "^25.0.1",
-    "typescript": "^5.4.3"
+    "typescript": "^5.9.3"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
