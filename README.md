@@ -43,22 +43,16 @@
 
 ## Installation
 
-RPC 0.9 - Upcoming
-
-```bash
-npm i @starknet-io/types-js@beta
-```
-
-RPC 0.8 - Latest
+RPC 0.9 - latest (Starknet 0.14)
 
 ```bash
 npm i @starknet-io/types-js
 ```
 
-RPC 0.7 - Deprecated - deadline (28.07.2025)
+RPC 0.8 - previous (Starknet 0.13)
 
 ```bash
-npm i @starknet-io/types-js@0.7.10
+npm i @starknet-io/types-js@0.8.4
 ```
 
 ## Types
@@ -84,12 +78,14 @@ import { WALLET_API } from '@starknet-io/types-js';
 #### SNIPs [StarkNet Improvement Proposals](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-1.md)
 
 - [SNIP-12 Hashing and signing typed structured data](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-12.md) - [/src/wallet-api/typedData.ts](https://github.com/starknet-io/types-js/blob/main/src/wallet-api/typedData.ts)
+
 ```ts
 // type import
 import type { TypedData } from '@starknet-io/types-js';
 ```
 
 - [SNIP-29 Applicative paymaster API standard](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-29.md)
+
 ```ts
 // namespace import
 import { PAYMASTER_API } from '@starknet-io/types-js';
@@ -100,6 +96,8 @@ import { PAYMASTER_API } from '@starknet-io/types-js';
 MAJOR and MINOR version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs/tags) semantic versioning. The PATCH version can diverge based on the bug fixes.
 
 Ex. Starknet types-js v0.7 == Starknet Spec v0.7
+
+To prevent auto update of the minor, meaning significant RPC JSON specification change use fixed or patch range ex. ~0.9.0
 
 ## Devs Build
 

@@ -1,8 +1,8 @@
 type MergeTypes<TypesArray extends any[], Res = {}> = TypesArray extends [infer Head, ...infer Rem]
   ? MergeTypes<Rem, Res & Head>
-  : Res;
+  : Res
 
-type OnlyFirst<F, S> = F & { [Key in keyof Omit<S, keyof F>]?: undefined }; // ?: never collapse to : undefined
+type OnlyFirst<F, S> = F & { [Key in keyof Omit<S, keyof F>]?: undefined } // ?: never collapse to : undefined
 /**
  * Exclusive one of types (no intersection allowed)
  *  OneOf<[A, B]> = exclusive A OR B, where (all props of A) OR (all props of B)
@@ -14,9 +14,9 @@ export type OneOf<
   AllProperties = MergeTypes<TypesArray>,
 > = TypesArray extends [infer Head, ...infer Rem]
   ? OneOf<Rem, Res | OnlyFirst<Head, AllProperties>, AllProperties>
-  : Res;
+  : Res
 
-export type SimpleOneOf<F, S> = OnlyFirst<F, S> | OnlyFirst<S, F>;
+export type SimpleOneOf<F, S> = OnlyFirst<F, S> | OnlyFirst<S, F>
 
 // TODO: find solution for the rest of oneOf that can't be converted with this solution
 /**
