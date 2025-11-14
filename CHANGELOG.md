@@ -1,3 +1,17 @@
+# [0.10.0-beta.1](https://github.com/starknet-io/types-js/compare/v0.9.2...v0.10.0-beta.1) (2025-11-14)
+
+
+### Bug Fixes
+
+* migrate to biom & dependency updates ([c2372d6](https://github.com/starknet-io/types-js/commit/c2372d645bc1eb7ff2d99b9a7bbafb0605942995))
+* new export, lint ([#25](https://github.com/starknet-io/types-js/issues/25)) ([4cfe411](https://github.com/starknet-io/types-js/commit/4cfe411d7ee117c9e3dfaa79807c9a62a1251a6f))
+* remove cz-conventional-changelog ([7944c8b](https://github.com/starknet-io/types-js/commit/7944c8b304d3dfe3b9e62b956128709fb2473c3d))
+
+
+### Features
+
+* a RPC 0.10.0-rc1 ([e982748](https://github.com/starknet-io/types-js/commit/e982748d98de7e5aa99e7f012c8a288913ee9d9f))
+
 # [0.10.0-alpha.2](https://github.com/starknet-io/types-js/compare/v0.10.0-alpha.1...v0.10.0-alpha.2) (2025-10-27)
 
 

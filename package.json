@@ -1,6 +1,6 @@
 {
   "name": "@starknet-io/types-js",
-  "version": "0.10.0-alpha.2",
+  "version": "0.10.0-beta.1",
   "author": "Toni Tabak <tabaktoni@gmail.com>",
   "repository": {
     "type": "git",
