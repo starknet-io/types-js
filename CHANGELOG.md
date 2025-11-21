@@ -1,3 +1,10 @@
+# [0.10.0-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.0-beta.1...v0.10.0-beta.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* rc2 implementation ([bad2029](https://github.com/starknet-io/types-js/commit/bad2029d2b7f227b59d38890f520948c6cbd060f))
+
 # [0.10.0-beta.1](https://github.com/starknet-io/types-js/compare/v0.9.2...v0.10.0-beta.1) (2025-11-14)
 
 
