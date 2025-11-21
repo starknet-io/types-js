@@ -448,17 +448,81 @@ export type BLOCK_BODY_WITH_RECEIPTS = {
 }
 
 export type BLOCK_HEADER = {
+  /**
+   * The hash of the block
+   */
   block_hash: BLOCK_HASH
+  /**
+   * The hash of the block's parent
+   */
   parent_hash: BLOCK_HASH
+  /**
+   * The block number
+   */
   block_number: BLOCK_NUMBER
+  /**
+   * The new global state root
+   */
   new_root: FELT
+  /**
+   * The time in which the block was created, in seconds since Unix epoch
+   */
   timestamp: number
+  /**
+   * The address of the sequencer who created the block
+   */
   sequencer_address: FELT
+  /**
+   * The price of L1 gas in the block
+   */
   l1_gas_price: RESOURCE_PRICE
+  /**
+   * The price of L2 gas in the block
+   */
   l2_gas_price: RESOURCE_PRICE
+  /**
+   * The price of L1 data gas in the block
+   */
   l1_data_gas_price: RESOURCE_PRICE
+  /**
+   * The mode of data availability for the block
+   */
   l1_da_mode: L1_DA_MODE
+  /**
+   * Semver of the current Starknet protocol
+   */
   starknet_version: string
+  /**
+   * The root of Merkle Patricia trie for events in the block
+   */
+  event_commitment: FELT
+  /**
+   * The root of Merkle Patricia trie for transactions in the block
+   */
+  transaction_commitment: FELT
+  /**
+   * The root of Merkle Patricia trie for receipts in the block
+   */
+  receipt_commitment: FELT
+  /**
+   * The state diff commitment hash in the block
+   */
+  state_diff_commitment: FELT
+  /**
+   * The number of events in the block
+   * @minimum 0
+   */
+  event_count: number
+  /**
+   * The number of transactions in the block
+   * @minimum 0
+   */
+  transaction_count: number
+  /**
+   * The length of the state diff in the block
+   * @minimum 0
+   */
+  state_diff_length: number
 }
 
 export type PRE_CONFIRMED_BLOCK_HEADER = {
