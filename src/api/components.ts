@@ -67,11 +67,18 @@ export type u64 = string
  * "pattern": "^0x(0|[a-fA-F1-9]{1}[a-fA-F0-9]{0,31})$"
  */
 export type u128 = string
+/**
+ * A transaction signature
+ */
 export type SIGNATURE = Array<FELT>
 /**
+ * The block number (height) in the blockchain
  * @minimum 0
  */
 export type BLOCK_NUMBER = number
+/**
+ * The hash of a block
+ */
 export type BLOCK_HASH = FELT
 /**
  * The hash of an Starknet transaction
@@ -81,8 +88,17 @@ export type TXN_HASH = FELT
  * The hash of an Ethereum transaction
  */
 export type L1_TXN_HASH = NUM_AS_HEX
+/**
+ * The Starknet chain id, encoded in ASCII
+ */
 export type CHAIN_ID = NUM_AS_HEX
+/**
+ * The mutability of a function
+ */
 export type STATE_MUTABILITY = STATE_MUTABILITY_VIEW | STATE_MUTABILITY_EXTERNAL
+/**
+ * The type of an ABI function entry
+ */
 export type FUNCTION_ABI_TYPE = ABI_TYPE_FUNCTION | ABI_TYPE_L1_HANDLER | ABI_TYPE_CONSTRUCTOR
 /**
  * common definition
@@ -176,6 +192,9 @@ export type BLOCK_SELECTOR = SimpleOneOf<
  * @see EBlockTag
  */
 export type BLOCK_TAG = EBlockTag
+/**
+ * Transaction status excluding L1 acceptance
+ */
 export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>
 
 //    *****************
@@ -187,6 +206,9 @@ export type TXN_STATUS_WITHOUT_L1 = Exclude<TXN_STATUS, STATUS_ACCEPTED_ON_L1>
  * Integer
  */
 export type SUBSCRIPTION_ID = string
+/**
+ * New transaction status notification data
+ */
 export type NEW_TXN_STATUS = {
   transaction_hash: TXN_HASH
   status: TXN_STATUS_RESULT
@@ -213,6 +235,9 @@ export type REORG_DATA = {
   ending_block_number: BLOCK_NUMBER
 }
 
+/**
+ * Notification to the client of a new block header
+ */
 export type NewHeadsEvent = {
   subscription_id: SUBSCRIPTION_ID
   result: BLOCK_HEADER
@@ -237,6 +262,9 @@ export type TransactionsStatusEvent = {
   result: NEW_TXN_STATUS
 }
 
+/**
+ * Notification to the client of a new transaction receipt
+ */
 export type NewTransactionReceiptsEvent = {
   subscription_id: SUBSCRIPTION_ID
   result: TXN_RECEIPT_WITH_BLOCK_INFO
@@ -253,6 +281,9 @@ export type NewTransactionEvent = {
   result: TXN_WITH_HASH & { finality_status: TXN_STATUS_WITHOUT_L1 } // TODO: this should be called transaction_status
 }
 
+/**
+ * Notification to the client of a chain reorganization
+ */
 export type ReorgEvent = {
   subscription_id: SUBSCRIPTION_ID
   result: REORG_DATA
@@ -310,12 +341,27 @@ export type EMITTED_EVENT = EVENT & {
   block_number?: BLOCK_NUMBER
 }
 
+/**
+ * A StarkNet event
+ */
 export type EVENT = {
+  /**
+   * The address of the contract that emitted the event
+   */
   from_address: ADDRESS
 } & EVENT_CONTENT
 
+/**
+ * The content of an event
+ */
 export type EVENT_CONTENT = {
+  /**
+   * The keys of the event
+   */
   keys: FELT[]
+  /**
+   * The data of the event
+   */
   data: FELT[]
 }
 
@@ -325,10 +371,25 @@ export type EVENT_CONTENT = {
  */
 export type EVENT_KEYS = FELT[][]
 
+/**
+ * An event filter used to query events
+ */
 export type EVENT_FILTER = {
+  /**
+   * The block to start filtering from
+   */
   from_block?: BLOCK_ID
+  /**
+   * The block to filter up to
+   */
   to_block?: BLOCK_ID
+  /**
+   * The contract address to filter events from
+   */
   address?: ADDRESS
+  /**
+   * The event keys to filter
+   */
   keys?: EVENT_KEYS
 }
 
@@ -425,22 +486,55 @@ export type PRE_CONFIRMED_STATE_UPDATE = {
   block_hash: never // diverge: this makes it distinct
 }
 
+/**
+ * The state update applied in a block
+ */
 export type STATE_UPDATE = {
+  /**
+   * The hash of the block
+   */
   block_hash: BLOCK_HASH
+  /**
+   * The previous global state root
+   */
   old_root: FELT
+  /**
+   * The new global state root
+   */
   new_root: FELT
+  /**
+   * The state diff of the block
+   */
   state_diff: STATE_DIFF
 }
 
+/**
+ * The block body with transaction hashes only
+ */
 export type BLOCK_BODY_WITH_TX_HASHES = {
+  /**
+   * The hashes of the transactions included in the block
+   */
   transactions: TXN_HASH[]
 }
 
+/**
+ * The block body with full transactions
+ */
 export type BLOCK_BODY_WITH_TXS = {
+  /**
+   * The transactions included in the block
+   */
   transactions: TXN_WITH_HASH[]
 }
 
+/**
+ * The block body with full transactions and their receipts
+ */
 export type BLOCK_BODY_WITH_RECEIPTS = {
+  /**
+   * The transactions and their receipts included in the block
+   */
   transactions: {
     transaction: TXN
     receipt: TXN_RECEIPT
@@ -448,17 +542,81 @@ export type BLOCK_BODY_WITH_RECEIPTS = {
 }
 
 export type BLOCK_HEADER = {
+  /**
+   * The hash of the block
+   */
   block_hash: BLOCK_HASH
+  /**
+   * The hash of the block's parent
+   */
   parent_hash: BLOCK_HASH
+  /**
+   * The block number
+   */
   block_number: BLOCK_NUMBER
+  /**
+   * The new global state root
+   */
   new_root: FELT
+  /**
+   * The time in which the block was created, in seconds since Unix epoch
+   */
   timestamp: number
+  /**
+   * The address of the sequencer who created the block
+   */
   sequencer_address: FELT
+  /**
+   * The price of L1 gas in the block
+   */
   l1_gas_price: RESOURCE_PRICE
+  /**
+   * The price of L2 gas in the block
+   */
   l2_gas_price: RESOURCE_PRICE
+  /**
+   * The price of L1 data gas in the block
+   */
   l1_data_gas_price: RESOURCE_PRICE
+  /**
+   * The mode of data availability for the block
+   */
   l1_da_mode: L1_DA_MODE
+  /**
+   * Semver of the current Starknet protocol
+   */
   starknet_version: string
+  /**
+   * The root of Merkle Patricia trie for events in the block
+   */
+  event_commitment: FELT
+  /**
+   * The root of Merkle Patricia trie for transactions in the block
+   */
+  transaction_commitment: FELT
+  /**
+   * The root of Merkle Patricia trie for receipts in the block
+   */
+  receipt_commitment: FELT
+  /**
+   * The state diff commitment hash in the block
+   */
+  state_diff_commitment: FELT
+  /**
+   * The number of events in the block
+   * @minimum 0
+   */
+  event_count: number
+  /**
+   * The number of transactions in the block
+   * @minimum 0
+   */
+  transaction_count: number
+  /**
+   * The length of the state diff in the block
+   * @minimum 0
+   */
+  state_diff_length: number
 }
 
 export type PRE_CONFIRMED_BLOCK_HEADER = {
@@ -553,6 +711,9 @@ export type StorageDiffItem = {
   value: FELT
 }
 
+/**
+ * A Starknet transaction
+ */
 export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLOY_ACCOUNT_TXN
 
 /**
@@ -560,6 +721,9 @@ export type TXN = INVOKE_TXN | L1_HANDLER_TXN | DECLARE_TXN | DEPLOY_TXN | DEPLO
  */
 export type TXN_WITH_HASH = TXN & { transaction_hash: TXN_HASH }
 
+/**
+ * A declare transaction (all versions)
+ */
 export type DECLARE_TXN = DECLARE_TXN_V0 | DECLARE_TXN_V1 | DECLARE_TXN_V2 | DECLARE_TXN_V3
 
 /**
@@ -618,15 +782,27 @@ export type DECLARE_TXN_V3 = {
   fee_data_availability_mode: DA_MODE
 }
 
+/**
+ * A transaction to be broadcasted to the network
+ */
 export type BROADCASTED_TXN =
   | BROADCASTED_INVOKE_TXN
   | BROADCASTED_DECLARE_TXN
   | BROADCASTED_DEPLOY_ACCOUNT_TXN
 
+/**
+ * A broadcasted invoke transaction
+ */
 export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3
 
+/**
+ * A broadcasted deploy account transaction
+ */
 export type BROADCASTED_DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V3
 
+/**
+ * A broadcasted declare transaction
+ */
 export type BROADCASTED_DECLARE_TXN = BROADCASTED_DECLARE_TXN_V3
 
 export type BROADCASTED_DECLARE_TXN_V3 = {
@@ -646,6 +822,9 @@ export type BROADCASTED_DECLARE_TXN_V3 = {
   fee_data_availability_mode: DA_MODE
 }
 
+/**
+ * A deploy account transaction (all versions)
+ */
 export type DEPLOY_ACCOUNT_TXN = DEPLOY_ACCOUNT_TXN_V1 | DEPLOY_ACCOUNT_TXN_V3
 
 /**
@@ -677,6 +856,9 @@ export type DEPLOY_ACCOUNT_TXN_V3 = {
   fee_data_availability_mode: DA_MODE
 }
 
+/**
+ * A deploy transaction (legacy, no longer used for new deployments)
+ */
 export type DEPLOY_TXN = {
   type: TXN_TYPE_DEPLOY
   version: FELT
@@ -685,6 +867,9 @@ export type DEPLOY_TXN = {
   class_hash: FELT
 }
 
+/**
+ * An invoke transaction (all versions)
+ */
 export type INVOKE_TXN = INVOKE_TXN_V0 | INVOKE_TXN_V1 | INVOKE_TXN_V3
 
 /**
@@ -728,6 +913,9 @@ export type INVOKE_TXN_V3 = {
   fee_data_availability_mode: DA_MODE
 }
 
+/**
+ * An L1 handler transaction, triggered by a message from L1
+ */
 export type L1_HANDLER_TXN = {
   version: typeof ETransactionVersion.V0
   type: Uppercase<ABI_TYPE_L1_HANDLER>
@@ -885,16 +1073,29 @@ export type DEPRECATED_CAIRO_ENTRY_POINT = {
   selector: FELT
 }
 
+/**
+ * A Sierra contract entry point
+ */
 export type SIERRA_ENTRY_POINT = {
+  /**
+   * A unique identifier of the entry point (function) in the program
+   */
   selector: FELT
   /**
+   * The index of the function in the program
    * @minimum 0
    */
   function_idx: number
 }
 
+/**
+ * The ABI of a contract
+ */
 export type CONTRACT_ABI = readonly CONTRACT_ABI_ENTRY[]
 
+/**
+ * A single entry in a contract's ABI
+ */
 export type CONTRACT_ABI_ENTRY = FUNCTION_ABI_ENTRY | EVENT_ABI_ENTRY | STRUCT_ABI_ENTRY
 
 export type STRUCT_ABI_ENTRY = {
@@ -931,6 +1132,9 @@ export type EVENT_ABI_ENTRY = {
   data: TYPED_PARAMETER[]
 }
 
+/**
+ * The state mutability of a function in an ABI
+ */
 export type FUNCTION_STATE_MUTABILITY = STATE_MUTABILITY_VIEW
 
 export type FUNCTION_ABI_ENTRY = {
@@ -967,9 +1171,18 @@ export type TYPED_PARAMETER = {
   type: string
 }
 
+/**
+ * Simulation flags allowed for fee estimation
+ */
 export type SIMULATION_FLAG_FOR_ESTIMATE_FEE = typeof ESimulationFlag.SKIP_VALIDATE
+/**
+ * The unit of a price (WEI or FRI)
+ */
 export type PRICE_UNIT = PRICE_UNIT_WEI | PRICE_UNIT_FRI
 
+/**
+ * Common properties for fee estimation
+ */
 export type FEE_ESTIMATE_COMMON = {
   /**
    * The Ethereum gas consumption of the transaction, charged for L1->L2 messages and, depending on the block's DA_MODE, state diffs.
@@ -1005,6 +1218,9 @@ export type FEE_ESTIMATE_COMMON = {
   overall_fee: u128
 }
 
+/**
+ * Fee estimation result for a transaction
+ */
 export type FEE_ESTIMATE = FEE_ESTIMATE_COMMON & {
   /**
    * Units in which the fee is given, can only be FRI
@@ -1022,11 +1238,23 @@ export type MESSAGE_FEE_ESTIMATE = FEE_ESTIMATE_COMMON & {
   unit: PRICE_UNIT_WEI
 }
 
+/**
+ * Fee payment information
+ */
 export type FEE_PAYMENT = {
+  /**
+   * The amount paid
+   */
   amount: FELT
+  /**
+   * The unit of the fee (WEI or FRI)
+   */
   unit: PRICE_UNIT
 }
 
+/**
+ * The resource bounds for a transaction
+ */
 export type RESOURCE_BOUNDS_MAPPING = {
   /**
    * The max amount and max price per unit of L1 gas used in this tx
@@ -1042,13 +1270,31 @@ export type RESOURCE_BOUNDS_MAPPING = {
   l2_gas: RESOURCE_BOUNDS
 }
 
+/**
+ * The maximum resources a transaction can consume
+ */
 export type RESOURCE_BOUNDS = {
+  /**
+   * The max amount of the resource that can be used
+   */
   max_amount: u64
+  /**
+   * The max price per unit of the resource
+   */
   max_price_per_unit: u128
 }
 
+/**
+ * The price of a resource in both FRI and WEI
+ */
 export type RESOURCE_PRICE = {
+  /**
+   * The price in FRI (STRK's smallest unit)
+   */
   price_in_fri: FELT
+  /**
+   * The price in WEI (ETH's smallest unit)
+   */
   price_in_wei: FELT
 }
 
