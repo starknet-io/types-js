@@ -5,6 +5,7 @@
 .eslintcache
 .vscode
 .idea
+.claude-flow/
 coverage
 node_modules
 npm-debug.log

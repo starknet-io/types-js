@@ -587,19 +587,23 @@ export type BLOCK_HEADER = {
    */
   starknet_version: string
   /**
-   * The root of Merkle Patricia trie for events in the block
+   * The root of Merkle Patricia trie for events in the block.
+   * For (old) blocks where this data is not available value is 0x0
    */
   event_commitment: FELT
   /**
-   * The root of Merkle Patricia trie for transactions in the block
+   * The root of Merkle Patricia trie for transactions in the block.
+   * For (old) blocks where this data is not available value is 0x0
    */
   transaction_commitment: FELT
   /**
-   * The root of Merkle Patricia trie for receipts in the block
+   * The root of Merkle Patricia trie for receipts in the block.
+   * For (old) blocks where this data is not available value is 0x0
    */
   receipt_commitment: FELT
   /**
-   * The state diff commitment hash in the block
+   * The state diff commitment hash in the block.
+   * For (old) blocks where this data is not available value is 0x0
    */
   state_diff_commitment: FELT
   /**
@@ -613,7 +617,8 @@ export type BLOCK_HEADER = {
    */
   transaction_count: number
   /**
-   * The length of the state diff in the block
+   * The length of the state diff in the block.
+   * For (old) blocks where this data is not available value is 0x0
    * @minimum 0
    */
   state_diff_length: number
@@ -1000,7 +1005,9 @@ export type TXN_RECEIPT =
 /**
  * A transaction receipt with block information
  */
-export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & { block_number: BLOCK_NUMBER } & (
+export type TXN_RECEIPT_WITH_BLOCK_INFO = TXN_RECEIPT & {
+  block_number: BLOCK_NUMBER
+} & (
     | { block_hash: BLOCK_HASH }
     | {
         /**
@@ -1363,7 +1370,10 @@ export type EDGE_NODE = {
 /**
  * a node_hash -> node mapping of all the nodes in the union of the paths between the requested leaves and the root
  */
-export type NODE_HASH_TO_NODE_MAPPING = Array<{ node_hash: FELT; node: MERKLE_NODE }>
+export type NODE_HASH_TO_NODE_MAPPING = Array<{
+  node_hash: FELT
+  node: MERKLE_NODE
+}>
 
 /**
  * structured error that can later be processed by wallets or sdks.
