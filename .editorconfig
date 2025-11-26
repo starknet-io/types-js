@@ -3,18 +3,15 @@
 # Top-most EditorConfig file
 root = true
 
-# All files
+# Default settings for all files
 [*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-indent_style = space
-indent_size = 2
-max_line_length = 100
 
-# TypeScript/JavaScript files
-[*.{ts,tsx,js,jsx,mts,cts,mjs,cjs}]
+# JavaScript, TypeScript, JSX, TSX
+[*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}]
 indent_style = space
 indent_size = 2
 quote_type = single
@@ -24,17 +21,25 @@ quote_type = single
 indent_style = space
 indent_size = 2
 
-# Package.json
-[package.json]
+# YAML files
+[*.{yml,yaml}]
 indent_style = space
 indent_size = 2
 
 # Markdown files
 [*.md]
 trim_trailing_whitespace = false
-max_line_length = off
 
-# YAML files
-[*.{yml,yaml}]
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# Makefiles (require tabs)
+[Makefile]
+indent_style = tab
+
+# Package manager files
+[{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}]
 indent_style = space
 indent_size = 2
