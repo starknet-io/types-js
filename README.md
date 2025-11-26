@@ -43,15 +43,19 @@
 
 ## Installation
 
-Check [releases](https://github.com/starknet-io/types-js/releases) or [NPM](https://www.npmjs.com/package/@starknet-io/types-js?activeTab=versions) for the upcoming versions (alpha, beta)
-
-RPC 0.9 - latest (Starknet 0.14)
+RPC 0.10 - latest (Starknet 0.14.1)
 
 ```bash
 npm i @starknet-io/types-js
 ```
 
-RPC 0.8 - previous (Starknet 0.13)
+RPC 0.9 - previous (Starknet 0.14)
+
+```bash
+npm i @starknet-io/types-js@0.9.2
+```
+
+RPC 0.8 - old (Starknet 0.13)
 
 ```bash
 npm i @starknet-io/types-js@0.8.4
