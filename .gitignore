@@ -12,6 +12,7 @@ npm-debug.log
 package
 yarn.lock
 .claude/
+.claude-flow/
 .hive-mind/
 .mcp.json
 .roo/
