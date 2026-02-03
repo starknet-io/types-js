@@ -121,9 +121,37 @@ export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransacti
 export const ESimulationFlag = {
   SKIP_VALIDATE: 'SKIP_VALIDATE',
   SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
+  RETURN_INITIAL_READS: 'RETURN_INITIAL_READS',
 } as const
 
 export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag]
+
+/**
+ * Flags that indicate additional fields to return in transaction responses
+ */
+export const ETxnResponseFlag = {
+  INCLUDE_PROOF_FACTS: 'INCLUDE_PROOF_FACTS',
+} as const
+
+export type ETxnResponseFlag = (typeof ETxnResponseFlag)[keyof typeof ETxnResponseFlag]
+
+/**
+ * Flags that indicate additional fields to return in trace responses
+ */
+export const ETraceFlag = {
+  RETURN_INITIAL_READS: 'RETURN_INITIAL_READS',
+} as const
+
+export type ETraceFlag = (typeof ETraceFlag)[keyof typeof ETraceFlag]
+
+/**
+ * Tags for transaction subscriptions
+ */
+export const ESubscriptionTag = {
+  INCLUDE_PROOF_FACTS: 'INCLUDE_PROOF_FACTS',
+} as const
+
+export type ESubscriptionTag = (typeof ESubscriptionTag)[keyof typeof ESubscriptionTag]
 
 export const ETransactionStatus = {
   RECEIVED: STATUS_RECEIVED,

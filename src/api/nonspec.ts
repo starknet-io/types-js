@@ -20,6 +20,7 @@ import type {
   FEE_ESTIMATE,
   FEE_PAYMENT,
   FELT,
+  INITIAL_READS,
   MESSAGE_FEE_ESTIMATE,
   MSG_FROM_L1,
   NODE_HASH_TO_NODE_MAPPING,
@@ -43,20 +44,44 @@ import type {
   TXN_RECEIPT_WITH_BLOCK_INFO,
   TXN_STATUS_RESULT,
   TXN_WITH_HASH,
-} from './components.js'
-import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js'
-import { OneOf } from './expansions/helpless.js'
-import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js'
+} from './components.js';
+import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
+import { OneOf } from './expansions/helpless.js';
+import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
 
 // METHOD RESPONSES
 // response starknet_getClass, starknet_getClassAt
 export type ContractClass = OneOf<[CONTRACT_CLASS, DEPRECATED_CONTRACT_CLASS]>
-// response starknet_simulateTransactions
+
+/**
+ * Response for starknet_simulateTransactions.
+ * When trace_flags includes RETURN_INITIAL_READS, the response includes initial_reads.
+ */
+export type SimulateTransactionResponse = SimulateTransaction[] | SimulateTransactionResponseWithInitialReads
+
+/**
+ * The execution trace and consumed resources of the required transactions. 
+ * This format is returned when RETURN_INITIAL_READS is not present in simulation_flags, 
+ * maintaining compatibility with JSON-RPC 0.10.0.
+ */
 export type SimulateTransaction = {
   transaction_trace: TRANSACTION_TRACE
   fee_estimation: FEE_ESTIMATE
 }
-export type SimulateTransactionResponse = SimulateTransaction[]
+
+/**
+ * The execution trace and consumed resources of the required transactions, 
+ * along with initial reads when RETURN_INITIAL_READS is present in simulation_flags.
+ */
+export type SimulateTransactionResponseWithInitialReads = {
+  simulated_transactions: SimulateTransaction[]
+  /**
+   * The set of state values fetched from the underlying state reader during execution for all transactions in the simulation. 
+   * Required when RETURN_INITIAL_READS is present in simulation_flags.
+   */
+  initial_reads: INITIAL_READS
+}
+
 // response starknet_estimateFee
 export type FeeEstimate = FEE_ESTIMATE
 // response starknet_estimateMessageFee
@@ -73,10 +98,35 @@ export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PRE_CONFIRMED_BLOCK
 export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PRE_CONFIRMED_BLOCK_WITH_RECEIPTS]>
 // response starknet_getStateUpdate
 export type StateUpdate = OneOf<[STATE_UPDATE, PRE_CONFIRMED_STATE_UPDATE]>
-// response starknet_traceBlockTransactions
-export type BlockTransactionsTraces = { transaction_hash: FELT; trace_root: TRANSACTION_TRACE }[]
+
+/**
+ * The execution traces of all transactions included in the given block
+ * When trace_flags includes RETURN_INITIAL_READS, returns BlockTransactionsTracesWithInitialReads
+ */
+export type BlockTransactionsTraces = BlockTransactionTrace[] | BlockTransactionsTracesWithInitialReads
+
+/**
+ * The traces of transaction in the block.
+ * This format is returned when RETURN_INITIAL_READS is not present in trace_flags (or trace_flags is not provided), 
+ * maintaining compatibility with JSON-RPC 0.10.0.
+ */
+export type BlockTransactionTrace = { transaction_hash: FELT; trace_root: TRANSACTION_TRACE }
+
+/**
+ * The traces of all transactions in the block, along with initial reads when RETURN_INITIAL_READS is present in trace_flags.
+ */
+export type BlockTransactionsTracesWithInitialReads = {
+  traces: BlockTransactionTrace[]
+  /**
+   * The set of state values fetched from the underlying state reader during execution for all transactions in the block. 
+   * Required when RETURN_INITIAL_READS is present in trace_flags. 
+   * Returns an empty object instead of INITIAL_READS when the execution trace for the referenced block is inconsistent 
+   * with the canonical block trace.
+   */
+  initial_reads: INITIAL_READS
+}
 // response starknet_syncing
-export type Syncing = false | SYNC_STATUS // TODO: propose in spec SYNC_STATUS to be names SYNC_STATS as it represent syncing data and not syncing status like true or false
+export type Syncing = false | SYNC_STATUS
 // response starknet_getEvents
 export type Events = EVENTS_CHUNK
 export type EmittedEvent = EMITTED_EVENT
