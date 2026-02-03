@@ -64,7 +64,7 @@ import type {
 export type Methods = ReadMethods & WriteMethods & TraceMethods
 
 type ReadMethods = {
-  // Returns the version of the Starknet JSON-RPC specification being used
+  /** Returns the version of the Starknet JSON-RPC specification being used */
   starknet_specVersion: {
     params: []
     /**
@@ -74,7 +74,7 @@ type ReadMethods = {
     result: string
   }
 
-  // Get block information with transaction hashes given the block id
+  /** Get block information with transaction hashes given the block id */
   starknet_getBlockWithTxHashes: {
     params: {
       block_id: BLOCK_ID
@@ -83,7 +83,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  // Get block information with full transactions given the block id
+  /** Get block information with full transactions given the block id */
   starknet_getBlockWithTxs: {
     params: {
       block_id: BLOCK_ID
@@ -96,7 +96,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  // Get block information with full transactions and receipts given the block id
+  /** Get block information with full transactions and receipts given the block id */
   starknet_getBlockWithReceipts: {
     params: {
       block_id: BLOCK_ID
@@ -109,7 +109,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  // Get the information about the result of executing the requested block
+  /** Get the information about the result of executing the requested block */
   starknet_getStateUpdate: {
     params: {
       block_id: BLOCK_ID
@@ -118,7 +118,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  // Get the value of the storage at the given address and key
+  /** Get the value of the storage at the given address and key */
   starknet_getStorageAt: {
     params: {
       contract_address: ADDRESS
@@ -129,7 +129,7 @@ type ReadMethods = {
     errors: Errors.CONTRACT_NOT_FOUND | Errors.BLOCK_NOT_FOUND
   }
 
-  // Gets the transaction status (possibly reflecting that the tx is still in the mempool, or dropped from it)
+  /** Gets the transaction status (possibly reflecting that the tx is still in the mempool, or dropped from it) */
   starknet_getTransactionStatus: {
     params: {
       transaction_hash: TXN_HASH
@@ -138,7 +138,7 @@ type ReadMethods = {
     errors: Errors.TXN_HASH_NOT_FOUND
   }
 
-  // Get the details and status of a submitted transaction
+  /** Get the details and status of a submitted transaction */
   starknet_getTransactionByHash: {
     params: {
       transaction_hash: TXN_HASH
@@ -151,7 +151,7 @@ type ReadMethods = {
     errors: Errors.TXN_HASH_NOT_FOUND
   }
 
-  // Get the details of a transaction by a given block id and index
+  /** Get the details of a transaction by a given block id and index */
   starknet_getTransactionByBlockIdAndIndex: {
     params: {
       block_id: BLOCK_ID
@@ -165,7 +165,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND | Errors.INVALID_TXN_INDEX
   }
 
-  // Get the transaction receipt by the transaction hash
+  /** Get the transaction receipt by the transaction hash */
   starknet_getTransactionReceipt: {
     params: {
       transaction_hash: TXN_HASH
@@ -174,7 +174,7 @@ type ReadMethods = {
     errors: Errors.TXN_HASH_NOT_FOUND
   }
 
-  // Get the contract class definition in the given block associated with the given hash
+  /** Get the contract class definition in the given block associated with the given hash */
   starknet_getClass: {
     params: {
       block_id: BLOCK_ID
@@ -184,7 +184,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND | Errors.CLASS_HASH_NOT_FOUND
   }
 
-  // Get the contract class hash in the given block for the contract deployed at the given address
+  /** Get the contract class hash in the given block for the contract deployed at the given address */
   starknet_getClassHashAt: {
     params: {
       block_id: BLOCK_ID
@@ -194,7 +194,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND
   }
 
-  // Get the contract class definition in the given block at the given address
+  /** Get the contract class definition in the given block at the given address */
   starknet_getClassAt: {
     params: {
       block_id: BLOCK_ID
@@ -204,7 +204,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND
   }
 
-  // Get the number of transactions in a block given a block id
+  /** Get the number of transactions in a block given a block id */
   starknet_getBlockTransactionCount: {
     params: {
       block_id: BLOCK_ID
@@ -213,7 +213,7 @@ type ReadMethods = {
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  // Call a Starknet function without creating a Starknet transaction
+  /** Call a Starknet function without creating a Starknet transaction */
   starknet_call: {
     params: {
       request: FUNCTION_CALL
@@ -241,7 +241,7 @@ type ReadMethods = {
     errors: Errors.TRANSACTION_EXECUTION_ERROR | Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND
   }
 
-  // Estimate the L2 fee of a message sent on L1
+  /** Estimate the L2 fee of a message sent on L1 */
   starknet_estimateMessageFee: {
     params: {
       message: MSG_FROM_L1
@@ -251,27 +251,27 @@ type ReadMethods = {
     errors: Errors.CONTRACT_ERROR | Errors.BLOCK_NOT_FOUND | Errors.CONTRACT_NOT_FOUND
   }
 
-  // Get the most recent accepted block number
+  /** Get the most recent accepted block number */
   starknet_blockNumber: {
     params: []
     result: BLOCK_NUMBER
     errors: Errors.NO_BLOCKS
   }
 
-  // Get the most recent accepted block hash and number
+  /** Get the most recent accepted block hash and number */
   starknet_blockHashAndNumber: {
     params: []
     result: BlockHashAndNumber
     errors: Errors.NO_BLOCKS
   }
 
-  // Return the currently configured Starknet chain id
+  /** Return the currently configured Starknet chain id */
   starknet_chainId: {
     params: []
     result: CHAIN_ID
   }
 
-  // Returns an object about the sync status, or false if the node is not syncing
+  /** Returns an object about the sync status, or false if the node is not syncing */
   starknet_syncing: {
     params: []
     /**
@@ -280,7 +280,7 @@ type ReadMethods = {
     result: Syncing
   }
 
-  // Returns all events matching the given filter
+  /** Returns all events matching the given filter */
   starknet_getEvents: {
     params: {
       filter: EVENT_FILTER & RESULT_PAGE_REQUEST
@@ -293,7 +293,7 @@ type ReadMethods = {
       | Errors.TOO_MANY_KEYS_IN_FILTER
   }
 
-  // Get the nonce associated with the given address in the given block
+  /** Get the nonce associated with the given address in the given block */
   starknet_getNonce: {
     params: {
       block_id: BLOCK_ID
@@ -362,7 +362,7 @@ type ReadMethods = {
 }
 
 type WriteMethods = {
-  // Submit a new transaction to be added to the chain
+  /** Submit a new transaction to be added to the chain */
   starknet_addInvokeTransaction: {
     params: {
       invoke_transaction: BROADCASTED_INVOKE_TXN
@@ -381,7 +381,7 @@ type WriteMethods = {
       | Errors.UNEXPECTED_ERROR
   }
 
-  // Submit a new class declaration transaction
+  /** Submit a new class declaration transaction */
   starknet_addDeclareTransaction: {
     params: {
       declare_transaction: BROADCASTED_DECLARE_TXN
@@ -405,7 +405,7 @@ type WriteMethods = {
       | Errors.UNEXPECTED_ERROR
   }
 
-  // Submit a new deploy account transaction
+  /** Submit a new deploy account transaction */
   starknet_addDeployAccountTransaction: {
     params: {
       deploy_account_transaction: BROADCASTED_DEPLOY_ACCOUNT_TXN
@@ -427,7 +427,7 @@ type WriteMethods = {
 }
 
 type TraceMethods = {
-  // For a given executed transaction, return the trace of its execution, including internal calls
+  /** For a given executed transaction, return the trace of its execution, including internal calls */
   starknet_traceTransaction: {
     params: { transaction_hash: TXN_HASH }
     result: TransactionTrace
