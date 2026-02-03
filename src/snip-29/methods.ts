@@ -8,13 +8,13 @@ import * as Errors from './errors'
 import { BuildTransactionResponse, ExecuteResponse } from './nonspec'
 
 type ReadMethods = {
-  // Returns the status of the paymaster service
+  /** Returns the status of the paymaster service */
   paymaster_isAvailable: {
     params: []
     result: boolean
   }
 
-  // Receives the transaction the user wants to execute. Returns the typed data along with the estimated gas cost and the maximum gas cost suggested to ensure execution
+  /** Receives the transaction the user wants to execute. Returns the typed data along with the estimated gas cost and the maximum gas cost suggested to ensure execution */
   paymaster_buildTransaction: {
     params: {
       transaction: USER_TRANSACTION
@@ -31,7 +31,7 @@ type ReadMethods = {
       | Errors.TRANSACTION_EXECUTION_ERROR
   }
 
-  // Get a list of the tokens that the paymaster supports, together with their prices in STRK
+  /** Get a list of the tokens that the paymaster supports, together with their prices in STRK */
   paymaster_getSupportedTokens: {
     params: {}
     result: TOKEN_DATA[]
@@ -39,7 +39,7 @@ type ReadMethods = {
 }
 
 type WriteMethods = {
-  // Sends the signed typed data to the paymaster service for execution
+  /** Sends the signed typed data to the paymaster service for execution */
   paymaster_executeTransaction: {
     params: {
       transaction: EXECUTABLE_USER_TRANSACTION
