@@ -49,8 +49,7 @@ import { CASM_COMPILED_CONTRACT_CLASS } from './executable.js';
 import { OneOf } from './expansions/helpless.js';
 import { IsInBlock, IsPreConfirmed } from './expansions/transactionReceipt.js';
 
-// METHOD RESPONSES
-// response starknet_getClass, starknet_getClassAt
+/** Response for starknet_getClass, starknet_getClassAt */
 export type ContractClass = OneOf<[CONTRACT_CLASS, DEPRECATED_CONTRACT_CLASS]>
 
 /**
@@ -82,21 +81,21 @@ export type SimulateTransactionResponseWithInitialReads = {
   initial_reads: INITIAL_READS
 }
 
-// response starknet_estimateFee
+/** Response for starknet_estimateFee */
 export type FeeEstimate = FEE_ESTIMATE
-// response starknet_estimateMessageFee
+/** Response for starknet_estimateMessageFee */
 export type MessageFeeEstimate = MESSAGE_FEE_ESTIMATE
-// response starknet_getTransactionByHash, starknet_getTransactionByBlockIdAndIndex
+/** Response for starknet_getTransactionByHash, starknet_getTransactionByBlockIdAndIndex */
 export type TransactionWithHash = TXN_WITH_HASH
-// response starknet_blockHashAndNumber
+/** Response for starknet_blockHashAndNumber */
 export type BlockHashAndNumber = { block_hash: BLOCK_HASH; block_number: BLOCK_NUMBER }
-// response starknet_getBlockWithTxs
+/** Response for starknet_getBlockWithTxs */
 export type BlockWithTxs = OneOf<[BLOCK_WITH_TXS, PRE_CONFIRMED_BLOCK_WITH_TXS]>
-// response starknet_getBlockWithTxHashes
+/** Response for starknet_getBlockWithTxHashes */
 export type BlockWithTxHashes = OneOf<[BLOCK_WITH_TX_HASHES, PRE_CONFIRMED_BLOCK_WITH_TX_HASHES]>
-// response starknet_getBlockWithReceipts
+/** Response for starknet_getBlockWithReceipts */
 export type BlockWithTxReceipts = OneOf<[BLOCK_WITH_RECEIPTS, PRE_CONFIRMED_BLOCK_WITH_RECEIPTS]>
-// response starknet_getStateUpdate
+/** Response for starknet_getStateUpdate */
 export type StateUpdate = OneOf<[STATE_UPDATE, PRE_CONFIRMED_STATE_UPDATE]>
 
 /**
@@ -125,21 +124,21 @@ export type BlockTransactionsTracesWithInitialReads = {
    */
   initial_reads: INITIAL_READS
 }
-// response starknet_syncing
+/** Response for starknet_syncing */
 export type Syncing = false | SYNC_STATUS
-// response starknet_getEvents
+/** Response for starknet_getEvents */
 export type Events = EVENTS_CHUNK
 export type EmittedEvent = EMITTED_EVENT
 export type Event = EVENT
-// response starknet_addInvokeTransaction
+/** Response for starknet_addInvokeTransaction */
 export type InvokedTransaction = { transaction_hash: TXN_HASH }
-// response starknet_addDeclareTransaction
+/** Response for starknet_addDeclareTransaction */
 export type DeclaredTransaction = { transaction_hash: TXN_HASH; class_hash: FELT }
-// response starknet_addDeployAccountTransaction
+/** Response for starknet_addDeployAccountTransaction */
 export type DeployedAccountTransaction = { transaction_hash: TXN_HASH; contract_address: FELT }
-// response starknet_getMessagesStatus (ordered by the l1 tx sending order)
+/** Response for starknet_getMessagesStatus (ordered by the l1 tx sending order) */
 export type L1L2MessagesStatus = Array<L1L2MessageStatus>
-// response starknet_getStorageProof (merkle paths)
+/** Response for starknet_getStorageProof (merkle paths) */
 export type StorageProof = {
   classes_proof: NODE_HASH_TO_NODE_MAPPING
   contracts_proof: {
@@ -166,15 +165,20 @@ export type StorageProof = {
     block_hash: FELT
   }
 }
-// response starknet_getCompiledCasm
+/** response starknet_getCompiledCasm */
 export type CompiledCasm = CASM_COMPILED_CONTRACT_CLASS
 
-// Nice Components names
+/** Contract address type alias */
 export type ContractAddress = ADDRESS
+/** Field element type alias */
 export type Felt = FELT
+/** Nonce type alias */
 export type Nonce = FELT
+/** Transaction hash type alias */
 export type TransactionHash = TXN_HASH
+/** Transaction trace type alias */
 export type TransactionTrace = TRANSACTION_TRACE
+/** Block hash type alias */
 export type BlockHash = BLOCK_HASH
 /**
  * All Type Transaction Receipt
@@ -188,15 +192,25 @@ export type TransactionReceiptProductionBlock = IsInBlock<TransactionReceipt>
  * All Type Transaction Receipt from pre confirmed block
  */
 export type TransactionReceiptPreConfirmedBlock = IsPreConfirmed<TransactionReceipt>
+/** Event filter type alias */
 export type EventFilter = EVENT_FILTER & RESULT_PAGE_REQUEST
+/** Simulation flags type alias */
 export type SimulationFlags = Array<SIMULATION_FLAG>
+/** L1 message type alias */
 export type L1Message = MSG_FROM_L1
+/** Base transaction type alias */
 export type BaseTransaction = BROADCASTED_TXN
+/** Chain ID type alias */
 export type ChainId = CHAIN_ID
+/** Transaction type alias */
 export type Transaction = TXN
+/** Transaction status type alias */
 export type TransactionStatus = TXN_STATUS_RESULT
+/** Resource bounds type alias */
 export type ResourceBounds = RESOURCE_BOUNDS_MAPPING
+/** Fee payment type alias */
 export type FeePayment = FEE_PAYMENT
+/** Price unit type alias */
 export type PriceUnit = PRICE_UNIT
 
 /**
@@ -221,8 +235,11 @@ export type L1L2MessageStatus = {
   failure_reason?: string
 }
 
-// Diff Than Seq
+/** Storage diffs type alias */
 export type StorageDiffs = Array<CONTRACT_STORAGE_DIFF_ITEM>
+/** Deprecated declared classes type alias */
 export type DeprecatedDeclaredClasses = Array<FELT>
+/** Nonce updates type alias */
 export type NonceUpdates = NONCE_UPDATE[]
+/** Replaced classes type alias */
 export type ReplacedClasses = REPLACED_CLASS[]
