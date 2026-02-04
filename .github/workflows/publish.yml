@@ -37,6 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha' }}
     needs: [quality]
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
