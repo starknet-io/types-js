@@ -38,6 +38,10 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/alpha' }}
     needs: [quality]
     permissions:
+      packages: write
+      pull-requests: write
+      contents: write
+      issues: write
       id-token: write
     steps:
       - uses: actions/checkout@v4
