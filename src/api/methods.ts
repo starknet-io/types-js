@@ -23,6 +23,8 @@ import type {
   SIMULATION_FLAG_FOR_ESTIMATE_FEE,
   StarknetEventsEvent,
   STORAGE_KEY,
+  STORAGE_RESPONSE_FLAG,
+  STORAGE_RESULT,
   SUBSCRIPTION_BLOCK_ID,
   SUBSCRIPTION_ID,
   SUBSCRIPTION_TAG,
@@ -113,19 +115,31 @@ type ReadMethods = {
   starknet_getStateUpdate: {
     params: {
       block_id: BLOCK_ID
+      /**
+       * If specified, only state diffs related to these contract addresses will be returned.
+       * Class declarations are unaffected by this filter. If omitted, the full state diff is returned.
+       */
+      contract_addresses?: ADDRESS[]
     }
     result: StateUpdate
     errors: Errors.BLOCK_NOT_FOUND
   }
 
-  /** Get the value of the storage at the given address and key */
+  /**
+   * Get the value of the storage at the given address and key.
+   * When response_flags includes INCLUDE_LAST_UPDATE_BLOCK, the result is an object containing the value and the block number of the most recent storage update
+   */
   starknet_getStorageAt: {
     params: {
       contract_address: ADDRESS
       key: STORAGE_KEY
       block_id: BLOCK_ID
+      /**
+       * Flags that control what additional fields are included in the response
+       */
+      response_flags?: STORAGE_RESPONSE_FLAG[]
     }
-    result: FELT
+    result: FELT | STORAGE_RESULT
     errors: Errors.CONTRACT_NOT_FOUND | Errors.BLOCK_NOT_FOUND
   }
 
@@ -378,6 +392,7 @@ type WriteMethods = {
       | Errors.NON_ACCOUNT
       | Errors.DUPLICATE_TX
       | Errors.UNSUPPORTED_TX_VERSION
+      | Errors.INVALID_PROOF
       | Errors.UNEXPECTED_ERROR
   }
 
