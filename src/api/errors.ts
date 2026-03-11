@@ -188,6 +188,11 @@ export interface TOO_MANY_BLOCKS_BACK {
   message: 'Cannot go back more than 1024 blocks'
 }
 
+export interface INVALID_PROOF {
+  code: 69
+  message: 'The proof field in the invoke v3 transaction is invalid'
+}
+
 export interface COMPILATION_ERROR {
   code: 100
   message: 'Failed to compile the contract'

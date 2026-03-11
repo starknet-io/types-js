@@ -10,6 +10,7 @@ import type {
   EBlockTag,
   EDataAvailabilityMode,
   ESimulationFlag,
+  EStorageResponseFlag,
   ESubscriptionTag,
   ETraceFlag,
   ETransactionVersion,
@@ -809,9 +810,10 @@ export type BROADCASTED_TXN =
  */
 export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3 & {
   /**
-   * Optional proof for the transaction (array of integers)
+   * Optional proof for the transaction, encoded as a base64 string of big-endian packed u32 values
+   * @pattern ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$
    */
-  proof?: number[]
+  proof?: string
 }
 
 /**
@@ -931,7 +933,7 @@ export type INVOKE_TXN_V3 = {
   nonce_data_availability_mode: DA_MODE
   fee_data_availability_mode: DA_MODE
   /**
-   * Proof facts for the transaction (optional)
+   * Proof facts for the transaction. An empty array is returned if no proof facts exist for the transaction
    */
   proof_facts?: FELT[]
 }
@@ -1417,7 +1419,8 @@ export type CONTRACT_EXECUTION_ERROR_INNER =
 //    *****************
 
 /**
- * Flags that indicate additional fields to return in transaction responses
+ * Flags that indicate additional fields to return in transaction responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction).
  */
 export type TXN_RESPONSE_FLAG = ETxnResponseFlag
 
@@ -1427,7 +1430,29 @@ export type TXN_RESPONSE_FLAG = ETxnResponseFlag
 export type TRACE_FLAG = ETraceFlag
 
 /**
- * Tags for transaction subscriptions
+ * Flags that control what additional fields are included in storage responses.
+ * INCLUDE_LAST_UPDATE_BLOCK: changes the return type to include the block number of the most recent block that modified this storage slot.
+ */
+export type STORAGE_RESPONSE_FLAG = EStorageResponseFlag
+
+/**
+ * The storage value along with additional metadata about the storage slot
+ */
+export type STORAGE_RESULT = {
+  /**
+   * The value at the given key for the given contract. 0 if no value is found
+   */
+  value: FELT
+  /**
+   * The block number of the most recent block that included a modification to this storage slot.
+   * 0 if the storage slot has never been modified (i.e. the value is 0)
+   */
+  last_update_block: BLOCK_NUMBER
+}
+
+/**
+ * Tags that control what additional fields are included in subscription responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction; only applicable to INVOKE transactions with version 3).
  */
 export type SUBSCRIPTION_TAG = ESubscriptionTag
 
