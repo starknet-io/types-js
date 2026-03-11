@@ -1451,8 +1451,8 @@ export type STORAGE_RESULT = {
 }
 
 /**
- * Tags for transaction subscriptions.
- * INCLUDE_PROOF_FACTS: Include proof_facts field in subscription events (an empty array is returned if no proof facts exist for the transaction).
+ * Tags that control what additional fields are included in subscription responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction; only applicable to INVOKE transactions with version 3).
  */
 export type SUBSCRIPTION_TAG = ESubscriptionTag
 

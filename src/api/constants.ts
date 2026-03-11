@@ -156,8 +156,8 @@ export const EStorageResponseFlag = {
 export type EStorageResponseFlag = (typeof EStorageResponseFlag)[keyof typeof EStorageResponseFlag]
 
 /**
- * Tags for transaction subscriptions.
- * INCLUDE_PROOF_FACTS: Include proof_facts field in subscription events (an empty array is returned if no proof facts exist for the transaction).
+ * Tags that control what additional fields are included in subscription responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction; only applicable to INVOKE transactions with version 3).
  */
 export const ESubscriptionTag = {
   INCLUDE_PROOF_FACTS: 'INCLUDE_PROOF_FACTS',
