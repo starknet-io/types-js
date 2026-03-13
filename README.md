@@ -43,13 +43,17 @@
 
 ## Installation
 
-RPC 0.10 - latest (Starknet 0.14.1)
-
+RPC 0.10.1 - **latest** (Starknet 0.14.2)
 ```bash
-npm i @starknet-io/types-js
+npm i @starknet-io/types-js@0.10.1
 ```
 
-RPC 0.9 - previous (Starknet 0.14)
+RPC 0.10.0 - (Starknet 0.14.1)
+```bash
+npm i @starknet-io/types-js@0.10.0
+```
+
+RPC 0.9 - (Starknet 0.14)
 
 ```bash
 npm i @starknet-io/types-js@0.9.2
@@ -101,7 +105,7 @@ import { PAYMASTER_API } from '@starknet-io/types-js';
 
 MAJOR and MINOR version of this package follows [starknet-spec](https://github.com/starkware-libs/starknet-specs/tags) semantic versioning. The PATCH version can diverge based on the bug fixes.
 
-Ex. Starknet types-js v0.7 == Starknet Spec v0.7
+Ex. Starknet types-js v0.10 == Starknet Spec v0.10
 
 To prevent auto update of the minor, meaning significant RPC JSON specification change use fixed or patch range ex. ~0.9.0
 
