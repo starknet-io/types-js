@@ -1,3 +1,17 @@
+## [0.10.1-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.1-beta.1...v0.10.1-beta.2) (2026-03-11)
+
+
+### Bug Fixes
+
+* starknet spec v0.10.1-rc.3 ([641bf08](https://github.com/starknet-io/types-js/commit/641bf082f79a42a1776e912706e195cb960dcaa3))
+
+## [0.10.1-beta.1](https://github.com/starknet-io/types-js/compare/v0.10.0...v0.10.1-beta.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* update starknet spec v0.10.1-rc.2 ([819a426](https://github.com/starknet-io/types-js/commit/819a426d61f4785f0c16be91f9b7a55462acbf45))
+
 # [0.10.0](https://github.com/starknet-io/types-js/compare/v0.9.2...v0.10.0) (2025-11-26)
 
 

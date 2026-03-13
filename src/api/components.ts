@@ -10,7 +10,11 @@ import type {
   EBlockTag,
   EDataAvailabilityMode,
   ESimulationFlag,
+  EStorageResponseFlag,
+  ESubscriptionTag,
+  ETraceFlag,
   ETransactionVersion,
+  ETxnResponseFlag,
   EVENT_ABI_TYPE,
   L1_DA_MODE,
   PRICE_UNIT_FRI,
@@ -29,8 +33,8 @@ import type {
   TXN_TYPE_DEPLOY,
   TXN_TYPE_DEPLOY_ACCOUNT,
   TXN_TYPE_INVOKE,
-} from './constants.js'
-import { SimpleOneOf } from './expansions/helpless.js'
+} from './constants.js';
+import { SimpleOneOf } from './expansions/helpless.js';
 
 /**
  * A field element. represented by at most 63 hex digits
@@ -117,11 +121,17 @@ export type ENTRY_POINT_TYPE =
   | Uppercase<ABI_TYPE_CONSTRUCTOR>
 
 /**
- * Flags that indicate how to simulate a given transaction. By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, and the fee will be deducted from the balance before the simulation of the next transaction). To skip the fee charge, use the SKIP_FEE_CHARGE flag.
+ * Flags that indicate how to simulate a given transaction. 
+ * By default, the sequencer behavior is replicated locally (enough funds are expected to be in the account, 
+ * and fee will be deducted from the balance before the simulation of the next transaction). 
+ * To skip the fee charge, use the SKIP_FEE_CHARGE flag. 
+ * When RETURN_INITIAL_READS is present, the node returns the minimal set of concrete state values fetched from 
+ * the underlying state reader during execution for all transactions in the simulation.
  */
 export type SIMULATION_FLAG =
   | typeof ESimulationFlag.SKIP_VALIDATE
   | typeof ESimulationFlag.SKIP_FEE_CHARGE
+  | typeof ESimulationFlag.RETURN_INITIAL_READS
 
 /**
  * Data availability mode.
@@ -384,9 +394,9 @@ export type EVENT_FILTER = {
    */
   to_block?: BLOCK_ID
   /**
-   * The contract address to filter events from
+   * The contract address(es) to filter events from. Can be a single address or an array of addresses.
    */
-  address?: ADDRESS
+  address?: ADDRESS | ADDRESS[]
   /**
    * The event keys to filter
    */
@@ -798,7 +808,13 @@ export type BROADCASTED_TXN =
 /**
  * A broadcasted invoke transaction
  */
-export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3
+export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3 & {
+  /**
+   * Optional proof for the transaction, encoded as a base64 string of big-endian packed u32 values
+   * @pattern ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$
+   */
+  proof?: string
+}
 
 /**
  * A broadcasted deploy account transaction
@@ -916,6 +932,10 @@ export type INVOKE_TXN_V3 = {
   account_deployment_data: FELT[]
   nonce_data_availability_mode: DA_MODE
   fee_data_availability_mode: DA_MODE
+  /**
+   * Proof facts for the transaction. An empty array is returned if no proof facts exist for the transaction
+   */
+  proof_facts?: FELT[]
 }
 
 /**
@@ -1397,6 +1417,100 @@ export type CONTRACT_EXECUTION_ERROR_INNER =
 //    *****************
 //    * TRACE API
 //    *****************
+
+/**
+ * Flags that indicate additional fields to return in transaction responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction).
+ */
+export type TXN_RESPONSE_FLAG = ETxnResponseFlag
+
+/**
+ * Flags that indicate additional fields to return in trace responses
+ */
+export type TRACE_FLAG = ETraceFlag
+
+/**
+ * Flags that control what additional fields are included in storage responses.
+ * INCLUDE_LAST_UPDATE_BLOCK: changes the return type to include the block number of the most recent block that modified this storage slot.
+ */
+export type STORAGE_RESPONSE_FLAG = EStorageResponseFlag
+
+/**
+ * The storage value along with additional metadata about the storage slot
+ */
+export type STORAGE_RESULT = {
+  /**
+   * The value at the given key for the given contract. 0 if no value is found
+   */
+  value: FELT
+  /**
+   * The block number of the most recent block that included a modification to this storage slot.
+   * 0 if the storage slot has never been modified (i.e. the value is 0)
+   */
+  last_update_block: BLOCK_NUMBER
+}
+
+/**
+ * Tags that control what additional fields are included in subscription responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction; only applicable to INVOKE transactions with version 3).
+ */
+export type SUBSCRIPTION_TAG = ESubscriptionTag
+
+/**
+ * Storage entry read during transaction execution
+ */
+export type STORAGE_READ = {
+  contract_address: ADDRESS
+  key: STORAGE_KEY
+  value: FELT
+}
+
+/**
+ * Nonce read during transaction execution
+ */
+export type NONCE_READ = {
+  contract_address: ADDRESS
+  nonce: FELT
+}
+
+/**
+ * Class hash read during transaction execution
+ */
+export type CLASS_HASH_READ = {
+  contract_address: ADDRESS
+  class_hash: FELT
+}
+
+/**
+ * Declared contract check during transaction execution
+ */
+export type DECLARED_CONTRACT_READ = {
+  class_hash: FELT
+  is_declared: boolean
+}
+
+/**
+ * The set of state values fetched from the underlying state reader during execution. 
+ * This is a complete witness sufficient to reconstruct the cached state needed for re-execution.
+ */
+export type INITIAL_READS = {
+  /**
+   * Storage entries read during execution simulation
+   */
+  storage: STORAGE_READ[]
+  /**
+   * Nonces read during execution simulation
+   */
+  nonces: NONCE_READ[]
+  /**
+   * Class hashes read during execution simulation
+   */
+  class_hashes: CLASS_HASH_READ[]
+  /**
+   * Declared contracts checked during execution simulation
+   */
+  declared_contracts: DECLARED_CONTRACT_READ[]
+}
 
 /**
  * A transaction trace including the execution details

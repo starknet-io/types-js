@@ -121,9 +121,49 @@ export type ETransactionType = (typeof ETransactionType)[keyof typeof ETransacti
 export const ESimulationFlag = {
   SKIP_VALIDATE: 'SKIP_VALIDATE',
   SKIP_FEE_CHARGE: 'SKIP_FEE_CHARGE',
+  RETURN_INITIAL_READS: 'RETURN_INITIAL_READS',
 } as const
 
 export type ESimulationFlag = (typeof ESimulationFlag)[keyof typeof ESimulationFlag]
+
+/**
+ * Flags that indicate additional fields to return in transaction responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction).
+ */
+export const ETxnResponseFlag = {
+  INCLUDE_PROOF_FACTS: 'INCLUDE_PROOF_FACTS',
+} as const
+
+export type ETxnResponseFlag = (typeof ETxnResponseFlag)[keyof typeof ETxnResponseFlag]
+
+/**
+ * Flags that indicate additional fields to return in trace responses
+ */
+export const ETraceFlag = {
+  RETURN_INITIAL_READS: 'RETURN_INITIAL_READS',
+} as const
+
+export type ETraceFlag = (typeof ETraceFlag)[keyof typeof ETraceFlag]
+
+/**
+ * Flags that control what additional fields are included in storage responses.
+ * INCLUDE_LAST_UPDATE_BLOCK: changes the return type to include the block number of the most recent block that modified this storage slot.
+ */
+export const EStorageResponseFlag = {
+  INCLUDE_LAST_UPDATE_BLOCK: 'INCLUDE_LAST_UPDATE_BLOCK',
+} as const
+
+export type EStorageResponseFlag = (typeof EStorageResponseFlag)[keyof typeof EStorageResponseFlag]
+
+/**
+ * Tags that control what additional fields are included in subscription responses.
+ * INCLUDE_PROOF_FACTS: Include proof_facts field in the response (an empty array is returned if no proof facts exist for the transaction; only applicable to INVOKE transactions with version 3).
+ */
+export const ESubscriptionTag = {
+  INCLUDE_PROOF_FACTS: 'INCLUDE_PROOF_FACTS',
+} as const
+
+export type ESubscriptionTag = (typeof ESubscriptionTag)[keyof typeof ESubscriptionTag]
 
 export const ETransactionStatus = {
   RECEIVED: STATUS_RECEIVED,
