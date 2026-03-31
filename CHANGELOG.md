@@ -1,3 +1,10 @@
+## [0.10.2](https://github.com/starknet-io/types-js/compare/v0.10.1...v0.10.2) (2026-03-31)
+
+
+### Bug Fixes
+
+* rpc 0.10.2 ([2badf44](https://github.com/starknet-io/types-js/commit/2badf44baf48ec1f412e954251cf168cb6cf4169))
+
 ## [0.10.1](https://github.com/starknet-io/types-js/compare/v0.10.0...v0.10.1) (2026-03-13)
 
 
