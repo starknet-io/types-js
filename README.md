@@ -43,9 +43,9 @@
 
 ## Installation
 
-RPC 0.10.1 - **latest** (Starknet 0.14.2)
+RPC 0.10.2 - **latest** (Starknet 0.14.2)
 ```bash
-npm i @starknet-io/types-js@0.10.1
+npm i @starknet-io/types-js@0.10.2
 ```
 
 RPC 0.10.0 - (Starknet 0.14.1)
