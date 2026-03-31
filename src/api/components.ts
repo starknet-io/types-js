@@ -810,7 +810,7 @@ export type BROADCASTED_TXN =
  */
 export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3 & {
   /**
-   * Optional proof for the transaction, encoded as a base64 string of big-endian packed u32 values
+   * Optional proof for the transaction, as a base64 string-encoded byte array
    * @pattern ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$
    */
   proof?: string
