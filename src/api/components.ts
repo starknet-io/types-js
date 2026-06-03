@@ -75,6 +75,17 @@ export type u128 = string
  * A transaction signature
  */
 export type SIGNATURE = Array<FELT>
+
+/**
+ * A STARK proof, encoded as a base64 string
+ * @pattern ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$
+ */
+export type PROOF = string
+
+/**
+ * Proof facts (felt values) associated with a proven transaction
+ */
+export type PROOF_FACTS = FELT[]
 /**
  * The block number (height) in the blockchain
  * @minimum 0
@@ -809,11 +820,7 @@ export type BROADCASTED_TXN =
  * A broadcasted invoke transaction
  */
 export type BROADCASTED_INVOKE_TXN = INVOKE_TXN_V3 & {
-  /**
-   * Optional proof for the transaction, as a base64 string-encoded byte array
-   * @pattern ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$
-   */
-  proof?: string
+  proof?: PROOF
 }
 
 /**
@@ -935,7 +942,7 @@ export type INVOKE_TXN_V3 = {
   /**
    * Proof facts for the transaction. An empty array is returned if no proof facts exist for the transaction
    */
-  proof_facts?: FELT[]
+  proof_facts?: PROOF_FACTS
 }
 
 /**
