@@ -23,6 +23,16 @@ export interface ACCOUNT_ALREADY_DEPLOYED {
   message: 'An error occurred (ACCOUNT_ALREADY_DEPLOYED)'
 }
 
+export interface DEPLOYMENT_DATA_NOT_AVAILABLE {
+  code: 116
+  message: 'An error occurred (DEPLOYMENT_DATA_NOT_AVAILABLE)'
+}
+
+export interface CHAIN_ID_NOT_SUPPORTED {
+  code: 117
+  message: 'An error occurred (CHAIN_ID_NOT_SUPPORTED)'
+}
+
 export interface NOT_REGISTERED {
   code: 118
   message: 'An error occurred (NOT_REGISTERED)'

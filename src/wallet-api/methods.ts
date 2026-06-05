@@ -91,6 +91,7 @@ export interface RpcTypeToMessageMap {
       | Errors.UNLISTED_NETWORK
       | Errors.USER_REFUSED_OP
       | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.CHAIN_ID_NOT_SUPPORTED
       | Errors.UNKNOWN_ERROR
   }
 
@@ -113,6 +114,7 @@ export interface RpcTypeToMessageMap {
     result: AccountDeploymentData
     errors:
       | Errors.ACCOUNT_ALREADY_DEPLOYED
+      | Errors.DEPLOYMENT_DATA_NOT_AVAILABLE
       | Errors.API_VERSION_NOT_SUPPORTED
       | Errors.UNKNOWN_ERROR
   }
