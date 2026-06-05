@@ -131,6 +131,7 @@ export interface AddStarknetChainParameters extends StarknetChain {}
 
 export interface SwitchStarknetChainParameters {
   chainId: ChainId
+  silent_mode?: boolean
 }
 
 /**
