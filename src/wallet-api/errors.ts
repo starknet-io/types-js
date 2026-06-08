@@ -23,6 +23,31 @@ export interface ACCOUNT_ALREADY_DEPLOYED {
   message: 'An error occurred (ACCOUNT_ALREADY_DEPLOYED)'
 }
 
+export interface DEPLOYMENT_DATA_NOT_AVAILABLE {
+  code: 116
+  message: 'An error occurred (DEPLOYMENT_DATA_NOT_AVAILABLE)'
+}
+
+export interface CHAIN_ID_NOT_SUPPORTED {
+  code: 117
+  message: 'An error occurred (CHAIN_ID_NOT_SUPPORTED)'
+}
+
+export interface NOT_REGISTERED {
+  code: 118
+  message: 'An error occurred (NOT_REGISTERED)'
+}
+
+export interface INSUFFICIENT_PRIVATE_BALANCE {
+  code: 119
+  message: 'An error occurred (INSUFFICIENT_PRIVATE_BALANCE)'
+}
+
+export interface PRIVACY_LEAK {
+  code: 120
+  message: 'An error occurred (PRIVACY_LEAK)'
+}
+
 export interface API_VERSION_NOT_SUPPORTED {
   code: 162
   message: 'An error occurred (API_VERSION_NOT_SUPPORTED)'

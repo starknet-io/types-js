@@ -73,6 +73,10 @@ export interface AddInvokeTransactionParameters {
    * Calls to invoke by the account
    */
   calls: Call[]
+  /**
+   * Optional ZK proof, required when the transaction was produced by wallet_strk20PrepareInvoke
+   */
+  proof?: STRK20_PROOF
 }
 export interface AddInvokeTransactionResult {
   /**
@@ -127,6 +131,7 @@ export interface AddStarknetChainParameters extends StarknetChain {}
 
 export interface SwitchStarknetChainParameters {
   chainId: ChainId
+  silent_mode?: boolean
 }
 
 /**
@@ -148,4 +153,62 @@ export type API_VERSION = string
  */
 export interface ApiVersionRequest {
   api_version?: API_VERSION
+}
+
+// ==================== STRK20 Privacy Protocol ====================
+
+export type STRK20_PROOF = {
+  data: string
+  output: FELT[]
+  proof_facts: FELT[]
+}
+
+export type STRK20_CALL_AND_PROOF = {
+  call: Call
+  proof: STRK20_PROOF
+}
+
+/**
+ * A wallet-resolved placeholder substituted during STRK20 action assembly.
+ * @pattern ^\$\{(?:openNoteIds\[[0-9]+\]|poolAddress)\}$
+ */
+export type STRK20_CALLDATA_PLACEHOLDER = string
+
+export type STRK20_CALLDATA_ITEM = FELT | STRK20_CALLDATA_PLACEHOLDER
+
+export type STRK20_DEPOSIT_ACTION = {
+  type: 'deposit'
+  token: ADDRESS
+  amount: FELT
+}
+
+export type STRK20_WITHDRAW_ACTION = {
+  type: 'withdraw'
+  token: ADDRESS
+  amount: FELT
+  recipient: ADDRESS
+}
+
+export type STRK20_TRANSFER_ACTION = {
+  type: 'transfer'
+  token: ADDRESS
+  amount: FELT
+  recipient: ADDRESS
+}
+
+export type STRK20_INVOKE_ACTION = {
+  type: 'invoke'
+  contract: ADDRESS
+  calldata: STRK20_CALLDATA_ITEM[]
+}
+
+export type STRK20_ACTION =
+  | STRK20_DEPOSIT_ACTION
+  | STRK20_WITHDRAW_ACTION
+  | STRK20_TRANSFER_ACTION
+  | STRK20_INVOKE_ACTION
+
+export type STRK20_BALANCE_ENTRY = {
+  token: ADDRESS
+  balance: FELT
 }

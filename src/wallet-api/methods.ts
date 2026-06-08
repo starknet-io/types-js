@@ -9,9 +9,13 @@ import type {
   AddStarknetChainParameters,
   API_VERSION,
   ApiVersionRequest,
+  PADDED_TXN_HASH,
   RequestAccountsParameters,
   Signature,
   SpecVersion,
+  STRK20_ACTION,
+  STRK20_BALANCE_ENTRY,
+  STRK20_CALL_AND_PROOF,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
 } from './components.js'
@@ -87,6 +91,7 @@ export interface RpcTypeToMessageMap {
       | Errors.UNLISTED_NETWORK
       | Errors.USER_REFUSED_OP
       | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.CHAIN_ID_NOT_SUPPORTED
       | Errors.UNKNOWN_ERROR
   }
 
@@ -109,6 +114,7 @@ export interface RpcTypeToMessageMap {
     result: AccountDeploymentData
     errors:
       | Errors.ACCOUNT_ALREADY_DEPLOYED
+      | Errors.DEPLOYMENT_DATA_NOT_AVAILABLE
       | Errors.API_VERSION_NOT_SUPPORTED
       | Errors.UNKNOWN_ERROR
   }
@@ -170,6 +176,69 @@ export interface RpcTypeToMessageMap {
    * @returns An array of supported wallet api versions.
    */
   wallet_supportedWalletApi: { params?: never; result: API_VERSION[] }
+
+  /**
+   * Execute a STRK20 privacy protocol transaction directly.
+   * @param params The list of STRK20 actions to perform (min 1).
+   * @returns The transaction hash.
+   */
+  wallet_strk20InvokeTransaction: {
+    params: {
+      actions: STRK20_ACTION[]
+      api_version?: API_VERSION
+    }
+    result: { transaction_hash: PADDED_TXN_HASH }
+    errors:
+      | Errors.NOT_REGISTERED
+      | Errors.INSUFFICIENT_PRIVATE_BALANCE
+      | Errors.PRIVACY_LEAK
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR
+  }
+
+  /**
+   * Prepare a STRK20 invoke transaction by building the calldata and generating a ZK proof.
+   * Pass simulate: true to skip proof generation (for fee estimation or preview).
+   * @param params The list of STRK20 actions and optional simulate flag.
+   * @returns The assembled call and proof (proof fields are empty when simulate is true).
+   */
+  wallet_strk20PrepareInvoke: {
+    params: {
+      actions: STRK20_ACTION[]
+      simulate?: boolean
+      api_version?: API_VERSION
+    }
+    result: STRK20_CALL_AND_PROOF
+    errors:
+      | Errors.NOT_REGISTERED
+      | Errors.INSUFFICIENT_PRIVATE_BALANCE
+      | Errors.PRIVACY_LEAK
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR
+  }
+
+  /**
+   * Get STRK20 private balances for the given tokens.
+   * @param params The list of token addresses to query (min 1).
+   * @returns Balance per token.
+   */
+  wallet_strk20Balances: {
+    params: {
+      tokens: Address[]
+      api_version?: API_VERSION
+    }
+    result: STRK20_BALANCE_ENTRY[]
+    errors:
+      | Errors.NOT_REGISTERED
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR
+  }
 }
 
 export type RpcMessage = {
