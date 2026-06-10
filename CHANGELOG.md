@@ -1,3 +1,10 @@
+## [0.10.3-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.3-beta.1...v0.10.3-beta.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* implements spec v 0.10.3-rc1 ([758ee7d](https://github.com/starknet-io/types-js/commit/758ee7d760ac65b8293cd7610a10eba0d74d95e1))
+
 ## [0.10.3-beta.1](https://github.com/starknet-io/types-js/compare/v0.10.2...v0.10.3-beta.1) (2026-06-08)
 
 
