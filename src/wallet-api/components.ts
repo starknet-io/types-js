@@ -192,7 +192,8 @@ export type STRK20_WITHDRAW_ACTION = {
 export type STRK20_TRANSFER_ACTION = {
   type: 'transfer'
   token: ADDRESS
-  amount: FELT
+  /** FELT amount, or "OPEN" to transfer the full opened note balance */
+  amount: FELT | 'OPEN'
   recipient: ADDRESS
 }
 
