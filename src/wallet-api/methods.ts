@@ -228,6 +228,7 @@ export interface RpcTypeToMessageMap {
    */
   wallet_strk20Balances: {
     params: {
+      /** Token addresses to query. Pass an empty array to return balances of all shielded tokens in the privacy pool. */
       tokens: Address[]
       api_version?: API_VERSION
     }
