@@ -178,8 +178,14 @@ export interface RpcTypeToMessageMap {
   wallet_supportedWalletApi: { params?: never; result: API_VERSION[] }
 
   /**
-   * Execute a STRK20 privacy protocol transaction directly.
-   * @param params The list of STRK20 actions to perform (min 1).
+   * Submit a transaction containing STRK20 privacy protocol actions. Submits one
+   * or more STRK20 actions (deposit, withdraw, private transfer) as a single
+   * atomic transaction. The wallet shows an approval UI and may take
+   * significantly longer than wallet_addInvokeTransaction because SNIP-36 ZK proof
+   * generation is required; the dapp must tolerate long-running calls.
+   * Registration into the pool is transparent — if the user is not registered,
+   * NOT_REGISTERED is returned.
+   * @param params.actions An ordered list of STRK20 actions to execute atomically (min 1).
    * @returns The transaction hash.
    */
   wallet_strk20InvokeTransaction: {
@@ -199,9 +205,15 @@ export interface RpcTypeToMessageMap {
   }
 
   /**
-   * Prepare a STRK20 invoke transaction by building the calldata and generating a ZK proof.
-   * Pass simulate: true to skip proof generation (for fee estimation or preview).
-   * @param params The list of STRK20 actions and optional simulate flag.
+   * Build the Starknet call (and SNIP-36 ZK proof) for a STRK20 transaction
+   * without submitting it. The dapp submits the returned call itself. The wallet
+   * supplies the viewing key and the user's private state (channels, notes); the
+   * dapp only describes the actions. When `simulate` is true the wallet skips the
+   * expensive, state-revealing proof generation and returns the call with an empty
+   * proof — same shape, but NOT submittable on-chain (use for fee estimation / UI
+   * previews). NOT_REGISTERED if the user is not registered.
+   * @param params.actions An ordered list of STRK20 actions to bundle (min 1).
+   * @param params.simulate If true, skip proof generation and return an empty proof. Defaults to false.
    * @returns The assembled call and proof (proof fields are empty when simulate is true).
    */
   wallet_strk20PrepareInvoke: {
@@ -222,8 +234,11 @@ export interface RpcTypeToMessageMap {
   }
 
   /**
-   * Get STRK20 private balances for the given tokens.
-   * @param params The list of token addresses to query (min 1).
+   * Query the user's private balances for a list of tokens, or for all shielded
+   * tokens. Returns the private balance held inside the pool for each requested
+   * token address; an empty array returns balances of all shielded tokens the
+   * wallet holds. NOT_REGISTERED if the user is not registered.
+   * @param params.tokens Token addresses to query; an empty array returns all shielded tokens.
    * @returns Balance per token.
    */
   wallet_strk20Balances: {
