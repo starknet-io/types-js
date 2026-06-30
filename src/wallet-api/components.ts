@@ -20,10 +20,14 @@ export type PADDED_TXN_HASH = PADDED_FELT // TODO: Should be like TXN_HASH_PADDE
 export type PADDED_FELT = string // TODO: STORAGE_KEY should also be PADDED_FELT to remove duplication, and padded felt added to api spec ?
 
 /**
- * A Starknet RPC spec version, only two numbers are provided
- * @pattern ^[0-9]+\\.[0-9]+$
+ * A Starknet JSON-RPC spec version, following semantic versioning.
+ * @pattern ^[0-9]+\\.[0-9]+(\\.[0-9]+(-[0-9A-Za-z.-]+)?)?$
+ * @example "0.10" | "0.10.3" | "0.10.3-rc.3"
  */
-export type SpecVersion = string
+export type SpecVersion =
+  | `${number}.${number}`
+  | `${number}.${number}.${number}`
+  | `${number}.${number}.${number}-${string}`
 
 /**
  * ERC20 Token Symbol (min:1 char - max:6 chars)
@@ -147,7 +151,13 @@ export interface AccountDeploymentData {
   version: 0 | 1 // Cairo version (an integer)
 }
 
-export type API_VERSION = string
+/**
+ * A wallet API version, following semantic versioning (no pre-release).
+ * When used as a request parameter and not specified, the latest is assumed.
+ * @pattern ^[0-9]+\\.[0-9]+(\\.[0-9]+)?$
+ * @example "0.8" | "0.10.3"
+ */
+export type API_VERSION = `${number}.${number}` | `${number}.${number}.${number}`
 
 /**
  * The version of wallet API the request expecting. If not specified, the latest is assumed
@@ -185,9 +195,10 @@ export type STRK20_CALL_AND_PROOF = {
 
 /**
  * A wallet-resolved placeholder that the wallet substitutes with a single felt
- * during STRK20 action assembly. ${openNoteIds[N]} expands to the Nth note ID
- * created by openNote actions in the same transaction; ${poolAddress} expands to
- * the privacy pool contract address. N is a zero-based index.
+ * during STRK20 action assembly. ${openNoteIds[N]} expands to the ID of the Nth
+ * open note in the same transaction (i.e. the Nth transfer action with amount
+ * "OPEN"); ${poolAddress} expands to the privacy pool contract address. N is a
+ * zero-based index.
  * @pattern ^\$\{(?:openNoteIds\[[0-9]+\]|poolAddress)\}$
  */
 export type STRK20_CALLDATA_PLACEHOLDER = string
@@ -224,7 +235,7 @@ export type STRK20_WITHDRAW_ACTION = {
 export type STRK20_TRANSFER_ACTION = {
   type: 'transfer'
   token: ADDRESS
-  /** FELT amount, or "OPEN" to transfer the full opened note balance */
+  /** FELT amount in the token's smallest unit, or the literal "OPEN" to create a new open note */
   amount: FELT | 'OPEN'
   recipient: ADDRESS
 }
@@ -233,8 +244,8 @@ export type STRK20_TRANSFER_ACTION = {
  * Invokes an arbitrary contract entry point as part of the same STRK20
  * transaction. Calldata items may be literal felts or wallet-resolved
  * placeholders that the wallet substitutes during action assembly:
- * ${openNoteIds[N]} for the Nth opened note ID, or ${poolAddress} for the privacy
- * pool address.
+ * ${openNoteIds[N]} for the ID of the Nth open note (the Nth transfer action with
+ * amount "OPEN"), or ${poolAddress} for the privacy pool address.
  */
 export type STRK20_INVOKE_ACTION = {
   type: 'invoke'
