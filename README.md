@@ -43,16 +43,11 @@
 
 ## Installation
 
-RPC 0.10.3 - **beta** (stable not yet released)
 
-| npm version | Spec |
-|---|---|
-| `npm i @starknet-io/types-js@0.10.3-beta.4` | rc3 - latest beta |
-| `npm i @starknet-io/types-js@0.10.3-beta.3` | rc2 |
-| `npm i @starknet-io/types-js@0.10.3-beta.2` | rc1 |
-| `npm i @starknet-io/types-js@0.10.3-beta.1` | rc0 |
+RPC 0.10.3 - **latest**
+```bash
+npm i @starknet-io/types-js@0.10.3
 
-RPC 0.10.2 - **latest** (Starknet 0.14.2)
 ```bash
 npm i @starknet-io/types-js@0.10.2
 ```
@@ -108,6 +103,13 @@ import type { TypedData } from '@starknet-io/types-js';
 ```ts
 // namespace import
 import { PAYMASTER_API } from '@starknet-io/types-js';
+```
+
+#### Proving API [Starknet Transaction Prover API](https://github.com/starkware-libs/starknet-specs/tree/master/proving-api)
+
+```ts
+// namespace import
+import { PROVING_API } from '@starknet-io/types-js';
 ```
 
 ## Versioning
