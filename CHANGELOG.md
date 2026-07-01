@@ -1,3 +1,16 @@
+## [0.10.3](https://github.com/starknet-io/types-js/compare/v0.10.2...v0.10.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* add missing items from rpc 0.10.2 ([e977073](https://github.com/starknet-io/types-js/commit/e97707319999f9eade49ae0c06b0945f475934be))
+* implement spec v0.10.3-rc.3 ([c10cb2a](https://github.com/starknet-io/types-js/commit/c10cb2a9a971c9014730d6966fe750226fe90461))
+* implements spec v 0.10.3-rc1 ([758ee7d](https://github.com/starknet-io/types-js/commit/758ee7d760ac65b8293cd7610a10eba0d74d95e1))
+* implements spec v0.10.3-rc2 ([93ec752](https://github.com/starknet-io/types-js/commit/93ec7522d850e75aad2d4de60b121b95195367a0))
+* rpc 0.10.3-rc0 ([d9ae10e](https://github.com/starknet-io/types-js/commit/d9ae10e6bf9a1490a6e1cf4e8937e298a0a37b14))
+* starknet spec v0.10.1-rc.3 ([641bf08](https://github.com/starknet-io/types-js/commit/641bf082f79a42a1776e912706e195cb960dcaa3))
+* update starknet spec v0.10.1-rc.2 ([819a426](https://github.com/starknet-io/types-js/commit/819a426d61f4785f0c16be91f9b7a55462acbf45))
+
 ## [0.10.3-beta.4](https://github.com/starknet-io/types-js/compare/v0.10.3-beta.3...v0.10.3-beta.4) (2026-06-30)
 
 
