@@ -43,11 +43,18 @@
 
 ## Installation
 
+RPC 0.10.4 - **beta** (stable not yet released)
+
+| npm version | Spec |
+|---|---|
+| `npm i @starknet-io/types-js@0.10.4-beta.1` | rc0 - latest beta |
 
 RPC 0.10.3 - **latest**
 ```bash
 npm i @starknet-io/types-js@0.10.3
+```
 
+RPC 0.10.2 - (Starknet 0.14.2)
 ```bash
 npm i @starknet-io/types-js@0.10.2
 ```

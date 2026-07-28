@@ -1,3 +1,4 @@
+import type { FELT } from '../api/components.js'
 import type { ChainId } from '../api/index.js'
 import type {
   AccountDeploymentData,
@@ -16,6 +17,7 @@ import type {
   STRK20_ACTION,
   STRK20_BALANCE_ENTRY,
   STRK20_CALL_AND_PROOF,
+  STRK20_DAPP_NAME,
   SwitchStarknetChainParameters,
   WatchAssetParameters,
 } from './components.js'
@@ -182,7 +184,9 @@ export interface RpcTypeToMessageMap {
    * or more STRK20 actions (deposit, withdraw, private transfer) as a single
    * atomic transaction. The wallet shows an approval UI and may take
    * significantly longer than wallet_addInvokeTransaction because SNIP-36 ZK proof
-   * generation is required; the dapp must tolerate long-running calls.
+   * generation is required; the dapp must tolerate long-running calls. The wallet
+   * adds the fee action itself: a withdraw action covering the paymaster/relayer
+   * fee required to submit, on top of the actions the dapp supplies.
    * Registration into the pool is transparent — if the user is not registered,
    * NOT_REGISTERED is returned.
    * @param params.actions An ordered list of STRK20 actions to execute atomically (min 1).
@@ -208,7 +212,9 @@ export interface RpcTypeToMessageMap {
    * Build the Starknet call (and SNIP-36 ZK proof) for a STRK20 transaction
    * without submitting it. The dapp submits the returned call itself. The wallet
    * supplies the viewing key and the user's private state (channels, notes); the
-   * dapp only describes the actions. When `simulate` is true the wallet skips the
+   * dapp only describes the actions. The wallet does not add a fee withdrawal
+   * action — the fee belongs to whoever submits, so the dapp covers it (for
+   * instance through its own paymaster). When `simulate` is true the wallet skips the
    * expensive, state-revealing proof generation and returns the call with an empty
    * proof — same shape, but NOT submittable on-chain (use for fee estimation / UI
    * previews). NOT_REGISTERED if the user is not registered.
@@ -248,6 +254,37 @@ export interface RpcTypeToMessageMap {
       api_version?: API_VERSION
     }
     result: STRK20_BALANCE_ENTRY[]
+    errors:
+      | Errors.NOT_REGISTERED
+      | Errors.INVALID_REQUEST_PAYLOAD
+      | Errors.USER_REFUSED_OP
+      | Errors.API_VERSION_NOT_SUPPORTED
+      | Errors.UNKNOWN_ERROR
+  }
+
+  /**
+   * Compute the commitment for a dapp's STRK20 sub-accounts. The commitment is
+   * computed locally by the wallet from the user's private state; no transaction
+   * is sent. When `nonce` is given, returns the full commitment for that single
+   * sub-account: hash(partial_commitment, nonce); each nonce maps to a distinct,
+   * deterministic sub-account for the user + dapp. When `nonce` is omitted,
+   * returns the partial (nonce-independent) commitment: hash(identity_key,
+   * dapp_name), where identity_key is derived from the user, their viewing key,
+   * and the sub-account anonymizer address. The partial commitment is shared by
+   * every sub-account the user derives for this dapp, so it can be published once
+   * to let a dapp recognize all of the user's sub-accounts without learning any
+   * individual nonce. NOT_REGISTERED if the user is not registered.
+   * @param params.dapp_name The dapp that scopes the sub-account(s).
+   * @param params.nonce The sub-account nonce; each nonce selects a distinct sub-account for this user + dapp. When omitted, the partial commitment is returned instead.
+   * @returns The sub-account commitment: hash(partial_commitment, nonce) when `nonce` was given, otherwise the partial commitment hash(identity_key, dapp_name).
+   */
+  wallet_strk20SubaccountCommitment: {
+    params: {
+      dapp_name: STRK20_DAPP_NAME
+      nonce?: FELT
+      api_version?: API_VERSION
+    }
+    result: FELT
     errors:
       | Errors.NOT_REGISTERED
       | Errors.INVALID_REQUEST_PAYLOAD
