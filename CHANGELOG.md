@@ -1,3 +1,10 @@
+## [0.10.4-beta.1](https://github.com/starknet-io/types-js/compare/v0.10.3...v0.10.4-beta.1) (2026-07-29)
+
+
+### Bug Fixes
+
+* sub-accounts handling ([1a46a02](https://github.com/starknet-io/types-js/commit/1a46a02286a7704a0eae86d1556ff2adfae56498))
+
 ## [0.10.3](https://github.com/starknet-io/types-js/compare/v0.10.2...v0.10.3) (2026-07-01)
 
 
