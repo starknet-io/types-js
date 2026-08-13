@@ -263,22 +263,23 @@ export interface RpcTypeToMessageMap {
   }
 
   /**
-   * Compute the commitment for a dapp's STRK20 sub-accounts. The commitment is
-   * computed locally by the wallet from the user's private state; no transaction
-   * is sent. When `nonce` is given, returns the full commitment for that single
-   * sub-account: hash(partial_commitment, nonce); each nonce maps to a distinct,
-   * deterministic sub-account for the user + dapp. When `nonce` is omitted,
-   * returns the partial (nonce-independent) commitment: hash(identity_key,
-   * dapp_name), where identity_key is derived from the user, their viewing key,
-   * and the sub-account anonymizer address. The partial commitment is shared by
-   * every sub-account the user derives for this dapp, so it can be published once
-   * to let a dapp recognize all of the user's sub-accounts without learning any
-   * individual nonce. NOT_REGISTERED if the user is not registered.
-   * @param params.dapp_name The dapp that scopes the sub-account(s).
-   * @param params.nonce The sub-account nonce; each nonce selects a distinct sub-account for this user + dapp. When omitted, the partial commitment is returned instead.
-   * @returns The sub-account commitment: hash(partial_commitment, nonce) when `nonce` was given, otherwise the partial commitment hash(identity_key, dapp_name).
+   * Compute the commitment for a dapp's STRK20 shadow accounts. The commitment
+   * is computed locally by the wallet from the user's private state; no
+   * transaction is sent. When `nonce` is given, returns the full commitment for
+   * that single shadow account: hash(partial_commitment, nonce); each nonce maps
+   * to a distinct, deterministic shadow account for the user + dapp. When
+   * `nonce` is omitted, returns the partial (nonce-independent) commitment:
+   * hash(identity_key, dapp_name), where identity_key is derived from the user,
+   * their viewing key, and the shadow account anonymizer address. The partial
+   * commitment is shared by every shadow account the user derives for this dapp,
+   * so it can be published once to let a dapp recognize all of the user's shadow
+   * accounts without learning any individual nonce. NOT_REGISTERED if the user
+   * is not registered.
+   * @param params.dapp_name The dapp that scopes the shadow account(s).
+   * @param params.nonce The shadow account nonce; each nonce selects a distinct shadow account for this user + dapp. When omitted, the partial commitment is returned instead.
+   * @returns The shadow account commitment: hash(partial_commitment, nonce) when `nonce` was given, otherwise the partial commitment hash(identity_key, dapp_name).
    */
-  wallet_strk20SubaccountCommitment: {
+  wallet_strk20ShadowAccountCommitment: {
     params: {
       dapp_name: STRK20_DAPP_NAME
       nonce?: FELT

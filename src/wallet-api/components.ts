@@ -254,17 +254,17 @@ export type STRK20_INVOKE_ACTION = {
 }
 
 /**
- * Identifies the dapp that scopes a set of STRK20 sub-accounts, as a single
+ * Identifies the dapp that scopes a set of STRK20 shadow accounts, as a single
  * felt. Either a 0x-prefixed felt, or a human-readable ASCII string of at most
  * 31 characters that the wallet encodes as a Cairo short string.
  */
 export type STRK20_DAPP_NAME = string
 
 /**
- * How much of the sub-account's token balance a settled open note collects.
- * 'all' collects the sub-account's entire token balance; 'diff' collects only
- * the balance gained during this interaction; 'exact' collects the given amount
- * (which must be provided).
+ * How much of the shadow account's token balance a settled open note
+ * collects. 'all' collects the shadow account's entire token balance; 'diff'
+ * collects only the balance gained during this interaction; 'exact' collects
+ * the given amount (which must be provided).
  */
 export type STRK20_COLLECT_POLICY =
   | { type: 'all' }
@@ -276,25 +276,25 @@ export type STRK20_COLLECT_POLICY =
     }
 
 /**
- * Invokes one or more contract calls through the user's STRK20 sub-account for a
- * dapp, routed via the sub-account anonymizer. The sub-account is selected by
- * (dapp_name, nonce); each nonce maps to a distinct, deterministic sub-account.
- * The proceeds of the calls are settled into the open notes created by transfer
- * actions with amount "OPEN" in the same transaction, so the usual rule applies:
- * the number of open notes filled by this action must match the number of open
- * notes created in the transaction.
+ * Invokes one or more contract calls through the user's STRK20 shadow account
+ * for a dapp, routed via the shadow account anonymizer. The shadow account is
+ * selected by (dapp_name, nonce); each nonce maps to a distinct, deterministic
+ * shadow account. The proceeds of the calls are settled into the open notes
+ * created by transfer actions with amount "OPEN" in the same transaction, so the
+ * usual rule applies: the number of open notes filled by this action must match
+ * the number of open notes created in the transaction.
  */
-export type STRK20_SUBACCOUNT_INVOKE_ACTION = {
-  type: 'subaccount_invoke'
-  /** The dapp that scopes the sub-account */
+export type STRK20_SHADOW_ACCOUNT_INVOKE_ACTION = {
+  type: 'shadow_account_invoke'
+  /** The dapp that scopes the shadow account */
   dapp_name: STRK20_DAPP_NAME
-  /** The sub-account nonce; each nonce selects a distinct sub-account for this user + dapp */
+  /** The shadow account nonce; each nonce selects a distinct shadow account for this user + dapp */
   nonce: FELT
-  /** The contract calls to execute through the sub-account, in order (min 1). */
+  /** The contract calls to execute through the shadow account, in order (min 1). */
   calls: Call[]
   /**
    * A single policy applied to every open note this action settles: how much of
-   * the sub-account's balance each note collects.
+   * the shadow account's balance each note collects.
    */
   collect_policy: STRK20_COLLECT_POLICY
 }
@@ -308,7 +308,7 @@ export type STRK20_ACTION =
   | STRK20_WITHDRAW_ACTION
   | STRK20_TRANSFER_ACTION
   | STRK20_INVOKE_ACTION
-  | STRK20_SUBACCOUNT_INVOKE_ACTION
+  | STRK20_SHADOW_ACCOUNT_INVOKE_ACTION
 
 /**
  * A private balance for a single token held inside the privacy pool.
