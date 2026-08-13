@@ -1,3 +1,10 @@
+## [0.10.4-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.4-beta.1...v0.10.4-beta.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* rename STRK20 sub-accounts to shadow accounts (spec PR 406) ([1c06e74](https://github.com/starknet-io/types-js/commit/1c06e74b456b0519f378f9bffb3e41356deb7a63))
+
 ## [0.10.4-beta.1](https://github.com/starknet-io/types-js/compare/v0.10.3...v0.10.4-beta.1) (2026-07-29)
 
 
