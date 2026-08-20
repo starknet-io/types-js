@@ -69,7 +69,7 @@ export type Call = {
 }
 
 /**
- * INVOKE_TXN_V1
+ * INVOKE_TXN_V3
  * @see https://github.com/starkware-libs/starknet-specs/blob/master/api/starknet_api_openrpc.json
  */
 export interface AddInvokeTransactionParameters {
