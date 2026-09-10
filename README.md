@@ -1,5 +1,5 @@
 <p align="center">
-  <img width='300' src="https://raw.githubusercontent.com/starknet-io/types-js/9c98311bfdeda3440b0d65d2eaa3c5869ddedcab/types%20js%20logo.png">
+  <img width='300' src="https://raw.githubusercontent.com/starknet-io/types-js/main/types%20js%20logo.png">
 </p>
 <p align="center">
     <a href="https://github.com/starknet-io/types-js/actions/workflows/publish.yml">
@@ -43,11 +43,17 @@
 
 ## Installation
 
+RPC 0.10.4 - **latest**
+```bash
+npm i @starknet-io/types-js@0.10.4
+```
 
-RPC 0.10.3 - **latest**
+RPC 0.10.3
 ```bash
 npm i @starknet-io/types-js@0.10.3
+```
 
+RPC 0.10.2 - (Starknet 0.14.2)
 ```bash
 npm i @starknet-io/types-js@0.10.2
 ```
@@ -80,7 +86,7 @@ import type { SomeApiType } from '@starknet-io/types-js';
 import { API } from '@starknet-io/types-js';
 ```
 
-#### Wallet API [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/48e77bf4aaf687388b40b8198e3105401941517a/wallet-api)
+#### Wallet API [Wallet JSON RPC Specification](https://github.com/starkware-libs/starknet-specs/tree/master/wallet-api)
 
 ```ts
 // type import

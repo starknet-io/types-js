@@ -22,7 +22,7 @@ export type PADDED_FELT = string // TODO: STORAGE_KEY should also be PADDED_FELT
 /**
  * A Starknet JSON-RPC spec version, following semantic versioning.
  * @pattern ^[0-9]+\\.[0-9]+(\\.[0-9]+(-[0-9A-Za-z.-]+)?)?$
- * @example "0.10" | "0.10.3" | "0.10.3-rc.3"
+ * @example "0.10" | "0.10.4" | "0.10.4-rc.0"
  */
 export type SpecVersion =
   | `${number}.${number}`
@@ -69,7 +69,7 @@ export type Call = {
 }
 
 /**
- * INVOKE_TXN_V1
+ * INVOKE_TXN_V3
  * @see https://github.com/starkware-libs/starknet-specs/blob/master/api/starknet_api_openrpc.json
  */
 export interface AddInvokeTransactionParameters {
@@ -155,7 +155,7 @@ export interface AccountDeploymentData {
  * A wallet API version, following semantic versioning (no pre-release).
  * When used as a request parameter and not specified, the latest is assumed.
  * @pattern ^[0-9]+\\.[0-9]+(\\.[0-9]+)?$
- * @example "0.8" | "0.10.3"
+ * @example "0.8" | "0.10.4"
  */
 export type API_VERSION = `${number}.${number}` | `${number}.${number}.${number}`
 
@@ -254,6 +254,52 @@ export type STRK20_INVOKE_ACTION = {
 }
 
 /**
+ * Identifies the dapp that scopes a set of STRK20 shadow accounts, as a single
+ * felt. Either a 0x-prefixed felt, or a human-readable ASCII string of at most
+ * 31 characters that the wallet encodes as a Cairo short string.
+ */
+export type STRK20_DAPP_NAME = string
+
+/**
+ * How much of the shadow account's token balance a settled open note
+ * collects. 'all' collects the shadow account's entire token balance; 'diff'
+ * collects only the balance gained during this interaction; 'exact' collects
+ * the given amount (which must be provided).
+ */
+export type STRK20_COLLECT_POLICY =
+  | { type: 'all' }
+  | { type: 'diff' }
+  | {
+      type: 'exact'
+      /** The exact amount to collect, in the token's smallest unit. */
+      amount: FELT
+    }
+
+/**
+ * Invokes one or more contract calls through the user's STRK20 shadow account
+ * for a dapp, routed via the shadow account anonymizer. The shadow account is
+ * selected by (dapp_name, nonce); each nonce maps to a distinct, deterministic
+ * shadow account. The proceeds of the calls are settled into the open notes
+ * created by transfer actions with amount "OPEN" in the same transaction, so the
+ * usual rule applies: the number of open notes filled by this action must match
+ * the number of open notes created in the transaction.
+ */
+export type STRK20_SHADOW_ACCOUNT_INVOKE_ACTION = {
+  type: 'shadow_account_invoke'
+  /** The dapp that scopes the shadow account */
+  dapp_name: STRK20_DAPP_NAME
+  /** The shadow account nonce; each nonce selects a distinct shadow account for this user + dapp */
+  nonce: FELT
+  /** The contract calls to execute through the shadow account, in order (min 1). */
+  calls: Call[]
+  /**
+   * A single policy applied to every open note this action settles: how much of
+   * the shadow account's balance each note collects.
+   */
+  collect_policy: STRK20_COLLECT_POLICY
+}
+
+/**
  * A single action to perform via the STRK20 privacy protocol. The `type` field
  * discriminates the variant.
  */
@@ -262,6 +308,7 @@ export type STRK20_ACTION =
   | STRK20_WITHDRAW_ACTION
   | STRK20_TRANSFER_ACTION
   | STRK20_INVOKE_ACTION
+  | STRK20_SHADOW_ACCOUNT_INVOKE_ACTION
 
 /**
  * A private balance for a single token held inside the privacy pool.

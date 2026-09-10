@@ -1,3 +1,25 @@
+## [0.10.4-beta.3](https://github.com/starknet-io/types-js/compare/v0.10.4-beta.2...v0.10.4-beta.3) (2026-09-10)
+
+
+### Bug Fixes
+
+* implement spec v0.10.4-rc.2 ([bd25569](https://github.com/starknet-io/types-js/commit/bd2556990c1dcd90c4982b073b3512515564b520))
+* remove leftover v1 transaction references ([e1551d5](https://github.com/starknet-io/types-js/commit/e1551d5636b9892b2e6e622894e17230a2672002))
+
+## [0.10.4-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.4-beta.1...v0.10.4-beta.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* rename STRK20 sub-accounts to shadow accounts (spec PR 406) ([1c06e74](https://github.com/starknet-io/types-js/commit/1c06e74b456b0519f378f9bffb3e41356deb7a63))
+
+## [0.10.4-beta.1](https://github.com/starknet-io/types-js/compare/v0.10.3...v0.10.4-beta.1) (2026-07-29)
+
+
+### Bug Fixes
+
+* sub-accounts handling ([1a46a02](https://github.com/starknet-io/types-js/commit/1a46a02286a7704a0eae86d1556ff2adfae56498))
+
 ## [0.10.3](https://github.com/starknet-io/types-js/compare/v0.10.2...v0.10.3) (2026-07-01)
 
 
