@@ -1,3 +1,11 @@
+## [0.10.4-beta.3](https://github.com/starknet-io/types-js/compare/v0.10.4-beta.2...v0.10.4-beta.3) (2026-09-10)
+
+
+### Bug Fixes
+
+* implement spec v0.10.4-rc.2 ([bd25569](https://github.com/starknet-io/types-js/commit/bd2556990c1dcd90c4982b073b3512515564b520))
+* remove leftover v1 transaction references ([e1551d5](https://github.com/starknet-io/types-js/commit/e1551d5636b9892b2e6e622894e17230a2672002))
+
 ## [0.10.4-beta.2](https://github.com/starknet-io/types-js/compare/v0.10.4-beta.1...v0.10.4-beta.2) (2026-08-13)
 
 
