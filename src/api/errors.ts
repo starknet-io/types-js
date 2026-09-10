@@ -114,7 +114,7 @@ export interface INSUFFICIENT_RESOURCES_FOR_VALIDATE {
 
 export interface INSUFFICIENT_ACCOUNT_BALANCE {
   code: 54
-  message: "Account balance is smaller than the transaction's max_fee"
+  message: "Account balance is smaller than the transaction's maximal fee (calculated as the sum of each resource's limit x max price)"
 }
 
 export interface VALIDATION_FAILURE {

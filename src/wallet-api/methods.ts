@@ -245,12 +245,15 @@ export interface RpcTypeToMessageMap {
    * token address; an empty array returns balances of all shielded tokens the
    * wallet holds. NOT_REGISTERED if the user is not registered.
    * @param params.tokens Token addresses to query; an empty array returns all shielded tokens.
+   * @param params.valid_until Expiry of the balance-read authorization, as a Unix timestamp in seconds; if omitted, the wallet applies its own default window.
    * @returns Balance per token.
    */
   wallet_strk20Balances: {
     params: {
       /** Token addresses to query. Pass an empty array to return balances of all shielded tokens in the privacy pool. */
       tokens: Address[]
+      /** Requested expiry of the balance-read authorization, as a Unix timestamp in seconds. When omitted, the wallet applies its own default window. */
+      valid_until?: number
       api_version?: API_VERSION
     }
     result: STRK20_BALANCE_ENTRY[]

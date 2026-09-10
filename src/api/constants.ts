@@ -273,25 +273,6 @@ export const ETransactionVersion = {
 } as const
 
 export type ETransactionVersion = (typeof ETransactionVersion)[keyof typeof ETransactionVersion]
-/**
- * Old Transaction Versions
- */
-
-/**
- * @deprecated Starknet 0.14 will not support this transaction
- */
-export const ETransactionVersion2 = {
-  V0: ETransactionVersion.V0,
-  V1: ETransactionVersion.V1,
-  V2: ETransactionVersion.V2,
-  F0: ETransactionVersion.F0,
-  F1: ETransactionVersion.F1,
-  F2: ETransactionVersion.F2,
-} as const
-/**
- * @deprecated Starknet 0.14 will not support this transaction
- */
-export type ETransactionVersion2 = (typeof ETransactionVersion2)[keyof typeof ETransactionVersion2]
 
 /**
  * V3 Transaction Versions
