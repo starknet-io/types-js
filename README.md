@@ -47,7 +47,9 @@ RPC 0.10.4 - **beta** (stable not yet released)
 
 | npm version | Spec |
 |---|---|
-| `npm i @starknet-io/types-js@0.10.4-beta.1` | rc0 - latest beta |
+| `npm i @starknet-io/types-js@0.10.4-beta.3` | rc2 - latest beta |
+| `npm i @starknet-io/types-js@0.10.4-beta.2` | rc1 |
+| `npm i @starknet-io/types-js@0.10.4-beta.1` | rc0 |
 
 RPC 0.10.3 - **latest**
 ```bash
