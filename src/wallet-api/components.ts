@@ -210,6 +210,15 @@ export type STRK20_CALLDATA_PLACEHOLDER = string
 export type STRK20_CALLDATA_ITEM = FELT | STRK20_CALLDATA_PLACEHOLDER
 
 /**
+ * Registers the active account in the wallet's configured STRK20 privacy pool
+ * on the active chain. Must be the only action in the request. Requests for an
+ * already registered account return INVALID_REQUEST_PAYLOAD.
+ */
+export type STRK20_REGISTER_ACTION = {
+  type: 'register'
+}
+
+/**
  * Deposits public funds from the user's account into the privacy pool. Always to
  * self.
  */
@@ -304,6 +313,7 @@ export type STRK20_SHADOW_ACCOUNT_INVOKE_ACTION = {
  * discriminates the variant.
  */
 export type STRK20_ACTION =
+  | STRK20_REGISTER_ACTION
   | STRK20_DEPOSIT_ACTION
   | STRK20_WITHDRAW_ACTION
   | STRK20_TRANSFER_ACTION

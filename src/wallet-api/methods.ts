@@ -181,14 +181,16 @@ export interface RpcTypeToMessageMap {
 
   /**
    * Submit a transaction containing STRK20 privacy protocol actions. Submits one
-   * or more STRK20 actions (deposit, withdraw, private transfer) as a single
-   * atomic transaction. The wallet shows an approval UI and may take
-   * significantly longer than wallet_addInvokeTransaction because SNIP-36 ZK proof
-   * generation is required; the dapp must tolerate long-running calls. The wallet
-   * adds the fee action itself: a withdraw action covering the paymaster/relayer
-   * fee required to submit, on top of the actions the dapp supplies.
-   * Registration into the pool is transparent — if the user is not registered,
-   * NOT_REGISTERED is returned.
+   * or more STRK20 actions (register, deposit, withdraw, private transfer, invoke,
+   * shadow account invoke) as a single atomic transaction. The wallet shows an
+   * approval UI and may take significantly longer than wallet_addInvokeTransaction
+   * because SNIP-36 ZK proof generation is required; the dapp must tolerate
+   * long-running calls. For actions other than register, the wallet adds the fee
+   * action itself: a withdraw action covering the paymaster fee required to
+   * submit, on top of the actions the dapp supplies. A register action must be
+   * the only action in a request; INVALID_REQUEST_PAYLOAD is returned otherwise,
+   * or if the account is already registered. Requests without a register action
+   * require a registered account; otherwise NOT_REGISTERED is returned.
    * @param params.actions An ordered list of STRK20 actions to execute atomically (min 1).
    * @returns The transaction hash.
    */
@@ -217,7 +219,10 @@ export interface RpcTypeToMessageMap {
    * instance through its own paymaster). When `simulate` is true the wallet skips the
    * expensive, state-revealing proof generation and returns the call with an empty
    * proof — same shape, but NOT submittable on-chain (use for fee estimation / UI
-   * previews). NOT_REGISTERED if the user is not registered.
+   * previews). A register action must be the only action in the request;
+   * INVALID_REQUEST_PAYLOAD is returned otherwise, or if the account is already
+   * registered. Requests without a register action require a registered account;
+   * otherwise NOT_REGISTERED is returned.
    * @param params.actions An ordered list of STRK20 actions to bundle (min 1).
    * @param params.simulate If true, skip proof generation and return an empty proof. Defaults to false.
    * @returns The assembled call and proof (proof fields are empty when simulate is true).

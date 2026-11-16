@@ -19,6 +19,7 @@ export interface RpcTypeToMessageMap {
       | ApiErrors.BLOCK_NOT_FOUND
       | Errors.ACCOUNT_VALIDATION_FAILED
       | Errors.UNSUPPORTED_TX_TYPE
+      | Errors.UNSUPPORTED_BUILTIN
       | Errors.SERVICE_BUSY
       | Errors.INVALID_TRANSACTION_INPUT
       | Errors.TRANSACTION_BLOCKED

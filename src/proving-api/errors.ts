@@ -22,6 +22,12 @@ export interface UNSUPPORTED_TX_TYPE {
   data: string
 }
 
+export interface UNSUPPORTED_BUILTIN {
+  code: 1002
+  message: 'Unsupported builtin'
+  data: string
+}
+
 export interface TRANSACTION_BLOCKED {
   code: 10000
   message: 'Transaction blocked'
