@@ -43,7 +43,12 @@
 
 ## Installation
 
-RPC 0.10.4 - **latest**
+RPC 0.10.5 - **latest**
+```bash
+npm i @starknet-io/types-js@0.10.5
+```
+
+RPC 0.10.4
 ```bash
 npm i @starknet-io/types-js@0.10.4
 ```
